@@ -1,0 +1,3 @@
+lvl = 3
+p = 0x3df6eeeab0871a2c6ae604a45d10ad665bc2e0a90aeb751c722f669356ea4684c6174c1ffffffffffffffffffffffff
+B = 48000

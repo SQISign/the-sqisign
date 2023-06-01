@@ -1,0 +1,1 @@
+include(${SELECT_SQISIGN_VARIANT})
