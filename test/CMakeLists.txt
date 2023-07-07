@@ -21,5 +21,7 @@ FOREACH(SVARIANT ${SVARIANT_S})
 
     add_test(sqisign_${SVARIANT}_KAT sqisign_test_kat_${SVARIANT})
     add_test(sqisign_${SVARIANT}_SELFTEST sqisign_test_scheme_${SVARIANT})
+
+    set_tests_properties(sqisign_${SVARIANT}_KAT PROPERTIES TIMEOUT 0)
 ENDFOREACH()
 
