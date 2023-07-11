@@ -38,6 +38,7 @@ set(SELECT_SQISIGN_VARIANT ${PROJECT_SOURCE_DIR}/.cmake/sqisign_variant.cmake)
 
 set(INC_PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+
 add_subdirectory(src)
 add_subdirectory(apps)
 

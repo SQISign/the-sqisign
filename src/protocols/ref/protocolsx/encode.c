@@ -441,6 +441,11 @@ void hash_to_challenge(ibz_vec_2_t *scalars, const ec_curve_t *curve, const unsi
         //FIXME should use SHAKE128 for smaller parameter sets?
         SHAKE256((void *) digits, sizeof(digits), buf, FP2_ENCODED_BYTES + length);
 
+#ifdef TARGET_BIG_ENDIAN
+        for (size_t i = 0; i < NWORDS_FIELD; i++)
+            digits[i] = BSWAP_DIGIT(digits[i]);
+#endif
+
         ibz_set(&(*scalars)[0], 1); //FIXME
         ibz_copy_digit_array(&(*scalars)[1], digits);
     }

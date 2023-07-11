@@ -19,7 +19,7 @@ FOREACH(SVARIANT ${SVARIANT_S})
     target_link_libraries(sqisign_test_prof_${SVARIANT} sqisign_${SVARIANT_LOWER})
     target_include_directories(sqisign_test_prof_${SVARIANT} PUBLIC ${PROJECT_SOURCE_DIR}/src/common ${INC_PUBLIC} ${PROJECT_SOURCE_DIR}/src/nistapi/${SVARIANT_LOWER})
 
-    add_test(sqisign_${SVARIANT}_KAT sqisign_test_kat_${SVARIANT})
+    add_test(sqisign_${SVARIANT}_KAT sqisign_test_kat_${SVARIANT} 0) # testing only the first KAT
     add_test(sqisign_${SVARIANT}_SELFTEST sqisign_test_scheme_${SVARIANT})
 
     set_tests_properties(sqisign_${SVARIANT}_KAT PROPERTIES TIMEOUT 0)

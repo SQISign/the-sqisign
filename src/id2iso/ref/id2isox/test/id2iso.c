@@ -218,12 +218,17 @@ int id2iso_test_long_id2iso() {
     // var finalize    
     quat_alg_elem_finalize(&gen_key);
     quat_alg_elem_finalize(&gen_check);
+    quat_alg_elem_finalize(&quat_temp);
     ibq_finalize(&ibq_norm);
-    ibz_finalize(&temp);ibz_finalize(&remainder);
+    ibz_finalize(&temp);ibz_finalize(&remainder);ibz_finalize(&n);
     quat_alg_elem_finalize(&gen);
     quat_alg_elem_finalize(&gen_two);
+    quat_left_ideal_finalize(&lideal_small);
+    quat_left_ideal_finalize(&lideal_check);
+    quat_left_ideal_finalize(&lideal_two);
     quat_left_ideal_finalize(&lideal_two_one);
     quat_left_ideal_finalize(&lideal_small_one);
+    quat_left_ideal_finalize(&ideal_test);
     quat_order_finalize(&right_order);
     quat_alg_coord_finalize(&coeffs);
     ibz_mat_4x4_finalize(&reduced);ibz_mat_4x4_finalize(&gram);

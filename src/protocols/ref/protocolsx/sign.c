@@ -61,6 +61,8 @@ void protocols_commit(quat_left_ideal_t *ideal, ec_curve_t *E1, ec_basis_t *basi
             ibz_gcd(&temp,&temp,&DEGREE_COMMITMENT);
             ibz_div(&temp,&remainder,&temp,&DEGREE_COMMITMENT);
             assert(0==ibz_cmp(&remainder,&ibz_const_zero));
+            ibz_finalize(&temp);ibz_finalize(&remainder);
+            quat_alg_coord_finalize(&coeffs);
         #endif
 
 
@@ -699,6 +701,7 @@ int protocols_sign(signature_t *sig,const public_key_t *pk, const secret_key_t *
             quat_alg_conj(&delta,&gen);
             quat_lideal_create_from_primitive(&ideal_signing_test,&delta,&ideal_eichler_rand.norm,&right_order_key,&QUATALG_PINFTY);
             assert(quat_lideal_equals(&ideal_signing_test,&ideal_eichler_rand,&QUATALG_PINFTY));
+            quat_left_ideal_finalize(&ideal_signing_test);
         #endif
         
         // checking cyclicity

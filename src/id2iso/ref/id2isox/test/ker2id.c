@@ -40,6 +40,8 @@ int _id2iso_test_ker2id() {
     id2iso_kernel_dlogs_to_ideal(&I, &vec2, &vec3);
 //    quat_left_ideal_print(&I);
     quat_left_ideal_finalize(&I);
+    ibz_vec_2_finalize(&vec2);
+    ibz_vec_2_finalize(&vec3);
 
     //TODO FIXME this really only tests that the function doesn't crash
 

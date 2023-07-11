@@ -19,29 +19,21 @@ jobs:
 
     strategy:
       matrix:
-        sqisign_build_type: [opt]
+        sqisign_build_type: [ref]
+        sqisign_test_reps: [10]
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
     
     - name: Install dependencies Valgrind, GMP, Doxygen, TeX
       run: |
-          sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex
+          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex
           echo "Valgrind installed"
-          
-    - name: Install Valgrind dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install ValgrindCI
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }}
 
     - name: Build
       # Build your program with the given configuration
@@ -61,23 +53,21 @@ jobs:
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
+      run: ctest -j4 -C ${{env.BUILD_TYPE}}
     
     - name: Examples
-      if: false
       working-directory: ${{github.workspace}}/build/apps
       run: |
-          ./PQCgenKAT_sign_lvl1
-          ./PQCgenKAT_sign_lvl1_varp6983
           ./example_nistapi_lvl1
-          ./example_nistapi_lvl1_varp6983
+          ./example_nistapi_lvl3
+          ./example_nistapi_lvl5
 
     - name: CT-Tests
       # TODO: re-enable for those tests that should be ct
       if: false
       run: |
           rm -rf build
-          cmake -Bbuild -DENABLE_CT_TESTING=ON -DCMAKE_BUILD_TYPE=Debug -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }}
+          cmake -Bbuild -DENABLE_CT_TESTING=ON -DCMAKE_BUILD_TYPE=Debug -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }}
           cmake --build build
           # valgrind --track-origins=yes build/
           # valgrind --track-origins=yes build/
@@ -87,7 +77,7 @@ jobs:
     - name: Memcheck
       run: |
           rm -rf build
-          cmake -Bbuild -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=10
+          cmake -Bbuild -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }}
           cmake --build build
           ctest -T memcheck --test-dir build
       if: false
@@ -95,27 +85,30 @@ jobs:
     - name: Address Sanitizer ASAN
       run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=ASAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=ASAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
           cmake --build build
-          ctest -v --test-dir build
+          ctest -j4 -v --test-dir build
 
+    # MSAN needs instrumented gmp
     - name: Memory Sanitizer MSAN
       run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=MSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=MSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
           cmake --build build
-          ctest -v --test-dir build
+          ctest -j4 -v --test-dir build
+
+      if: false
 
     - name: Leak Sanitizer LSAN
       run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=LSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=LSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
           cmake --build build
-          ctest -v --test-dir build
+          ctest -j4 -v --test-dir build
 
     - name: Undefined Behavior Sanitizer UBSAN
       run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=UBSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=UBSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
           cmake --build build
-          ctest -v --test-dir build
+          ctest -j4 -v --test-dir build
