@@ -57,7 +57,7 @@ void xisog_4_singular(ec_point_t* B24, ec_point_t const P, ec_point_t A24)
 // xISOG procedure, which is a hybrid between Montgomery and Twisted Edwards
 // This tradition fomulae corresponds with the Twisted Edwards formulae but 
 // mapping the output into Montgomery form
-void xisog_t(ec_point_t* B, uint64_t const i, ec_point_t const A)
+void xisog_t(ec_point_t* B, int i, ec_point_t const A)
 {
 	int j;
 	int d = ((int)TORSION_ODD_PRIMES[i] - 1) / 2;	// Here, l = 2d + 1
@@ -107,7 +107,7 @@ void xisog_t(ec_point_t* B, uint64_t const i, ec_point_t const A)
 // -------------------------------------------------------------------------
 //  Isogeny construction (xISOG) used in velu SQRT
 
-void xisog_s(ec_point_t* B, uint64_t const i, ec_point_t const A)
+void xisog_s(ec_point_t* B, int i, ec_point_t const A)
 {
 	// =================================================================================
 	assert(TORSION_ODD_PRIMES[i] > gap);     // Ensuring velusqrt is used for l_i > gap

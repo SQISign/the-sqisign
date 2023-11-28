@@ -7,7 +7,7 @@ int quat_test_randomized_ibz_mat_2x2_inv_mod()
     int res = 0;
     ibz_t m, det, gcd;
     ibz_mat_2x2_t a, inv, id, prod;
-    int64_t rand[4];
+    int rand[4];
     int64_t rand_m;
     ibz_init(&m);
     ibz_init(&det);
@@ -21,13 +21,13 @@ int quat_test_randomized_ibz_mat_2x2_inv_mod()
 
     for (int iter = 0; iter < 100; iter++){
         // generate random matrix and modulo, with modulo larger than 2
-        int randret = randombytes((unsigned char*)rand, 4*sizeof(uint64_t));
+        int randret = randombytes((unsigned char*)rand, 4*sizeof(int));
         if (randret != 0)
             return 1;
         ibz_mat_2x2_set(&a, rand[0],rand[1],rand[2],rand[3]);
         rand_m = 0;
         while(rand_m < 2) {
-            int randret = randombytes((unsigned char*)&rand_m, sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)&rand_m, sizeof(int64_t));
             if (randret != 0)
                 return 1;
         }
@@ -94,7 +94,7 @@ int quat_test_randomized_2x2_lattice_enumerate_cvp_filter()
     unsigned int dist_bound;
     void *params = (void *)&p;
     unsigned int max_tries;
-    int64_t rand[9];
+    int rand[9];
 
     // fix p since only used inside condition which is internal, unused by any external function
     ibz_set(&p, 3);
@@ -104,7 +104,7 @@ int quat_test_randomized_2x2_lattice_enumerate_cvp_filter()
         // generate random matrix  with non-0 det
         ibz_set(&bound,0);
         while(ibz_is_zero(&bound)){
-            int randret = randombytes((unsigned char*)rand, 9*sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)rand, 9*sizeof(int));
             if (randret != 0)
                 return 1;
             ibz_mat_2x2_set(&basis, rand[0],rand[1],rand[2],rand[3]);
@@ -210,7 +210,7 @@ int quat_test_randomized_ibz_mat_4x8_hnf_core(){
     int det_non_0;
 
     for (int iter = 0; iter < 100; iter++){
-        int randret = randombytes((unsigned char*)rand, 8*4*sizeof(uint64_t));
+        int randret = randombytes((unsigned char*)rand, 8*4*sizeof(int64_t));
         if (randret != 0)
             return 1;
 
@@ -266,7 +266,7 @@ int quat_test_randomized_ibz_4x5_right_ker_mod_prime(){
 
     for (int iter = 0; iter < 100; iter++){
         // generate random matrix and modulo, with modulo larger than 2
-        int randret = randombytes((unsigned char*)rand, 4*5*sizeof(uint64_t));
+        int randret = randombytes((unsigned char*)rand, 4*5*sizeof(int64_t));
         if (randret != 0)
             return 1;
         for (int i = 0; i < 4; i++){
@@ -276,7 +276,7 @@ int quat_test_randomized_ibz_4x5_right_ker_mod_prime(){
         }
         rand_p = 0;
         while(rand_p ==0) {
-            int randret = randombytes((unsigned char*)&rand_p, sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)&rand_p, sizeof(int64_t));
             if (randret != 0)
                 return 1;
             ibz_set(&prime,rand_p);
@@ -335,7 +335,7 @@ int quat_test_randomized_ibz_4x4_right_ker_mod_prime(){
     for (int iter = 0; iter < 100; iter++){
         rand_p = 0;
         while(rand_p ==0) {
-            int randret = randombytes((unsigned char*)&rand_p, sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)&rand_p, sizeof(int64_t));
             if (randret != 0)
                 return 1;
             ibz_set(&prime,rand_p);
@@ -345,7 +345,7 @@ int quat_test_randomized_ibz_4x4_right_ker_mod_prime(){
         // generate random invertible matrix
         ibz_set(&det,0);
         while(ibz_is_zero(&det)){
-            int randret = randombytes((unsigned char*)rand, 4*4*sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)rand, 4*4*sizeof(int64_t));
             if (randret != 0)
                 return 1;
             for (int i = 0; i < 4; i++){
@@ -404,7 +404,7 @@ int quat_test_randomized_ibz_4x4_right_ker_mod_power_of_2(){
     int zero = 1;
     short exp;
     int64_t rand[4][4];
-    uint64_t rand_exp;
+    unsigned char rand_exp;
     ibz_mat_4x4_t mat, rank3;
     ibz_vec_4_t ker;
     ibz_vec_4_t prod;
@@ -424,15 +424,15 @@ int quat_test_randomized_ibz_4x4_right_ker_mod_power_of_2(){
     for (int iter = 0; iter < 100; iter++){
         rand_exp = 0;
         while(rand_exp <=0) {
-            int randret = randombytes((unsigned char*)&rand_exp, sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)&rand_exp, sizeof(unsigned char));
             if (randret != 0)
                 return 1;
-                exp = ((short) ((unsigned char) rand_exp));
+            exp = (short)rand_exp;
         }
         // generate random invertible matrix
         ibz_set(&det,0);
         while(ibz_is_zero(&det)){
-            int randret = randombytes((unsigned char*)rand, 4*4*sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)rand, 4*4*sizeof(int64_t));
             if (randret != 0)
                 return 1;
             for (int i = 0; i < 4; i++){
@@ -514,7 +514,7 @@ int quat_test_randomized_lattice_lll(){
         // generate random invertible matrix
         ibz_set(&det,0);
         while(ibz_is_zero(&det)){
-            int randret = randombytes((unsigned char*)rand, 4*4*sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)rand, 4*4*sizeof(int64_t));
             if (randret != 0)
                 return 1;
             for (int i = 0; i < 4; i++){
@@ -563,7 +563,7 @@ int quat_test_randomized_lattice_contains_without_alg(){
     quat_alg_elem_t x, cmp;
     quat_alg_coord_t coord;
     quat_lattice_t lat;
-    uint64_t rand_denom;
+    int64_t rand_denom;
     int64_t rand[5][4];
     ibz_init(&det);
     quat_alg_coord_init(&coord);
@@ -574,14 +574,14 @@ int quat_test_randomized_lattice_contains_without_alg(){
     for (int iter = 0; iter < 10; iter++){
         rand_denom = 0;
         while(rand_denom ==0) {
-            int randret = randombytes((unsigned char*)&rand_denom, sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)&rand_denom, sizeof(int64_t));
             if (randret != 0)
                 return 1;
         }
         // generate random invertible matrix
         ibz_set(&det,0);
         while(ibz_is_zero(&det)){
-            int randret = randombytes((unsigned char*)rand, 5*4*sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)rand, 5*4*sizeof(int64_t));
             if (randret != 0)
                 return 1;
             for (int i = 0; i < 4; i++){
@@ -670,7 +670,7 @@ int quat_test_randomized_ibz_cornacchia_extended(){
         // sample large prime as last factor
         rand_fact = 0;
         while(rand_fact == 0) {
-            int randret = randombytes((unsigned char*)&rand_fact, sizeof(uint64_t));
+            int randret = randombytes((unsigned char*)&rand_fact, sizeof(int64_t));
             if (randret != 0)
                 return 1;
             if(rand_fact < 0) 

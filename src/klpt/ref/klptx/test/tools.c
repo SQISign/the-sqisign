@@ -446,7 +446,8 @@ int klpt_test_represent_integer() {
 
     found = found && (ibz_cmp(&ibz_norm,&M)==0); 
     if (! found ){
-        ibz_printf("unequality of norm \n %Zd \n %Zd \n",ibz_norm,M);
+        printf("unequality of norm \n");
+        ibz_printf(" %Zd \n %Zd \n",ibz_norm,M);
     }
 
     ibz_t remainder;

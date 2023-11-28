@@ -91,7 +91,7 @@ void quat_lideal_make_primitive_then_create(quat_left_ideal_t *lideal, const qua
     ibz_finalize(&n1);
 }
 
-int quat_lideal_random_2e(quat_left_ideal_t *lideal, const quat_order_t *order, const quat_alg_t *alg, int64_t e, unsigned char n) {
+int quat_lideal_random_2e(quat_left_ideal_t *lideal, const quat_order_t *order, const quat_alg_t *alg, int e, unsigned char n) {
     ibq_t norm;
     ibz_t norm_num;
     ibq_init(&norm);

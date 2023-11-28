@@ -1,6 +1,7 @@
 
 set(SOURCE_FILES_GF_${SVARIANT_UPPER}_REF
-    fp_p318233.c fp.c fp2.c
+
+    fp_p318233_32.c fp_p318233_64.c fp.c fp2.c
 )
 
 add_library(${LIB_GF_${SVARIANT_UPPER}} ${SOURCE_FILES_GF_${SVARIANT_UPPER}_REF})

@@ -28,6 +28,16 @@ if (ENABLE_GMP_BUILD)
 
   set(GMP ${libgmp_INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}gmp${GMP_LIB_SUFFIX})
   include_directories(${libgmp_INSTALL_DIR}/include)
+elseif(ENABLE_MINI_GMP)
+  add_library(mini-gmp STATIC
+    ${CMAKE_SOURCE_DIR}/src/mini-gmp/mini-gmp.c
+    ${CMAKE_SOURCE_DIR}/src/mini-gmp/mini-gmp-extra.c
+    ${CMAKE_SOURCE_DIR}/src/mini-gmp/mini-mpq.c
+  )
+  add_compile_definitions(ENABLE_MINI_GMP)
+  target_include_directories(mini-gmp PRIVATE ${CMAKE_SOURCE_DIR}/include)
+  include_directories(${CMAKE_SOURCE_DIR}/src/mini-gmp)
+  set(GMP mini-gmp)
 else()
   # use system gmp version
   find_library(GMP gmp)

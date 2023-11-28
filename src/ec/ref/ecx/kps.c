@@ -86,7 +86,7 @@ void yadd(ec_point_t* R, ec_point_t* const P, ec_point_t* const Q, ec_point_t* c
 }
 
 // tvelu formulae
-void kps_t(uint64_t const i, ec_point_t const P, ec_point_t const A)
+void kps_t(int i, ec_point_t const P, ec_point_t const A)
 {
 	int j;
 	int d = ((int)TORSION_ODD_PRIMES[i] - 1) / 2;
@@ -105,7 +105,7 @@ void kps_t(uint64_t const i, ec_point_t const P, ec_point_t const A)
 // -----------------------------------------------------------
 // -----------------------------------------------------------
 // Kernel Point computation (KPs) used in velu SQRT
-void kps_s(uint64_t const i, ec_point_t const P, ec_point_t const A)
+void kps_s(int i, ec_point_t const P, ec_point_t const A)
 {
 	// =================================================================================
 	assert(TORSION_ODD_PRIMES[i] > gap);	// Ensuring velusqrt is used for l_i > gap
@@ -156,9 +156,9 @@ void kps_s(uint64_t const i, ec_point_t const P, ec_point_t const A)
 	int bhalf_floor= sJ >> 1;
 	int bhalf_ceil = sJ - bhalf_floor;
 	xDBLv2(&P4, &P2, &A);								// x([4]P)
-	swap_points(&P2, &P4, -(uint64_t)(sJ % 2));								// x([4]P) <--- coditional swap ---> x([2]P)
+	swap_points(&P2, &P4, -(digit_t)(sJ % 2));								// x([4]P) <--- coditional swap ---> x([2]P)
 	xADD(&Q, &J[bhalf_ceil], &J[bhalf_floor - 1], &P2);	// Q := [2b]P
-	swap_points(&P2, &P4, -(uint64_t)(sJ % 2));								// x([4]P) <--- coditional swap ---> x([2]P)
+	swap_points(&P2, &P4, -(digit_t)(sJ % 2));								// x([4]P) <--- coditional swap ---> x([2]P)
 
 	// .............................................
 	xDBLv2(&Q2, &Q, &A);					// x([2]Q)
@@ -173,7 +173,7 @@ void kps_s(uint64_t const i, ec_point_t const P, ec_point_t const A)
 		xADD(&tmp2, &tmp1, &Q2, &tmp2);	// x([2*j + 1]Q)
 		fp2_neg(&I[j][0], &tmp2.x);
 		fp2_copy(&I[j][1], &tmp2.z);
-		swap_points(&tmp1, &tmp2, -(uint64_t)1);
+		swap_points(&tmp1, &tmp2, -(digit_t)1);
 	}
 
 

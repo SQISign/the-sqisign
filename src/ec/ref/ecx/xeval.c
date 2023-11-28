@@ -87,7 +87,7 @@ void xeval_4_singular(ec_point_t* R, const ec_point_t* Q, const int lenQ, const 
 
 // Isogeny evaluation on Montgomery curves
 // Recall: K has been computed in Twisted Edwards model and none extra additions are required.
-void xeval_t(ec_point_t* Q, uint64_t const i, ec_point_t const P)
+void xeval_t(ec_point_t* Q, int i, ec_point_t const P)
 {
 	int j;
 	int d = ((int)TORSION_ODD_PRIMES[i] - 1) / 2;	// Here, l = 2d + 1
@@ -115,7 +115,7 @@ void xeval_t(ec_point_t* Q, uint64_t const i, ec_point_t const P)
 // -----------------------------------------------------------------------------------------
 // Isogeny evaluation (xEVAL) used in velu SQRT
 
-void xeval_s(ec_point_t* Q, uint64_t const i, ec_point_t const P, ec_point_t const A)
+void xeval_s(ec_point_t* Q, int i, ec_point_t const P, ec_point_t const A)
 {
 	// =================================================================================
 	assert(TORSION_ODD_PRIMES[i] > gap);     // Ensuring velusqrt is used for l_i > gap

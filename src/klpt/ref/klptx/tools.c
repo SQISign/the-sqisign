@@ -632,7 +632,7 @@ int norm_list_computation(ibz_t *list, int list_size, int log_bound, const ibz_t
     int log_freedom =0;
     ibz_t const *const T = &TORSION_ODD;
     size_t const num_fac = sizeof(TORSION_ODD_PRIMES) / sizeof(*TORSION_ODD_PRIMES);
-    uint64_t const *const fac = TORSION_ODD_PRIMES;
+    digit_t const *const fac = TORSION_ODD_PRIMES;
 
 
     // var init

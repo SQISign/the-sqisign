@@ -690,11 +690,11 @@ void quat_lideal_make_primitive_then_create(quat_left_ideal_t *lideal, const qua
  * @param lideal Output: random left ideal (of parents alg and order) with norm 2^e
  * @param alg parent algebra for which an ideal is chosen. Is a quaterion algebra
  * @param order parent order for which an ideal is chosen. Must be maximal
- * @param e int64_t determining the norm of the resulting ideal
+ * @param e int determining the norm of the resulting ideal
  * @param n Parameter controlling the amount of randomness used by the algorithm
  * @return 0 if PRNG failed, 1 otherwise.
  */
-int quat_lideal_random_2e(quat_left_ideal_t *lideal, const quat_order_t *order, const quat_alg_t *alg, int64_t e, unsigned char n);
+int quat_lideal_random_2e(quat_left_ideal_t *lideal, const quat_order_t *order, const quat_alg_t *alg, int e, unsigned char n);
 
 /** @}
 */

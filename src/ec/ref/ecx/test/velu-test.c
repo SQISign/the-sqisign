@@ -55,11 +55,11 @@ void ladder3pt(ec_point_t *R, fp_t const m, ec_point_t const *P, ec_point_t cons
 	copy_point(&X2, PQ);
 
 	int i,j;
-	uint64_t t;
+	digit_t t;
 	for (i = 0; i < NWORDS_FIELD; i++)
 	{
 		t = 1;
-		for (j = 0 ; j < 64; j++)
+		for (j = 0 ; j < RADIX; j++)
 		{
 			swap_points(&X1, &X2, -((t & m[i]) == 0));
 			xDBLADD(&X0, &X1, &X0, &X1, &X2, A);
@@ -167,9 +167,9 @@ int main()
 
 		kps(i, T, A);
 		if (TORSION_ODD_PRIMES[i] > gap)
-			printf("[\033[0;31m%7" PRId64 "\033[0m] (#I: %3d, #J: %3d, #K: %3d) \n", TORSION_ODD_PRIMES[i], sI, sJ, sK);
+			printf("[\033[0;31m%7" PRId "\033[0m] (#I: %3d, #J: %3d, #K: %3d) \n", TORSION_ODD_PRIMES[i], sI, sJ, sK);
 		else
-			printf("[\033[0;31m%7" PRId64 "\033[0m] --------------------------- \n", TORSION_ODD_PRIMES[i]);
+			printf("[\033[0;31m%7" PRId "\033[0m] --------------------------- \n", TORSION_ODD_PRIMES[i]);
 
 		xisog(&B, i, A);
 
@@ -268,9 +268,9 @@ int main()
 
 		kps(i, T, A);
 		if (TORSION_ODD_PRIMES[i] > gap)
-			printf("[\033[0;31m%7" PRId64 "\033[0m] (#I: %3d, #J: %3d, #K: %3d) \n", TORSION_ODD_PRIMES[i], sI, sJ, sK);
+			printf("[\033[0;31m%7" PRId "\033[0m] (#I: %3d, #J: %3d, #K: %3d) \n", TORSION_ODD_PRIMES[i], sI, sJ, sK);
 		else
-			printf("[\033[0;31m%7" PRId64 "\033[0m] --------------------------- \n", TORSION_ODD_PRIMES[i]);
+			printf("[\033[0;31m%7" PRId "\033[0m] --------------------------- \n", TORSION_ODD_PRIMES[i]);
 
 		xisog(&B, i, A);
 

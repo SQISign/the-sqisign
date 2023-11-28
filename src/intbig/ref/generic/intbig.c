@@ -194,7 +194,7 @@ void ibz_mul(ibz_t *prod, const ibz_t *a, const ibz_t *b)
 
 /** @brief prod=a*2^exp
 */
-void ibz_mul_2exp(ibz_t *prod, const ibz_t *a, uint64_t exp) {
+void ibz_mul_2exp(ibz_t *prod, const ibz_t *a, unsigned int exp) {
 #ifdef DEBUG_VERBOSE
     ibz_t a_cp;
     ibz_init(&a_cp);
@@ -254,7 +254,7 @@ void ibz_div_floor(ibz_t *q, ibz_t *r, const ibz_t *n, const ibz_t *d){
  * 
  * Computes a right shift of abs(a) by exp bits, then sets sign(quotient) to sign(a)
 */
-void ibz_div_2exp(ibz_t *quotient, const ibz_t *a, uint64_t exp) {
+void ibz_div_2exp(ibz_t *quotient, const ibz_t *a, unsigned int exp) {
 #ifdef DEBUG_VERBOSE
     ibz_t a_cp;
     ibz_init(&a_cp);
@@ -288,9 +288,9 @@ int ibz_divides(const ibz_t *a, const ibz_t *b)
  *
  * Assumes valid inputs
  */
-void ibz_pow(ibz_t *pow, const ibz_t *x, int64_t e)
+void ibz_pow(ibz_t *pow, const ibz_t *x, unsigned int e)
 {
-    mpz_pow_ui(*pow, *x, (unsigned long int)e);
+    mpz_pow_ui(*pow, *x, e);
 }
 
 /** @brief pow=(x^e) mod m
@@ -348,7 +348,20 @@ int ibz_is_even(const ibz_t *x) {
  */
 void ibz_set(ibz_t *i, int64_t x)
 {
+#ifdef RADIX_32
+    assert(x != 0x8000000000000000LL);
+
+    mp_limb_t* limbs = mpz_limbs_write(*i, 2);
+    int64_t x_abs = (x >= 0) ? x : -x;
+    mp_size_t size = ((x >> 32) != 0) ? 2 : ((x != 0) ? 1 : 0);
+    size = (x >= 0) ? size : -size;
+
+    limbs[0] = (mp_limb_t)x_abs;
+    limbs[1] = (mp_limb_t)(x_abs >> 32);
+    mpz_limbs_finish(*i, size);
+#elif defined(RADIX_64)
     mpz_set_si(*i, (signed long int)x);
+#endif
 }
 
 /** @brief set i to integer ontained in string when read as number in base
@@ -381,7 +394,16 @@ void ibz_swap(ibz_t *a, ibz_t *b){
  */
 int64_t ibz_get(const ibz_t *i)
 {
-    return (int64_t)mpz_get_si(*i);
+#ifdef RADIX_32
+    // TODO: analyze this code carefully with regards to inputs near/at the limits of a 64-bit representation
+    int64_t ret = (int64_t)((uint64_t)mpz_getlimbn(*i, 0) | ((uint64_t)(mpz_getlimbn(*i, 1) & 0x7FFFFFFF) << 32));
+    int64_t sign = (int64_t)mpz_sgn(*i);
+
+    // TODO: this can be improved a bit: if sign is either 0 or -1, can do something like (ret ^ sign) - sign
+    return ret * sign;
+#elif defined(RADIX_64)
+   return (int64_t)mpz_get_si(*i);
+#endif
 }
 
 /** @brief generate random value in [a, b] with rejection sampling
@@ -430,8 +452,10 @@ err:
 int ibz_rand_interval_i(ibz_t *rand, int64_t a, int64_t b) {
     int ret = 1;
     mpz_t a_big, b_big;
-    mpz_init_set_si(a_big, a);
-    mpz_init_set_si(b_big, b);
+    mpz_init(a_big);
+    mpz_init(b_big);
+    ibz_set(&a_big, a);
+    ibz_set(&b_big, b);
     ret = ibz_rand_interval(rand, &a_big, &b_big);
     mpz_clear(a_big);
     mpz_clear(b_big);
@@ -439,10 +463,14 @@ int ibz_rand_interval_i(ibz_t *rand, int64_t a, int64_t b) {
 }
 
 int ibz_rand_interval_minm_m(ibz_t *rand, int64_t m) {
+    mpz_t m_big;
     int ret = 1;
     ret = ibz_rand_interval_i(rand, 0, 2*m);
     if (ret != 1) goto err;
-    mpz_sub_ui(*rand, *rand, (unsigned long int) m);
+    mpz_init(m_big);
+    ibz_set(&m_big, m);
+    mpz_sub(*rand, *rand, m_big);
+    mpz_clear(m_big);
 err:
     return ret;
 }
@@ -648,7 +676,7 @@ void ibz_to_digits(digit_t *target, const ibz_t *ibz) {
                 for (int j = 0; j < (sizeof_digit_t + sizeof_limb - 1) / sizeof_limb; ++j) {
                     target[i] |= ((digit_t) mpz_getlimbn(tmp, j)) << (j*8*sizeof_limb);
                 }
-                mpz_div_2exp(tmp, tmp, sizeof_digit_t*8);
+                mpz_fdiv_q_2exp(tmp, tmp, sizeof_digit_t*8);
             }
             mpz_clear(tmp);
         }
@@ -838,6 +866,7 @@ void ibz_crt(ibz_t *crt, const ibz_t *a, const ibz_t *b, const ibz_t *mod_a, con
     mpz_clear(v);
 }
 
+#ifndef ENABLE_MINI_GMP
 /**
  * @brief Kronecker symbol of a mod b
  *
@@ -867,6 +896,7 @@ int ibz_jacobi(const ibz_t *a, const ibz_t *odd)
 {
     return mpz_jacobi(*a, *odd);
 }
+#endif
 
 /**
  * @brief Legendre symbol of a mod p
@@ -969,7 +999,7 @@ int ibz_sqrt_mod_p(ibz_t *sqrt, const ibz_t *a, const ibz_t *p)
         mpz_add(amod, *p, amod);
     }
 
-    if (mpz_jacobi(amod, *p) != 1)
+    if (mpz_legendre(amod, *p) != 1)
     {
         ret = 0;
         goto end;

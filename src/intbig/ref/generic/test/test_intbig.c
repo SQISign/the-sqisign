@@ -1,3 +1,4 @@
+#include "tutil.h"
 #include <intbig.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -310,6 +311,7 @@ static int test_ibz_rand_interval(int reps) {
 
         if (mpz_cmp(rand, low) < 0 || mpz_cmp(rand, high) > 0) {
             ret = -1;
+            printf("test_ibz_rand_interval() failed\n");
             gmp_printf("rand: %Zx\n", rand);
             goto err;
         }
@@ -324,12 +326,15 @@ err:
 static int test_ibz_rand_interval_i(int reps) {
     int ret = 0;
     int64_t low, high;
-    mpz_t rand;
+    mpz_t rand, low_big, high_big;
     mpz_init(rand);
+    mpz_init(low_big);
+    mpz_init(high_big);
 
     for (int i = 0; i < reps; ++i) {
         randombytes((unsigned char *)&low, sizeof(int64_t));
         randombytes((unsigned char *)&high, sizeof(int64_t));
+
         if (low < 0) low = -low;
         if (high < 0) high = -high;
         if (low > high) {
@@ -337,6 +342,9 @@ static int test_ibz_rand_interval_i(int reps) {
             low = high;
             high = tmp;
         }
+
+        ibz_set(&low_big, low);
+        ibz_set(&high_big, high);
 
         ret = ibz_rand_interval_i(&rand, low, high);
         if (ret != 1) {
@@ -346,8 +354,9 @@ static int test_ibz_rand_interval_i(int reps) {
             ret = 0;
         }
 
-        if (mpz_cmp_si(rand, low) < 0 || mpz_cmp_si(rand, high) > 0) {
+        if (mpz_cmp(rand, low_big) < 0 || mpz_cmp(rand, high_big) > 0) {
             ret = -1;
+            printf("test_ibz_rand_interval_i() failed\n");
             gmp_printf("rand: %Zx\n", rand);
             goto err;
         }
@@ -356,14 +365,18 @@ static int test_ibz_rand_interval_i(int reps) {
 
 err:
     mpz_clear(rand);
+    mpz_clear(low_big);
+    mpz_clear(high_big);
     return ret;
 }
 
 static int test_ibz_rand_interval_minm_m(int reps) {
     int ret = 0;
     int64_t m;
-    mpz_t rand;
+    mpz_t rand, m_big, minus_m_big;
     mpz_init(rand);
+    mpz_init(m_big);
+    mpz_init(minus_m_big);
 
     for (int i = 0; i < reps; ++i) {
         randombytes((unsigned char *)&m, sizeof(int64_t));
@@ -375,6 +388,9 @@ static int test_ibz_rand_interval_minm_m(int reps) {
             goto err;
         }
 
+        ibz_set(&m_big, m);
+        ibz_set(&minus_m_big, -m);
+
         ret = ibz_rand_interval_minm_m(&rand, m);
         if (ret != 1) {
             ret = -1;
@@ -383,8 +399,9 @@ static int test_ibz_rand_interval_minm_m(int reps) {
             ret = 0;
         }
         
-        if (mpz_cmp_si(rand, -m) < 0 || mpz_cmp_si(rand, m) > 0) {
+        if (mpz_cmp(rand, minus_m_big) < 0 || mpz_cmp(rand, m_big) > 0) {
             ret = -1;
+            printf("test_ibz_rand_interval_minm_m() failed\n");
             gmp_printf("rand: %Zx\n", rand);
             goto err;
         }
@@ -392,13 +409,22 @@ static int test_ibz_rand_interval_minm_m(int reps) {
 
 err:
     mpz_clear(rand);
+    mpz_clear(m_big);
+    mpz_clear(minus_m_big);
     return ret;
 }
 
 static int test_ibz_copy_digits() {
     int ret = 0;
+#ifdef RADIX_32
+    digit_t d1[] = { 0x12345678 };
+    digit_t d2[] = { 2, 0, 1};
+    int d2_len = 3;
+#elif defined(RADIX_64)
     digit_t d1[] = { 0x12345678 };
     digit_t d2[] = { 2, 1 };
+    int d2_len = 2;
+#endif
 
     // TODO: test for other than 64 bit
     const char d1str[] = "12345678";
@@ -412,10 +438,10 @@ static int test_ibz_copy_digits() {
     mpz_init(d2_intbig);
 
     ibz_copy_digits(&d1_intbig, d1, 1);
-    ibz_copy_digits(&d2_intbig, d2, 2);
+    ibz_copy_digits(&d2_intbig, d2, d2_len);
 
-    gmp_sprintf(d1_intbig_str, "%Zx", d1_intbig);
-    gmp_sprintf(d2_intbig_str, "%Zx", d2_intbig);    
+    mpz_get_str(d1_intbig_str, 16, d1_intbig);
+    mpz_get_str(d2_intbig_str, 16, d2_intbig);
 
     if (memcmp(d1str, d1_intbig_str, 8)) {
         ret = -1;
@@ -465,18 +491,23 @@ static int test_ibz_to_digits() {
     ibz_copy_digits(&d2_intbig_rec, d2, d2_digits);
     ibz_copy_digits(&zero_intbig_rec, zero, 1);
 
-    if (mpz_cmp(d1_intbig, d1_intbig_rec) || mpz_cmp(zero_intbig, zero_intbig_rec)) {
+    if (mpz_cmp(d1_intbig, d1_intbig_rec) || mpz_cmp(d2_intbig, d2_intbig_rec) || mpz_cmp(zero_intbig, zero_intbig_rec)) {
         ret = -1;
         goto err;
     }
 
 
+#ifdef RADIX_32
+    digit_t p_cofactor_for_3g[10] = { 0x00000000,0x00000000,0x0d9ec800, 0x74f9dace,0x7f655001,0x63a25b43,0x00000019,0,0,0 };
+    digit_t p_cofactor_for_3g_rec[10] = { 0 };
+#elif defined(RADIX_64)
     digit_t p_cofactor_for_3g[5] = { 0x0000000000000000,0x74f9dace0d9ec800,0x63a25b437f655001,0x0000000000000019, 0 };
     digit_t p_cofactor_for_3g_rec[5] = { 0 };
-    ibz_copy_digits(&cof, p_cofactor_for_3g, 5);
+#endif
+    ibz_copy_digits(&cof, p_cofactor_for_3g, sizeof(p_cofactor_for_3g)/sizeof(digit_t));
     ibz_printf("cof: %Zx\n", cof);
     ibz_to_digits(p_cofactor_for_3g_rec, &cof);
-    ibz_copy_digits(&cof2, p_cofactor_for_3g_rec, 5);
+    ibz_copy_digits(&cof2, p_cofactor_for_3g_rec, sizeof(p_cofactor_for_3g_rec)/sizeof(digit_t));
     ibz_printf("cof2: %Zx\n", cof2);
 
     if (ibz_cmp(&cof, &cof2)) {
@@ -484,13 +515,19 @@ static int test_ibz_to_digits() {
         goto err;
     }
 
+#ifdef RADIX_32
+    digit_t da[3] = {0,0,0};
+    int da_len = 3;
+#elif defined(RADIX_64)
     digit_t da[2] = {0,0};
+    int da_len = 2;
+#endif
 
     mpz_t strval, strval_check;
     mpz_init(strval_check);
     mpz_init_set_str(strval, "1617406613339667622221321", 10);
     ibz_to_digits(da,&strval);
-    ibz_copy_digits(&strval_check, da, 2);
+    ibz_copy_digits(&strval_check, da, sizeof(da)/sizeof(digit_t));
     ibz_printf("strval:       %Zd\nstrval_check: %Zd\n", strval, strval_check);
     if (ibz_cmp(&strval, &strval_check)) {
         ret = -1;
