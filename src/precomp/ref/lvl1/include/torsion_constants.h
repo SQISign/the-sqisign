@@ -2,12 +2,12 @@
 #define TORSION_2POWER_BYTES 10
 #define TORSION_3POWER_BYTES 8
 #define TORSION_23POWER_BYTES 17
-extern const uint64_t TORSION_PLUS_EVEN_POWER;
-extern const uint64_t TORSION_ODD_PRIMES[28];
-extern const uint64_t TORSION_ODD_POWERS[28];
-extern const uint64_t TORSION_PLUS_ODD_PRIMES[9];
+extern const digit_t TORSION_PLUS_EVEN_POWER;
+extern const digit_t TORSION_ODD_PRIMES[28];
+extern const digit_t TORSION_ODD_POWERS[28];
+extern const digit_t TORSION_PLUS_ODD_PRIMES[9];
 extern const size_t TORSION_PLUS_ODD_POWERS[9];
-extern const uint64_t TORSION_MINUS_ODD_PRIMES[19];
+extern const digit_t TORSION_MINUS_ODD_PRIMES[19];
 extern const size_t TORSION_MINUS_ODD_POWERS[19];
 extern const size_t DEGREE_COMMITMENT_POWERS[28];
 extern const ibz_t CHARACTERISTIC;
