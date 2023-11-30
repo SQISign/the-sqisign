@@ -52,6 +52,16 @@ class EcPointX:
         vs = [[(int(c) >> sz*i) % 2**sz for i in range(l)] for c in self.x]
         return '{' + ', '.join(map(lambda v: '{' + ', '.join(map(hex, v)) + '}', vs)) + '}'
 
+class FpEl:
+    def __init__(self, n, p):
+        self.n = n
+        self.p = p
+
+    def _literal(self, sz):
+        l = 1 + floor(log(self.p, 2**sz))
+        vs = [(self.n >> sz*i) % 2**sz for i in range(l)]
+        return '{' + ', '.join(map(hex, vs)) + '}'
+
 
 class Object:
     def __init__(self, ty, name, obj):
@@ -87,6 +97,8 @@ class Object:
                 return obj._literal(mp_limb_t_bits)
             if isinstance(obj, EcPointX):
                 return obj._literal(mp_limb_t_bits)
+            if isinstance(obj, FpEl):
+                return obj._literal(mp_limb_t_bits)
             if isinstance(obj, list) or isinstance(obj, tuple):
                 return '{' + ', '.join(map(rec, obj)) + '}'
             raise NotImplementedError(f'unknown type {type(obj)} in Formatter')
@@ -94,6 +106,11 @@ class Object:
 
     def _definition(self, mp_limb_t_bits):
         return f'const {self.ty[0]} {self.name}{self.ty[1]} = ' + self._literal(mp_limb_t_bits) + ';'
+
+
+class ObjectStatic(Object):
+    def _definition(self, mp_limb_t_bits):
+        return f'static {self.ty[0]} {self.name}{self.ty[1]} = ' + self._literal(mp_limb_t_bits) + ';'
 
 
 class ObjectFormatter:

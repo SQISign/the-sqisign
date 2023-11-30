@@ -6,47 +6,64 @@
 #define POWER_OF_2 75
 #define POWER_OF_3 36
 
-static digit_t TWOpF[NWORDS_ORDER] = {0x0, 0x0800, 0x0, 0x0}; // 2^g
-static digit_t TWOpFm1[NWORDS_ORDER] = {0x0, 0x0400, 0x0, 0x0}; // 2^(g-1)
-static digit_t THREEpE[NWORDS_ORDER] = {0x0000000017179149, 0x0, 0x0, 0x0};    // 3^e
-static digit_t THREEpF[NWORDS_ORDER] = {0x02153E468B91C6D1, 0x0, 0x0, 0x0};    // 3^f
-static digit_t THREEpFdiv2[NWORDS_ORDER] = {0x010A9F2345C8E368, 0x0, 0x0, 0x0};    // Floor(3^f/2)
-
-#define scaled 1	// unscaled (0) or scaled (1) remainder tree approach
+#define scaled 1
 #define gap 83
 
 #define P_LEN 9
 #define M_LEN 19
 
 static digit_t p_plus_minus_bitlength[P_LEN + M_LEN] =
-        { 2,5,6,7,7,8,9,10,11,3,4,4,6,7,7,7,8,8,8,8,9,9,9,10,11,11,11,11 };
+	{2, 5, 6, 7, 7, 8, 9, 10, 11, 3, 4, 4, 6, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 10, 11, 11, 11, 11};
 
-static digit_t p_cofactor_for_2f[3] = { 0x86e4a593c926aa29,0x318674d50cb0e80e,0x00069c53c50d72bb };
-#define P_COFACTOR_FOR_2F_BITLENGTH 179
+static digit_t STRATEGY4[] =
+	{15, 9, 5, 3, 2, 1, 1, 1, 1, 2, 1, 1, 1, 4, 2, 1, 1, 1, 2, 1, 1, 7, 4, 2, 1, 1, 2, 1, 1, 3, 2, 1, 1, 1, 1};
 
-static digit_t p_cofactor_for_3g[4] = { 0x0000000000000000,0x74f9dace0d9ec800,0x63a25b437f655001,0x0000000000000019 };
-#define P_COFACTOR_FOR_3G_BITLENGTH 197
-
-static digit_t p_cofactor_for_6fg[4] = { 0x002E9F3B59C1B3D9,0x032C744B686FECAA };
-#define P_COFACTOR_FOR_6FG_BITLENGTH 122
-
-static int STRATEGY4[36] = { 15, 9, 5, 3, 2, 1, 1, 1, 1, 2, 1, 1, 1, 4, 2, 1, 1, 1, 2, 1, 1, 7, 4, 2, 1, 1, 2, 1, 1, 3, 2, 1, 1, 1, 1};
-
-static int sizeI[] = {
-        0, 2, 4, 6, 6, 7, 12, 14, 28, 1, 2, 3, 3, 5, 6, 6, 6, 6, 9, 8, 10, 12, 12, 12, 16, 16, 18, 22
-};
-static int sizeJ[] = {
-        0, 2, 3, 4, 4, 7, 10, 13, 17, 1, 1, 1, 3, 4, 4, 4, 5, 5, 6, 7, 9, 8, 10, 12, 16, 16, 16, 22
-};
-static int sizeK[] = {
-        1, 3, 5, 2, 6, 0, 5, 7, 4, 1, 1, 0, 0, 4, 0, 5, 5, 8, 3, 7, 11, 2, 9, 15, 4, 12, 20, 18
-};
+static digit_t sizeI[] =
+	{0, 2, 4, 6, 6, 7, 12, 14, 28, 1, 2, 3, 3, 5, 6, 6, 6, 6, 9, 8, 10, 12, 12, 12, 16, 16, 18, 22};
+static digit_t sizeJ[] =
+	{0, 2, 3, 4, 4, 7, 10, 13, 17, 1, 1, 1, 3, 4, 4, 4, 5, 5, 6, 7, 9, 8, 10, 12, 16, 16, 16, 22};
+static digit_t sizeK[] =
+	{1, 3, 5, 2, 6, 0, 5, 7, 4, 1, 1, 0, 0, 4, 0, 5, 5, 8, 3, 7, 11, 2, 9, 15, 4, 12, 20, 18};
 
 #define sI_max 28
 #define sJ_max 22
-#define sK_max 59
+#define sK_max 41
 
 #define ceil_log_sI_max 5
 #define ceil_log_sJ_max 5
+
+#if 0
+#elif 8*DIGIT_LEN == 16
+static digit_t TWOpF[NWORDS_ORDER] = {0x0, 0x0, 0x0, 0x0, 0x800, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t TWOpFm1[NWORDS_ORDER] = {0x0, 0x0, 0x0, 0x0, 0x400, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t THREEpE[NWORDS_ORDER] = {0x9149, 0x1717, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t THREEpF[NWORDS_ORDER] = {0xc6d1, 0x8b91, 0x3e46, 0x215, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t THREEpFdiv2[NWORDS_ORDER] = {0xe368, 0x45c8, 0x9f23, 0x10a, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t p_cofactor_for_2f[NWORDS_ORDER] = {0xaa29, 0xc926, 0xa593, 0x86e4, 0xe80e, 0xcb0, 0x74d5, 0x3186, 0x72bb, 0xc50d, 0x9c53, 0x6, 0x0, 0x0, 0x0, 0x0};
+static digit_t p_cofactor_for_3g[NWORDS_ORDER] = {0x0, 0x0, 0x0, 0x0, 0xc800, 0xd9e, 0xdace, 0x74f9, 0x5001, 0x7f65, 0x5b43, 0x63a2, 0x19, 0x0, 0x0, 0x0};
+static digit_t p_cofactor_for_6fg[NWORDS_ORDER] = {0xb3d9, 0x59c1, 0x9f3b, 0x2e, 0xecaa, 0x686f, 0x744b, 0x32c, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+#elif 8*DIGIT_LEN == 32
+static digit_t TWOpF[NWORDS_ORDER] = {0x0, 0x0, 0x800, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t TWOpFm1[NWORDS_ORDER] = {0x0, 0x0, 0x400, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t THREEpE[NWORDS_ORDER] = {0x17179149, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t THREEpF[NWORDS_ORDER] = {0x8b91c6d1, 0x2153e46, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t THREEpFdiv2[NWORDS_ORDER] = {0x45c8e368, 0x10a9f23, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+static digit_t p_cofactor_for_2f[NWORDS_ORDER] = {0xc926aa29, 0x86e4a593, 0xcb0e80e, 0x318674d5, 0xc50d72bb, 0x69c53, 0x0, 0x0};
+static digit_t p_cofactor_for_3g[NWORDS_ORDER] = {0x0, 0x0, 0xd9ec800, 0x74f9dace, 0x7f655001, 0x63a25b43, 0x19, 0x0};
+static digit_t p_cofactor_for_6fg[NWORDS_ORDER] = {0x59c1b3d9, 0x2e9f3b, 0x686fecaa, 0x32c744b, 0x0, 0x0, 0x0, 0x0};
+#elif 8*DIGIT_LEN == 64
+static digit_t TWOpF[NWORDS_ORDER] = {0x0, 0x800, 0x0, 0x0};
+static digit_t TWOpFm1[NWORDS_ORDER] = {0x0, 0x400, 0x0, 0x0};
+static digit_t THREEpE[NWORDS_ORDER] = {0x17179149, 0x0, 0x0, 0x0};
+static digit_t THREEpF[NWORDS_ORDER] = {0x2153e468b91c6d1, 0x0, 0x0, 0x0};
+static digit_t THREEpFdiv2[NWORDS_ORDER] = {0x10a9f2345c8e368, 0x0, 0x0, 0x0};
+static digit_t p_cofactor_for_2f[NWORDS_ORDER] = {0x86e4a593c926aa29, 0x318674d50cb0e80e, 0x69c53c50d72bb, 0x0};
+static digit_t p_cofactor_for_3g[NWORDS_ORDER] = {0x0, 0x74f9dace0d9ec800, 0x63a25b437f655001, 0x19};
+static digit_t p_cofactor_for_6fg[NWORDS_ORDER] = {0x2e9f3b59c1b3d9, 0x32c744b686fecaa, 0x0, 0x0};
+#endif
+
+#define P_COFACTOR_FOR_2F_BITLENGTH 179
+#define P_COFACTOR_FOR_3G_BITLENGTH 197
+#define P_COFACTOR_FOR_6FG_BITLENGTH 122
 
 #endif
