@@ -548,6 +548,60 @@ err:
     return ret;
 }
 
+static int mpz_legendre_powering(const mpz_t a, const mpz_t p) {
+    // Reference version of Legendre symbol using the formula a^((p - 1)/2) mod p
+    int ret = -1;
+    mpz_t tmp;
+
+    mpz_init(tmp);
+
+    mpz_sub_ui(tmp, p, 1);
+    mpz_fdiv_q_2exp(tmp, tmp, 1);
+
+    mpz_powm(tmp, a, tmp, p);
+
+    if (mpz_cmp_ui(tmp, 1) == 0)
+    {
+        ret = 1;
+    }
+    else if (mpz_cmp_ui(tmp, 0) == 0)
+    {
+        ret = 0;
+    }
+
+    mpz_clear(tmp);
+
+    return ret;
+}
+
+static int test_ibz_legendre(int reps, int prime_n) {
+    mpz_t a, b;
+    gmp_randstate_t state;
+    int ret = 0;
+
+    gmp_randinit_mt(state);
+    mpz_init(a);
+    mpz_init(b);
+
+    for (int r = 0; r < reps; ++r) {
+        mpz_urandomb(a, state, prime_n);
+        mpz_urandomb(b, state, prime_n);
+        mpz_nextprime(b, b);
+
+        if (mpz_legendre_powering(a, b) != ibz_legendre(&a, &b)) {
+            ret = -1;
+            goto err;
+        }
+    }
+
+err:
+    gmp_randclear(state);
+    mpz_clear(a);
+    mpz_clear(b);
+
+    return ret;
+}
+
 int main(int argc, char *argv[]) {
     int ret = 0;
     if (argc < 3) {
@@ -583,6 +637,11 @@ int main(int argc, char *argv[]) {
 
     ret = test_ibz_to_digits();
     if (ret) goto err;
+
+#ifdef ENABLE_MINI_GMP
+    ret = test_ibz_legendre(reps, prime_n);
+    if (ret) goto err;
+#endif
 err:
     return ret;
 }

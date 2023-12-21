@@ -35,7 +35,7 @@ elseif(ENABLE_MINI_GMP)
     ${CMAKE_SOURCE_DIR}/src/mini-gmp/mini-mpq.c
   )
   add_compile_definitions(ENABLE_MINI_GMP)
-  target_include_directories(mini-gmp PRIVATE ${CMAKE_SOURCE_DIR}/include)
+  target_include_directories(mini-gmp PRIVATE ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src/common/generic/include) # the second is needed for tutil.h
   include_directories(${CMAKE_SOURCE_DIR}/src/mini-gmp)
   set(GMP mini-gmp)
 else()
