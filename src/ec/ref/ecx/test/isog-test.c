@@ -30,10 +30,10 @@ void fp2_print(char *name, fp2_t const a){
     fp2_mul(&b, &b, &a);
     printf("%s = 0x", name);
     for(int i = NWORDS_FIELD - 1; i >=0; i--)
-        printf("%016" PRIx64, b.re[i]);
+        printf(HEX_FS, b.re[i]);
     printf(" + i*0x");
     for(int i = NWORDS_FIELD - 1; i >=0; i--)
-        printf("%016" PRIx64, b.im[i]);
+        printf(HEX_FS, b.im[i]);
     printf("\n");
 }
 
@@ -80,11 +80,11 @@ void ladder3pt(ec_point_t *R, fp_t const m, ec_point_t const *P, ec_point_t cons
 	copy_point(&X2, PQ);
 
 	int i,j;
-	uint64_t t;
+	digit_t t;
 	for (i = 0; i < NWORDS_FIELD; i++)
 	{
 		t = 1;
-		for (j = 0 ; j < 64; j++)
+		for (j = 0 ; j < RADIX; j++)
 		{
 			swap_points(&X1, &X2, -((t & m[i]) == 0));
 			xDBLADD(&X0, &X1, &X0, &X1, &X2, A);

@@ -1,11 +1,15 @@
+#include <assert.h>
 #include "include/fp.h"
 
-
-const uint64_t p[NWORDS_FIELD] =  { 0xFFFFFFFFFFFFFFFF, 0x4C6174C1FFFFFFFF, 0xC722F669356EA468, 0x65BC2E0A90AEB751, 0xC6AE604A45D10AD6, 0x03DF6EEEAB0871A2 };
-const uint64_t R2[NWORDS_FIELD] = { 0x47B3E8268664617E, 0xDC10C645BFE4A1AC, 0x342C8B98F26F21ED, 0x328905E465CD7DB3, 0x0AFEA5EB6EF0DA10, 0x0389174E2D56216F };
-const uint64_t pp[NWORDS_FIELD] = { 0x01, 0x00, 0x00, 0x00 };
-
-
+#ifdef RADIX_32
+const digit_t p[NWORDS_FIELD] =  { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x4C6174C1, 0x356EA468, 0xC722F669, 0x90AEB751, 0x65BC2E0A, 0x45D10AD6, 0xC6AE604A, 0xAB0871A2, 0x03DF6EEE };
+const digit_t R2[NWORDS_FIELD] = { 0x8664617E, 0x47B3E826, 0xBFE4A1AC, 0xDC10C645, 0xF26F21ED, 0x342C8B98, 0x65CD7DB3, 0x328905E4, 0x6EF0DA10, 0x0AFEA5EB, 0x2D56216F, 0x0389174E };
+const digit_t pp[NWORDS_FIELD] = { 0x00000001, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
+#elif defined(RADIX_64)
+const digit_t p[NWORDS_FIELD] =  { 0xFFFFFFFFFFFFFFFF, 0x4C6174C1FFFFFFFF, 0xC722F669356EA468, 0x65BC2E0A90AEB751, 0xC6AE604A45D10AD6, 0x03DF6EEEAB0871A2 };
+const digit_t R2[NWORDS_FIELD] = { 0x47B3E8268664617E, 0xDC10C645BFE4A1AC, 0x342C8B98F26F21ED, 0x328905E465CD7DB3, 0x0AFEA5EB6EF0DA10, 0x0389174E2D56216F };
+const digit_t pp[NWORDS_FIELD] = { 0x0000000000000001, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000 };
+#endif
 
 void fp_set(digit_t* x, const digit_t val)
 { // Set field element x = val, where val has wordsize
@@ -104,10 +108,19 @@ digit_t mp_shiftr(digit_t* x, const unsigned int shift, const unsigned int nword
 void mp_shiftl(digit_t* x, const unsigned int shift, const unsigned int nwords)
 { // Multiprecision left shift
 
-    for (int i = nwords-1; i > 0; i--) {
-        SHIFTL(x[i], x[i-1], shift, x[i], RADIX);
+    assert(shift < RADIX*nwords);
+
+    int shift_words = shift / RADIX;
+
+    for (int i = nwords-1; i > shift_words; i--) {
+        SHIFTL(x[i-shift_words], x[i-shift_words-1], shift % RADIX, x[i], RADIX);
     }
-    x[0] <<= shift;
+
+    x[shift_words] = x[0] << (shift % RADIX);
+
+    for (int i = shift_words - 1; i >= 0; i--) {
+        x[i] = 0;
+    }
 }
 
 static void fp_exp3div4(digit_t* out, const digit_t* a)

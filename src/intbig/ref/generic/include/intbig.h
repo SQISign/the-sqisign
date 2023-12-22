@@ -124,7 +124,7 @@ void ibz_mul(ibz_t *prod, const ibz_t *a, const ibz_t *b);
 
 /** @brief prod=a*2^exp
 */
-void ibz_mul_2exp(ibz_t *prod, const ibz_t *a, uint64_t exp);
+void ibz_mul_2exp(ibz_t *prod, const ibz_t *a, unsigned int exp);
 
 /** @brief neg=-a
 */
@@ -154,7 +154,7 @@ void ibz_div_floor(ibz_t *q, ibz_t *r, const ibz_t *n, const ibz_t *d);
  * 
  * Division and rounding is as in ibz_div.
 */
-void ibz_div_2exp(ibz_t *quotient, const ibz_t *a, uint64_t exp);
+void ibz_div_2exp(ibz_t *quotient, const ibz_t *a, unsigned int exp);
 
 /** @brief r = a mod b
  * 
@@ -171,7 +171,7 @@ int ibz_divides(const ibz_t *a, const ibz_t *b);
  * 
  * Assumes valid inputs, The case 0^0 yields 1.
 */
-void ibz_pow(ibz_t *pow, const ibz_t *x, int64_t e);
+void ibz_pow(ibz_t *pow, const ibz_t *x, unsigned int e);
 
 /** @brief pow=(x^e) mod m
  * 
@@ -248,7 +248,12 @@ void ibz_to_digits(digit_t *target, const ibz_t *ibz);
 int64_t ibz_get(const ibz_t *i);
 
 //void ibz_printf(const char* format, ...);
+#ifdef ENABLE_MINI_GMP
+__attribute__((unused)) static void ibz_printf(const char* str, ...) { }
+__attribute__((unused)) static void gmp_printf(const char* str, ...) { }
+#else
 #define ibz_printf gmp_printf
+#endif
 
 /** @brief generate random value in [a, b]
  *  assumed that a >= 0 and b >= 0 and a < b

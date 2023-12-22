@@ -102,7 +102,8 @@ int klpt_test_equiv_intern() {
 
     res = res && ibz_cmp(&norm,&n)==0; 
     if (!res) {
-        ibz_printf("% the norms are not equal! Zd %Zd \n",norm,n);
+        printf("the norms are not equal!\n");
+        ibz_printf("Zd %Zd \n",norm,n);
     }
 
     quat_alg_elem_t conj;

@@ -18,6 +18,51 @@ class Ibz:
             }
         return '{{' + ', '.join(f'{k} = {v}' for k,v in data.items()) + '}}'
 
+class Basis:
+    def __init__(self, p, Fp2, P, Q):
+        self.p = p
+        self.Fp2 = Fp2
+        self.P = P
+        self.Q = Q
+
+    def field2limbs(self, el, sz):
+        l = 1 + floor(log(self.p, 2**sz))
+        el = self.Fp2(el)
+        vs = [[(int(c) >> sz*i) % 2**sz for i in range(l)] for c in el]
+        return vs
+    
+    def _literal(self, sz):
+        vs = [
+                [self.field2limbs(T[0], sz), self.field2limbs(T[2], sz)]
+                for T in (self.P,self.Q,self.P-self.Q)
+            ]
+        return '{' + ', '.join(map(lambda v: '{' + ', '.join(map(lambda w: '{' + ', '.join(map(lambda ri: '{' + ','.join(map(hex, ri)) + '}',w)) + '}', v)) + '}', vs)) + '}'
+
+class EcPointX:
+    def __init__(self, P, F):
+        self.F = F
+        try:
+            self.x = F(P.xy()[0])
+        except ValueError:
+            print("Point coordinate cannot be projected to base field.")
+            exit(-1)
+
+    def _literal(self, sz):
+        l = 1 + floor(log(self.F.characteristic(), 2**sz))
+        vs = [[(int(c) >> sz*i) % 2**sz for i in range(l)] for c in self.x]
+        return '{' + ', '.join(map(lambda v: '{' + ', '.join(map(hex, v)) + '}', vs)) + '}'
+
+class FpEl:
+    def __init__(self, n, p):
+        self.n = n
+        self.p = p
+
+    def _literal(self, sz):
+        l = 1 + floor(log(self.p, 2**sz))
+        vs = [(self.n >> sz*i) % 2**sz for i in range(l)]
+        return '{' + ', '.join(map(hex, vs)) + '}'
+
+
 class Object:
     def __init__(self, ty, name, obj):
         if '[' in ty:
@@ -48,6 +93,12 @@ class Object:
                 return hex(obj)
             if isinstance(obj, Ibz):
                 return obj._literal(mp_limb_t_bits)
+            if isinstance(obj, Basis):
+                return obj._literal(mp_limb_t_bits)
+            if isinstance(obj, EcPointX):
+                return obj._literal(mp_limb_t_bits)
+            if isinstance(obj, FpEl):
+                return obj._literal(mp_limb_t_bits)
             if isinstance(obj, list) or isinstance(obj, tuple):
                 return '{' + ', '.join(map(rec, obj)) + '}'
             raise NotImplementedError(f'unknown type {type(obj)} in Formatter')
@@ -55,6 +106,11 @@ class Object:
 
     def _definition(self, mp_limb_t_bits):
         return f'const {self.ty[0]} {self.name}{self.ty[1]} = ' + self._literal(mp_limb_t_bits) + ';'
+
+
+class ObjectStatic(Object):
+    def _definition(self, mp_limb_t_bits):
+        return f'static {self.ty[0]} {self.name}{self.ty[1]} = ' + self._literal(mp_limb_t_bits) + ';'
 
 
 class ObjectFormatter:

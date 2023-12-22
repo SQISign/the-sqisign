@@ -13,10 +13,10 @@ static void fp2_print(char *name, fp2_t const a){
     fp2_mul(&b, &b, &a);
     printf("%s = 0x", name);
     for(int i = NWORDS_FIELD - 1; i >=0; i--)
-        printf("%016" PRIx64, b.re[i]);
+        printf(HEX_FS, b.re[i]);
     printf(" + i*0x");
     for(int i = NWORDS_FIELD - 1; i >=0; i--)
-        printf("%016" PRIx64, b.im[i]);
+        printf(HEX_FS, b.im[i]);
     printf("\n");
 }
 
@@ -43,7 +43,11 @@ int test_challenge()
     protocols_commit(&ideal_comm, &E1, &E1basis);
 // curve_print("E1", E1);
 
+#ifdef RADIX_32
+    signature_t sig = {{0}, {0xcafecafe, 0xcafecafe}, {0xcc, {0xdeadbeef}, {0xdeadbeef}}};
+#else
     signature_t sig = {{0}, {0xcafecafecafecafe}, {0xcc, {0xdeadbeef}, {0xdeadbeef}}};
+#endif
     {
         ibz_vec_2_t vec;
         ibz_vec_2_init(&vec);
@@ -58,17 +62,17 @@ int test_challenge()
 // printf("r = 0x");
 if (0) {
 for (ssize_t i = sizeof(sig.r)/sizeof(*sig.r)-1; i >= 0; --i)
-    printf("%016" PRIx64, sig.r[i]);
+    printf(HEX_FS, sig.r[i]);
 printf("\n");
 printf("s.bit2 = %u\n", !!(sig.s.select23 & 1));
 printf("s.bit3 = %u\n", !!(sig.s.select23 & 2));
 printf("s.scalar2 = 0x");
 for (ssize_t i = sizeof(sig.s.scalar2)/sizeof(*sig.s.scalar2)-1; i >= 0; --i)
-    printf("%016" PRIx64, sig.s.scalar2[i]);
+    printf(HEX_FS, sig.s.scalar2[i]);
 printf("\n");
 printf("s.scalar3 = 0x");
 for (ssize_t i = sizeof(sig.s.scalar3)/sizeof(*sig.s.scalar3)-1; i >= 0; --i)
-    printf("%016" PRIx64, sig.s.scalar3[i]);
+    printf(HEX_FS, sig.s.scalar3[i]);
 printf("\n");
 }
 }

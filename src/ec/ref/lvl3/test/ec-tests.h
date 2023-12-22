@@ -168,10 +168,22 @@ bool dlog_test()
     copy_point(&PQ2.P, &P);
     copy_point(&PQ2.Q, &Q);
     copy_point(&PQ2.PmQ, &PQ);
+#ifdef RADIX_32
+    k[0] = 0xFFFFFFFF;
+    k[1] = 0xFFFFFFFF;
+    k[2] = 0x000007FF;
+    k[3] = 0x00000000;
+
+    l[0] = 0xFFFFFFFE;
+    l[1] = 0xFFFFFFFF;
+    l[2] = 0x000007FF;
+    l[3] = 0x00000000;
+#elif defined(RADIX_64)
     k[0] = 0xFFFFFFFFFFFFFFFF;
     k[1] = 0x00000000000007FF;
     l[0] = 0xFFFFFFFFFFFFFFFE;
     l[1] = 0x00000000000007FF;
+#endif
 
     for (int n = 0; n < TEST_LOOPS; n++)
     {
@@ -221,10 +233,21 @@ bool dlog_test()
     copy_point(&PQ2.P, &P);
     copy_point(&PQ2.Q, &Q);
     copy_point(&PQ2.PmQ, &PQ);
+#ifdef RADIX_32
+    k[3] = 0;
+    l[3] = 0;
+    k[2] = 0;
+    l[2] = 0;
+    k[1] = 0x02153E46;
+    l[1] = 0x02153E46;
+    k[0] = 0x8B91C6D1;
+    l[0] = 0x8B91C6D0;
+#elif defined(RADIX_64)
     k[1] = 0;
     l[1] = 0;
     k[0] = 0x02153E468B91C6D1;
     l[0] = 0x02153E468B91C6D0;
+#endif
 
     for (int n = 0; n < TEST_LOOPS; n++)
     {

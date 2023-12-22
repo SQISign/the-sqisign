@@ -3,7 +3,6 @@
 #include <ec_params.h>
 #include <assert.h>
 
-
 bool ec_is_zero(ec_point_t const* P)
 {
     return fp2_is_zero(&P->z);
@@ -382,11 +381,11 @@ void ec_ladder3pt(ec_point_t *R, fp_t const m, ec_point_t const *P, ec_point_t c
 	copy_point(&X2, PQ);
 
 	int i,j;
-	uint64_t t;
+    digit_t t;
 	for (i = 0; i < NWORDS_FIELD; i++)
 	{
 		t = 1;
-		for (j = 0 ; j < 64; j++)
+		for (j = 0 ; j < RADIX; j++)
 		{
 			swap_points(&X1, &X2, -((t & m[i]) == 0));
 			xDBLADD(&X0, &X1, &X0, &X1, &X2, &A24);
@@ -622,18 +621,19 @@ static bool mp_is_zero(const digit_t* a, unsigned int nwords)
     return (bool)is_digit_zero_ct(r);
 }
 
-void DBLMUL(jac_point_t* R, const jac_point_t* P, const digit_t k, const jac_point_t* Q, const digit_t l, const ec_curve_t* curve)
-{  // Double-scalar multiplication R <- k*P + l*Q, fixed for 64-bit scalars
+void DBLMUL(jac_point_t* R, const jac_point_t* P, const digit_t* k, const jac_point_t* Q, const digit_t* l, const ec_curve_t* curve)
+{  // Double-scalar multiplication R <- k*P + l*Q, fixed for 128-bit scalars
     digit_t k_t, l_t;
     jac_point_t PQ;
 
     ADD(&PQ, P, Q, curve);
     jac_init(R);
 
-    for (int i = 0; i < 64; i++) {
-        k_t = k >> (63-i);
+    for (int i = 72; i >= 0; i--) {
+        int w = i/RADIX;
+        k_t = k[w] >> (i % RADIX);
         k_t &= 0x01;
-        l_t = l >> (63-i);
+        l_t = l[w] >> (i % RADIX);
         l_t &= 0x01;
         DBL(R, R, curve);
         if (k_t == 1 && l_t == 1) {
@@ -646,73 +646,39 @@ void DBLMUL(jac_point_t* R, const jac_point_t* P, const digit_t k, const jac_poi
     }
 }
 
-#define SCALAR_BITS 128  //// TODO: this could be defined by level
-
-void DBLMUL2(jac_point_t* R, const jac_point_t* P, const digit_t* k, const jac_point_t* Q, const digit_t* l, const ec_curve_t* curve)
-{  // Double-scalar multiplication R <- k*P + l*Q, fixed for 128-bit scalars
-    digit_t k_t[2], l_t[2];
-    jac_point_t PQ;
-
-    ADD(&PQ, P, Q, curve);
-    jac_init(R);
-
-    for (int i = 0; i < SCALAR_BITS-64; i++) {
-        k_t[1] = k[1] >> (SCALAR_BITS-64-1-i);
-        k_t[1] &= 0x01;
-        l_t[1] = l[1] >> (SCALAR_BITS-64-1-i);
-        l_t[1] &= 0x01;
-        DBL(R, R, curve);
-        if (k_t[1] == 1 && l_t[1] == 1) {
-            ADD(R, R, &PQ, curve);
-        } else if (k_t[1] == 1) {
-            ADD(R, R, P, curve);
-        } else if (l_t[1] == 1) {
-            ADD(R, R, Q, curve);
-        }
-    }
-
-    for (int i = 0; i < 64; i++) {
-        k_t[0] = k[0] >> (64-1-i);
-        k_t[0] &= 0x01;
-        l_t[0] = l[0] >> (64-1-i);
-        l_t[0] &= 0x01;
-        DBL(R, R, curve);
-        if (k_t[0] == 1 && l_t[0] == 1) {
-            ADD(R, R, &PQ, curve);
-        } else if (k_t[0] == 1) {
-            ADD(R, R, P, curve);
-        } else if (l_t[0] == 1) {
-            ADD(R, R, Q, curve);
-        }
-    }
-}
-
 static void mp_mul2(digit_t* c, const digit_t* a, const digit_t* b)
 { // Multiprecision multiplication fixed to two-digit operands
-    unsigned int carry = 0;
-    digit_t t0[2], t1[2], t2[2];
+    unsigned int carry;
+    digit_t t0[2], t1[2], t2[2], t3[2];
 
     MUL(t0, a[0], b[0]);
     MUL(t1, a[0], b[1]);
-    ADDC(t0[1], carry, t0[1], t1[0], carry);
-    ADDC(t1[1], carry, 0, t1[1], carry);
-    MUL(t2, a[1], b[1]);
-    ADDC(t2[0], carry, t2[0], t1[1], carry);
-    ADDC(t2[1], carry, 0, t2[1], carry);
+    MUL(t2, a[1], b[0]);
+    MUL(t3, a[1], b[1]);
+
+    ADDC(t0[1], carry, t0[1], t1[0], 0);
+    ADDC(t3[0], carry, t3[0], t1[1], carry);
+    t3[1] += carry;
+
+    ADDC(t0[1], carry, t0[1], t2[0], 0);
+    ADDC(t3[0], carry, t3[0], t2[1], carry);
+    t3[1] += carry;
+
     c[0] = t0[0];
     c[1] = t0[1];
-    c[2] = t2[0];
-    c[3] = t2[1];
+    c[2] = t3[0];
+    c[3] = t3[1];
 }
 
 static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const int f, const int B, const jac_point_t* Pe2, const jac_point_t* Qe2, const jac_point_t* PQe2, const ec_curve_t* curve)
 { // Based on Montgomery formulas using Jacobian coordinates
     int i, j;
-    digit_t value = 1;
+    digit_t value[NWORDS_ORDER] = {1};
+    digit_t one[NWORDS_ORDER] = {1};
     jac_point_t P, Q, TT, SS, PQp, T[(POWER_OF_2-1)/2], Re[(POWER_OF_2-1)/2];    // Storage could be reduced to e1 points
 
-    *x = 0;        
-    *y = 0;
+    memset(x, 0, sizeof(digit_t)*NWORDS_ORDER);
+    memset(y, 0, sizeof(digit_t)*NWORDS_ORDER);
 
     copy_jac_point(&P, &Pe2[f-1]);
     copy_jac_point(&Q, &Qe2[f-1]);
@@ -725,7 +691,7 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
 
     // Unrolling the first two iterations
     if (is_jac_equal(&Pe2[0], &Re[0])) {
-        *x += 1;
+        mp_add(x, x, one, NWORDS_ORDER);
         copy_jac_point(&T[0], &P);
         for (j = 3; j <= B; j++) {
             copy_jac_point(&T[j-1], &Pe2[j-1]);
@@ -733,7 +699,7 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &Pe2[1]);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&Qe2[0], &Re[0])) {
-        *y += 1;
+        mp_add(y, y, one, NWORDS_ORDER);
         copy_jac_point(&T[0], &Q);
         for (j = 3; j <= B; j++) {
             copy_jac_point(&T[j-1], &Qe2[j-1]);
@@ -741,8 +707,8 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &Qe2[1]);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&PQe2[0], &Re[0])) {
-        *x += 1;
-        *y += 1;
+        mp_add(x, x, one, NWORDS_ORDER);
+        mp_add(y, y, one, NWORDS_ORDER);
         copy_jac_point(&T[0], &PQp);
         for (j = 3; j <= B; j++) {
             copy_jac_point(&T[j-1], &PQe2[j-1]);
@@ -759,11 +725,11 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
 
     // Unrolling iterations 3-B
     for (i = 3; i <= B; i++) {
-        value <<= 1;
+        mp_shiftl(value, 1, NWORDS_ORDER);
         jac_neg(&TT, &T[i-1]);
         ADD(&TT, &Re[i-1], &TT, curve);       // TT <- Re[i-1]-T[i-1]
         if (is_jac_equal(&Pe2[0], &Re[0])) {
-            *x += value;
+            mp_add(x, x, value, NWORDS_ORDER);
             ADD(&T[0], &T[0], &Pe2[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
                 ADD(&T[j-1], &T[j-1], &Pe2[j-i+1], curve);
@@ -771,7 +737,7 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &Pe2[1]);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&Qe2[0], &Re[0])) {
-            *y += value;
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&T[0], &T[0], &Qe2[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
                 ADD(&T[j-1], &T[j-1], &Qe2[j-i+1], curve);
@@ -779,8 +745,8 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &Qe2[1]);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&PQe2[0], &Re[0])) {
-            *x += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&T[0], &T[0], &PQe2[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
                 ADD(&T[j-1], &T[j-1], &PQe2[j-i+1], curve);
@@ -794,16 +760,16 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
 
     // Main Loop
     for (i = B; i < f; i++) {
-        value <<= 1;
+        mp_shiftl(value, 1, NWORDS_ORDER);
         if (is_jac_equal(&Pe2[0], &Re[0])) {
-            *x += value;
+            mp_add(x, x, value, NWORDS_ORDER);
             ADD(&T[0], &T[0], &Pe2[f-i], curve);
         } else if (is_jac_equal(&Qe2[0], &Re[0])) {
-            *y += value;
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&T[0], &T[0], &Qe2[f-i], curve);
         } else if (is_jac_equal(&PQe2[0], &Re[0])) {
-            *x += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&T[0], &T[0], &PQe2[f-i], curve);
         }
         jac_neg(&TT, &T[0]);
@@ -812,23 +778,24 @@ static void ec_dlog_2_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             DBL(&Re[0], &Re[0], curve);
         }
     }
-    value <<= 1;
+    mp_shiftl(value, 1, NWORDS_ORDER);
     if (is_jac_equal(&Pe2[0], &Re[0])) {
-        *x += value;
+        mp_add(x, x, value, NWORDS_ORDER);
     } else if (is_jac_equal(&Qe2[0], &Re[0])) {
-        *y += value;
+        mp_add(y, y, value, NWORDS_ORDER);
     } else if (is_jac_equal(&PQe2[0], &Re[0])) {
-        *x += value;
-        *y += value;
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
     }
 }
 
 void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const ec_point_t* R, const ec_curve_t* curve)
 { // Optimized implementation based on Montgomery formulas using Jacobian coordinates
     int i;
-    digit_t w0 = 0, z0 = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0, w1 = 0, z1 = 0, e, e1, f, f1, f2, f2div2, f22, w, z;
-    digit_t fp2[NWORDS_ORDER] = {0}, xx[NWORDS_ORDER] = {0}, yy[NWORDS_ORDER] = {0}, ww[NWORDS_ORDER] = {0}, zz[NWORDS_ORDER] = {0};
-    digit_t f22_p[NWORDS_ORDER] = {0}, w_p[NWORDS_ORDER] = {0}, z_p[NWORDS_ORDER] = {0}, x0_p[NWORDS_ORDER] = {0}, y0_p[NWORDS_ORDER] = {0}, w0_p[NWORDS_ORDER] = {0}, z0_p[NWORDS_ORDER] = {0};
+    digit_t w0[NWORDS_ORDER] = {0}, z0[NWORDS_ORDER] = {0}, x0[NWORDS_ORDER] = {0}, y0[NWORDS_ORDER] = {0};
+    digit_t w1[NWORDS_ORDER] = {0}, z1[NWORDS_ORDER] = {0}, x1[NWORDS_ORDER] = {0}, y1[NWORDS_ORDER] = {0};
+    digit_t e, e1, f, f1, f2, f2div2, f22, w, z;
+    digit_t fp2[NWORDS_ORDER] = {0};
     jac_point_t P, Q, RR, TT, R2r0, R2r, R2r1;
     jac_point_t Pe2[POWER_OF_2], Qe2[POWER_OF_2], PQe2[POWER_OF_2];
     ec_point_t Rnorm;    
@@ -918,7 +885,7 @@ void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const 
     // w0, z0 <- dlog2(2^(f-f2)*R, f2, f2 div 2)
     f2div2 = f2;
     mp_shiftr(&f2div2, 1, 1);
-    ec_dlog_2_step(&w0, &z0, &TT, (int)f2, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
+    ec_dlog_2_step(w0, z0, &TT, (int)f2, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
 
     // R2r0 <- 2^e*R2 - (w0*Pe2[f1-1] + z0*Qe2[f1-1])
     copy_jac_point(&TT, &RR);
@@ -928,68 +895,44 @@ void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const 
     DBLMUL(&R2r0, &Pe2[f1-1], w0, &Qe2[f1-1], z0, &curvenorm);
     jac_neg(&R2r0, &R2r0);
     ADD(&R2r0, &TT, &R2r0, &curvenorm);
-    ec_dlog_2_step(&x0, &y0, &R2r0, (int)e1, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
+    ec_dlog_2_step(x0, y0, &R2r0, (int)e1, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
 
     // w <- w0 + 2^f2 * x0, z <- z0 + 2^f2 * y0
-    //f22 = 1;
-    //mp_shiftl(&f22, (unsigned int)f2, 1);
-    //w = w0 + f22 * x0;
-    //z = z0 + f22 * y0;
-    f22_p[0] = 1;
-    mp_shiftl(&f22_p[0], (unsigned int)f2, NWORDS_ORDER);
-    x0_p[0] = x0;
-    y0_p[0] = y0;
-    w0_p[0] = w0;
-    z0_p[0] = z0;
-    mp_mul2(&x0_p[0], &f22_p[0], &x0_p[0]);
-    mp_add(&w_p[0], &w0_p[0], &x0_p[0], NWORDS_ORDER);
-    mp_mul2(&y0_p[0], &f22_p[0], &y0_p[0]);
-    mp_add(&z_p[0], &z0_p[0], &y0_p[0], NWORDS_ORDER);
+    mp_shiftl(&x0[0], (unsigned int)f2, NWORDS_ORDER);
+    mp_shiftl(&y0[0], (unsigned int)f2, NWORDS_ORDER);
+
+    mp_add(&w0[0], &w0[0], &x0[0], NWORDS_ORDER);
+    mp_add(&z0[0], &z0[0], &y0[0], NWORDS_ORDER);
 
     // R2r <- R2 - (w*Pe2[f-1] + z*Qe2[f-1]), R2r has order 2^(f-e)
-    //DBLMUL(&R2r, &Pe2[f-1], w, &Qe2[f-1], z, &curvenorm);
-    DBLMUL2(&R2r, &Pe2[f-1], &w_p[0], &Qe2[f-1], &z_p[0], &curvenorm);
+    DBLMUL(&R2r, &Pe2[f-1], &w0[0], &Qe2[f-1], &z0[0], &curvenorm);
     jac_neg(&R2r, &R2r);
     ADD(&R2r, &RR, &R2r, &curvenorm);
     copy_jac_point(&TT, &R2r);
     for (i = 0; i < e1; i++) {
         DBL(&TT, &TT, &curvenorm);
     }
-    ec_dlog_2_step(&w1, &z1, &TT, (int)f2, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
+    ec_dlog_2_step(w1, z1, &TT, (int)f2, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
 
     // R2r1 <- R2r - (w1*Pe2[f1-1] + z1*Qe2[f1-1])
     DBLMUL(&R2r1, &Pe2[f1-1], w1, &Qe2[f1-1], z1, &curvenorm);
     jac_neg(&R2r1, &R2r1);
     ADD(&R2r1, &R2r, &R2r1, &curvenorm);
-    ec_dlog_2_step(&x1, &y1, &R2r1, (int)e1, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
+    ec_dlog_2_step(x1, y1, &R2r1, (int)e1, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
 
-    xx[0] = x1;
-    yy[0] = y1;
-    ww[0] = w1;
-    zz[0] = z1;
-    mp_shiftl(&xx[0], (unsigned int)f2, NWORDS_ORDER);
-    mp_add(&xx[0], &xx[0], &ww[0], NWORDS_ORDER);
-    mp_shiftl(&yy[0], (unsigned int)f2, NWORDS_ORDER);
-    mp_add(&yy[0], &yy[0], &zz[0], NWORDS_ORDER);
-    //ww[0] = w;
-    //zz[0] = z;
-    ww[0] = w_p[0];
-    zz[0] = z_p[0];
-    ww[1] = w_p[1];
-    zz[1] = z_p[1];
-    if (e < 64) {
-        mp_shiftl(&xx[0], (unsigned int)e, NWORDS_ORDER);
-        mp_shiftl(&yy[0], (unsigned int)e, NWORDS_ORDER);
-    } else {
-        x0_p[0] = 0;
-        y0_p[0] = 0;
-        x0_p[1] = 0x100;
-        y0_p[1] = 0x100;
-        mp_mul2(&xx[0], &xx[0], &x0_p[0]);
-        mp_mul2(&yy[0], &yy[0], &y0_p[0]);
-    }
-    mp_add(scalarP, &xx[0], &ww[0], NWORDS_ORDER);
-    mp_add(scalarQ, &yy[0], &zz[0], NWORDS_ORDER);
+    // x1 <- w1 + 2^f2 * x1, y1 <- z1 + 2^f2 * y1
+    mp_shiftl(&x1[0], (unsigned int)f2, NWORDS_ORDER);
+    mp_shiftl(&y1[0], (unsigned int)f2, NWORDS_ORDER);
+
+    mp_add(&x1[0], &x1[0], &w1[0], NWORDS_ORDER);
+    mp_add(&y1[0], &y1[0], &z1[0], NWORDS_ORDER);
+
+    // scalarP <- w1 + 2^e * x1, scalarQ <- z1 + 2^e * y1
+    mp_shiftl(&x1[0], (unsigned int)e, NWORDS_ORDER);
+    mp_shiftl(&y1[0], (unsigned int)e, NWORDS_ORDER);
+
+    mp_add(scalarP, &x1[0], &w0[0], NWORDS_ORDER);
+    mp_add(scalarQ, &y1[0], &z0[0], NWORDS_ORDER);
 
     fp_copy(fp2, TWOpFm1);   // 2^(f-1)
 
@@ -1007,12 +950,16 @@ void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const 
 static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const int f, const int B, const jac_point_t* Pe3, const jac_point_t* Qe3, const jac_point_t* PQe3, const ec_curve_t* curve)
 { // Based on Montgomery formulas using Jacobian coordinates
     int i, j;
-    digit_t value = 1;
+    digit_t one[NWORDS_ORDER] = {1};
+    digit_t two[NWORDS_ORDER] = {2};
+    digit_t three[NWORDS_ORDER] = {3};
+    digit_t value[NWORDS_ORDER] = {1};
+    digit_t t[NWORDS_ORDER];
     jac_point_t P, Q, PQp, PQ2p, P2Qp, P2Q2p, P2p, Q2p, TT, SS, Te[POWER_OF_3/2], Re[POWER_OF_3/2];    // Storage could be reduced to e points
     jac_point_t PQep0, PQ2ep0, P2Qep0, P2Q2ep0, P2ep0, Q2ep0, PQep1, PQ2ep1, P2Qep1, P2Q2ep1, P2ep1, Q2ep1;
 
-    *x = 0;       
-    *y = 0;
+    memset(x, 0, sizeof(digit_t)*NWORDS_ORDER);
+    memset(y, 0, sizeof(digit_t)*NWORDS_ORDER);
 
     copy_jac_point(&P, &Pe3[f-1]);
     copy_jac_point(&Q, &Qe3[f-1]);
@@ -1043,7 +990,7 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
 
     // Unrolling the first two iterations
     if (is_jac_equal(&Pe3[0], &Re[0])) {
-        *x += 1;
+        mp_add(x, x, one, NWORDS_ORDER);
         copy_jac_point(&Te[0], &P);
         for (j = 3; j <= B; j++) {
             copy_jac_point(&Te[j-1], &Pe3[j-1]);
@@ -1051,8 +998,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &Pe3[1]);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&PQep0, &Re[0])) {
-        *x += 1;
-        *y += 1;
+        mp_add(x, x, one, NWORDS_ORDER);
+        mp_add(y, y, one, NWORDS_ORDER);
         copy_jac_point(&Te[0], &PQp);
         for (j = 3; j <= B; j++) {
             ADD(&Te[j-1], &Pe3[j-1], &Qe3[j-1], curve);
@@ -1060,8 +1007,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &PQep1);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&PQ2ep0, &Re[0])) {
-        *x += 1;
-        *y += 2;
+        mp_add(x, x, one, NWORDS_ORDER);
+        mp_add(y, y, two, NWORDS_ORDER);
         copy_jac_point(&Te[0], &PQ2p);
         for (j = 3; j <= B; j++) {
             DBL(&TT, &Qe3[j-1], curve);
@@ -1070,7 +1017,7 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &PQ2ep1);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&P2ep0, &Re[0])) {
-        *x += 2;
+        mp_add(x, x, two, NWORDS_ORDER);
         copy_jac_point(&Te[0], &P2p);
         for (j = 3; j <= B; j++) {
             DBL(&Te[j-1], &Pe3[j-1], curve);
@@ -1078,8 +1025,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &P2ep1);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&P2Qep0, &Re[0])) {
-        *x += 2;
-        *y += 1;
+        mp_add(x, x, two, NWORDS_ORDER);
+        mp_add(y, y, one, NWORDS_ORDER);
         copy_jac_point(&Te[0], &P2Qp);
         for (j = 3; j <= B; j++) {
             DBL(&TT, &Pe3[j-1], curve);
@@ -1088,8 +1035,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &P2Qep1);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&P2Q2ep0, &Re[0])) {
-        *x += 2;
-        *y += 2;
+        mp_add(x, x, two, NWORDS_ORDER);
+        mp_add(y, y, two, NWORDS_ORDER);
         copy_jac_point(&Te[0], &P2Q2p);
         for (j = 3; j <= B; j++) {
             DBL(&TT, &Pe3[j-1], curve);
@@ -1099,7 +1046,7 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &P2Q2ep1);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&Qe3[0], &Re[0])) {
-        *y += 1;
+        mp_add(y, y, one, NWORDS_ORDER);
         copy_jac_point(&Te[0], &Q);
         for (j = 3; j <= B; j++) {
             copy_jac_point(&Te[j-1], &Qe3[j-1]);
@@ -1107,7 +1054,7 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
         jac_neg(&TT, &Qe3[1]);
         ADD(&Re[0], &Re[1], &TT, curve);
     } else if (is_jac_equal(&Q2ep0, &Re[0])) {
-        *y += 2;
+        mp_add(y, y, two, NWORDS_ORDER);
         copy_jac_point(&Te[0], &Q2p);
         for (j = 3; j <= B; j++) {
             DBL(&Te[j-1], &Qe3[j-1], curve);
@@ -1124,11 +1071,13 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
 
     // Unrolling iterations 3-B
     for (i = 3; i <= B; i++) {
-        value *= 3;             
+        memcpy(t, value, sizeof(value));
+        mp_shiftl(t, 1, NWORDS_ORDER);
+        mp_add(value, value, t, NWORDS_ORDER);            
         jac_neg(&TT, &Te[i-1]);
         ADD(&TT, &Re[i-1], &TT, curve);       // TT <- Re[i-1]-T[i-1]
         if (is_jac_equal(&Pe3[0], &Re[0])) {
-            *x += value;
+            mp_add(x, x, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
                 ADD(&Te[j-1], &Te[j-1], &Pe3[j-i+1], curve);
@@ -1136,8 +1085,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &Pe3[1]);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&PQep0, &Re[0])) {
-            *x += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
@@ -1147,9 +1096,9 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &PQep1);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&PQ2ep0, &Re[0])) {
-            *x += value;
-            *y += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
@@ -1161,8 +1110,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &PQ2ep1);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&P2ep0, &Re[0])) {
-            *x += value;
-            *x += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(x, x, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
@@ -1172,9 +1121,9 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &P2ep1);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&P2Qep0, &Re[0])) {
-            *x += value;
-            *x += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
@@ -1186,10 +1135,10 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &P2Qep1);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&P2Q2ep0, &Re[0])) {
-            *x += value;
-            *x += value;
-            *y += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Pe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
@@ -1203,7 +1152,7 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &P2Q2ep1);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&Qe3[0], &Re[0])) {
-            *y += value;
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
                 ADD(&Te[j-1], &Te[j-1], &Qe3[j-i+1], curve);
@@ -1211,8 +1160,8 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             jac_neg(&SS, &Qe3[1]);
             ADD(&Re[0], &TT, &SS, curve);
         } else if (is_jac_equal(&Q2ep0, &Re[0])) {
-            *y += value;
-            *y += value;
+            mp_add(y, y, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
             ADD(&Te[0], &Te[0], &Qe3[f-i+1], curve);
             for (j = i+1; j <= B; j++) {
@@ -1228,68 +1177,70 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
 
     // Main Loop
     for (i = B; i < f; i++) {
-        value *= 3;             
+        memcpy(t, value, sizeof(value));
+        mp_shiftl(t, 1, NWORDS_ORDER);
+        mp_add(value, value, t, NWORDS_ORDER);             
         if (is_jac_equal(&Pe3[0], &Re[0])) {
-            *x += value;
+            mp_add(x, x, value, NWORDS_ORDER);
             copy_jac_point(&TT, &P);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&PQep0, &Re[0])) {
-            *x += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             copy_jac_point(&TT, &PQp);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&PQ2ep0, &Re[0])) {
-            *x += value;
-            *y += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             copy_jac_point(&TT, &PQ2p);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&P2ep0, &Re[0])) {
-            *x += value;
-            *x += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(x, x, value, NWORDS_ORDER);
             copy_jac_point(&TT, &P2p);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&P2Qep0, &Re[0])) {
-            *x += value;
-            *x += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             copy_jac_point(&TT, &P2Qp);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&P2Q2ep0, &Re[0])) {
-            *x += value;
-            *x += value;
-            *y += value;
-            *y += value;
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(x, x, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             copy_jac_point(&TT, &P2Q2p);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&Qe3[0], &Re[0])) {
-            *y += value;
+            mp_add(y, y, value, NWORDS_ORDER);
             copy_jac_point(&TT, &Q);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
             }
             ADD(&Te[0], &Te[0], &TT, curve);
         } else if (is_jac_equal(&Q2ep0, &Re[0])) {
-            *y += value;
-            *y += value;
+            mp_add(y, y, value, NWORDS_ORDER);
+            mp_add(y, y, value, NWORDS_ORDER);
             copy_jac_point(&TT, &Q2p);
             for (j = 0; j < (i-1); j++) {
                 TPL(&TT, &TT, curve);
@@ -1302,41 +1253,45 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
             TPL(&Re[0], &Re[0], curve);
         }
     }
-    value *= 3;           
+    memcpy(t, value, sizeof(value));
+    mp_shiftl(t, 1, NWORDS_ORDER);
+    mp_add(value, value, t, NWORDS_ORDER);            
     if (is_jac_equal(&Pe3[0], &Re[0])) {
-        *x += value;
+        mp_add(x, x, value, NWORDS_ORDER);
     } else if (is_jac_equal(&PQep0, &Re[0])) {
-        *x += value;
-        *y += value;
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
     } else if (is_jac_equal(&PQ2ep0, &Re[0])) {
-        *x += value;
-        *y += value;
-        *y += value;
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
     } else if (is_jac_equal(&P2ep0, &Re[0])) {
-        *x += value;
-        *x += value;
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(x, x, value, NWORDS_ORDER);
     } else if (is_jac_equal(&P2Qep0, &Re[0])) {
-        *x += value;
-        *x += value;
-        *y += value;
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
     } else if (is_jac_equal(&P2Q2ep0, &Re[0])) {
-        *x += value;
-        *x += value;
-        *y += value;
-        *y += value;
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(x, x, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
     } else if (is_jac_equal(&Qe3[0], &Re[0])) {
-        *y += value;
+        mp_add(y, y, value, NWORDS_ORDER);
     } else if (is_jac_equal(&Q2ep0, &Re[0])) {
-        *y += value;
-        *y += value;
+        mp_add(y, y, value, NWORDS_ORDER);
+        mp_add(y, y, value, NWORDS_ORDER);
     }
 }
 
 void ec_dlog_3(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ3, const ec_point_t* R, const ec_curve_t* curve)
 { // Optimized implementation based on Montgomery formulas using Jacobian coordinates
     int i;
-    digit_t w0 = 0, z0 = 0, x0 = 0, y0 = 0, x1 = 0, y1 = 0, w1 = 0, z1 = 0, e, f, f1, f1div2;
-    digit_t fp2[NWORDS_ORDER] = {0}, xx[NWORDS_ORDER] = {0}, yy[NWORDS_ORDER] = {0}, ww[NWORDS_ORDER] = {0}, zz[NWORDS_ORDER] = {0};
+    digit_t w0[NWORDS_ORDER] = {0}, z0[NWORDS_ORDER] = {0}, x0[NWORDS_ORDER] = {0}, y0[NWORDS_ORDER] = {0};
+    digit_t x1[NWORDS_ORDER] = {0}, y1[NWORDS_ORDER] = {0}, w1[NWORDS_ORDER] = {0}, z1[NWORDS_ORDER] = {0};
+    digit_t e, f, f1, f1div2;
+    digit_t fp2[NWORDS_ORDER] = {0};
     jac_point_t P, Q, RR, TT, R2r0;
     jac_point_t Pe3[POWER_OF_3], Qe3[POWER_OF_3], PQe3[POWER_OF_3];
     ec_point_t Rnorm;
@@ -1420,22 +1375,18 @@ void ec_dlog_3(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ3, const 
     }
     // w0, z0 <- dlog3(3^(f-f1)*R, f1, f1 div 2)
     f1div2 = f1 >> 1;
-    ec_dlog_3_step(&w0, &z0, &TT, (int)f1, (int)f1div2, &Pe3[0], &Qe3[0], &PQe3[0], &curvenorm);
+    ec_dlog_3_step(w0, z0, &TT, (int)f1, (int)f1div2, &Pe3[0], &Qe3[0], &PQe3[0], &curvenorm);
 
     // R2r0 <- R2 - (w0*Pe3[f-1] + z0*Qe3[f-1])
     DBLMUL(&R2r0, &Pe3[f-1], w0, &Qe3[f-1], z0, &curvenorm);
     jac_neg(&R2r0, &R2r0);
     ADD(&R2r0, &RR, &R2r0, &curvenorm);
-    ec_dlog_3_step(&x0, &y0, &R2r0, (int)e, (int)f1div2, &Pe3[0], &Qe3[0], &PQe3[0], &curvenorm);
+    ec_dlog_3_step(x0, y0, &R2r0, (int)e, (int)f1div2, &Pe3[0], &Qe3[0], &PQe3[0], &curvenorm);
 
-    xx[0] = x0;
-    yy[0] = y0;
-    ww[0] = w0;
-    zz[0] = z0;
-    mp_mul2(&xx[0], THREEpE, &xx[0]);       
-    mp_add(scalarP, &xx[0], &ww[0], NWORDS_ORDER);
-    mp_mul2(&yy[0], THREEpE, &yy[0]);       
-    mp_add(scalarQ, &yy[0], &zz[0], NWORDS_ORDER);
+    mp_mul2(&x0[0], THREEpE, &x0[0]);       
+    mp_add(scalarP, &x0[0], &w0[0], NWORDS_ORDER);
+    mp_mul2(&y0[0], THREEpE, &y0[0]);       
+    mp_add(scalarQ, &y0[0], &z0[0], NWORDS_ORDER);
 
     // If scalarP > Floor(3^f/2) or (scalarQ > Floor(3^f/2) and scalarP = 0) then output -scalarP mod 3^f, -scalarQ mod 3^f
     if (mp_compare(scalarP, THREEpFdiv2, NWORDS_ORDER) == 1 ||

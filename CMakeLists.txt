@@ -12,6 +12,7 @@ option(ENABLE_STRICT "Build with strict compile options." OFF)
 option(ENABLE_TESTS  "Enable compilation of tests." ON)
 option(ENABLE_CT_TESTING  "Enable compilation for constant time testing." OFF)
 option(ENABLE_GMP_BUILD "Download and build external version of GMP" OFF)
+option(ENABLE_MINI_GMP "Build with mini-gmp library" OFF)
 option(ENABLE_DOC_TARGET "Enable building API documentation using doxygen" OFF)
 
 if (NOT DEFINED SQISIGN_BUILD_TYPE)
