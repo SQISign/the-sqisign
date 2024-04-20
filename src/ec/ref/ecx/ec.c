@@ -621,7 +621,7 @@ static bool mp_is_zero(const digit_t* a, unsigned int nwords)
     return (bool)is_digit_zero_ct(r);
 }
 
-void DBLMUL(jac_point_t* R, const jac_point_t* P, const digit_t* k, const jac_point_t* Q, const digit_t* l, const ec_curve_t* curve)
+void DBLMUL(jac_point_t* R, const jac_point_t* P, const digit_t* k, const jac_point_t* Q, const digit_t* l, const ec_curve_t* curve, int width)
 {  // Double-scalar multiplication R <- k*P + l*Q, fixed for 128-bit scalars
     digit_t k_t, l_t;
     jac_point_t PQ;
@@ -629,7 +629,7 @@ void DBLMUL(jac_point_t* R, const jac_point_t* P, const digit_t* k, const jac_po
     ADD(&PQ, P, Q, curve);
     jac_init(R);
 
-    for (int i = 72; i >= 0; i--) {
+    for (int i = width; i >= 0; i--) {
         int w = i/RADIX;
         k_t = k[w] >> (i % RADIX);
         k_t &= 0x01;
@@ -892,7 +892,7 @@ void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const 
     for (i = 0; i < e; i++) {
         DBL(&TT, &TT, &curvenorm);
     }
-    DBLMUL(&R2r0, &Pe2[f1-1], w0, &Qe2[f1-1], z0, &curvenorm);
+    DBLMUL(&R2r0, &Pe2[f1-1], w0, &Qe2[f1-1], z0, &curvenorm, 64);
     jac_neg(&R2r0, &R2r0);
     ADD(&R2r0, &TT, &R2r0, &curvenorm);
     ec_dlog_2_step(x0, y0, &R2r0, (int)e1, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
@@ -905,7 +905,7 @@ void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const 
     mp_add(&z0[0], &z0[0], &y0[0], NWORDS_ORDER);
 
     // R2r <- R2 - (w*Pe2[f-1] + z*Qe2[f-1]), R2r has order 2^(f-e)
-    DBLMUL(&R2r, &Pe2[f-1], &w0[0], &Qe2[f-1], &z0[0], &curvenorm);
+    DBLMUL(&R2r, &Pe2[f-1], &w0[0], &Qe2[f-1], &z0[0], &curvenorm, 72);
     jac_neg(&R2r, &R2r);
     ADD(&R2r, &RR, &R2r, &curvenorm);
     copy_jac_point(&TT, &R2r);
@@ -915,7 +915,7 @@ void ec_dlog_2(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ2, const 
     ec_dlog_2_step(w1, z1, &TT, (int)f2, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
 
     // R2r1 <- R2r - (w1*Pe2[f1-1] + z1*Qe2[f1-1])
-    DBLMUL(&R2r1, &Pe2[f1-1], w1, &Qe2[f1-1], z1, &curvenorm);
+    DBLMUL(&R2r1, &Pe2[f1-1], w1, &Qe2[f1-1], z1, &curvenorm, 64);
     jac_neg(&R2r1, &R2r1);
     ADD(&R2r1, &R2r, &R2r1, &curvenorm);
     ec_dlog_2_step(x1, y1, &R2r1, (int)e1, (int)f2div2, &Pe2[0], &Qe2[0], &PQe2[0], &curvenorm);
@@ -952,7 +952,6 @@ static void ec_dlog_3_step(digit_t* x, digit_t* y, const jac_point_t* R, const i
     int i, j;
     digit_t one[NWORDS_ORDER] = {1};
     digit_t two[NWORDS_ORDER] = {2};
-    digit_t three[NWORDS_ORDER] = {3};
     digit_t value[NWORDS_ORDER] = {1};
     digit_t t[NWORDS_ORDER];
     jac_point_t P, Q, PQp, PQ2p, P2Qp, P2Q2p, P2p, Q2p, TT, SS, Te[POWER_OF_3/2], Re[POWER_OF_3/2];    // Storage could be reduced to e points
@@ -1378,7 +1377,7 @@ void ec_dlog_3(digit_t* scalarP, digit_t* scalarQ, const ec_basis_t* PQ3, const 
     ec_dlog_3_step(w0, z0, &TT, (int)f1, (int)f1div2, &Pe3[0], &Qe3[0], &PQe3[0], &curvenorm);
 
     // R2r0 <- R2 - (w0*Pe3[f-1] + z0*Qe3[f-1])
-    DBLMUL(&R2r0, &Pe3[f-1], w0, &Qe3[f-1], z0, &curvenorm);
+    DBLMUL(&R2r0, &Pe3[f-1], w0, &Qe3[f-1], z0, &curvenorm, 64);
     jac_neg(&R2r0, &R2r0);
     ADD(&R2r0, &RR, &R2r0, &curvenorm);
     ec_dlog_3_step(x0, y0, &R2r0, (int)e, (int)f1div2, &Pe3[0], &Qe3[0], &PQe3[0], &curvenorm);
