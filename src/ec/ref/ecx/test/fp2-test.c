@@ -28,10 +28,10 @@ void fp2_print(char *name, fp2_t const a){
     fp2_mul(&b, &b, &a);
     printf("%s = 0x", name);
     for(int i = NWORDS_FIELD - 1; i >=0; i--)
-        printf("%016" PRIx64, b.re[i]);
+        printf(HEX_FS, b.re[i]);
     printf(" + i*0x");
     for(int i = NWORDS_FIELD - 1; i >=0; i--)
-        printf("%016" PRIx64, b.im[i]);
+        printf(HEX_FS, b.im[i]);
     printf("\n");
 }
 

@@ -147,20 +147,20 @@ assert sum(Mod(c,Dcom)*g for c,g in zip(distorter,(1,mati,matj,matk))).columns()
 
 ################################################################
 
-from cformat import Ibz, Object, ObjectFormatter
+from cformat import Ibz, Basis, Object, ObjectFormatter
 
-def field2limbs(el):
-    l = 1 + floor(log(p, 2**64))
-    el = Fp2(el)
-    vs = [[(int(c) >> 64*i) % 2**64 for i in range(l)] for c in el]
-    return vs
+# def field2limbs(el):
+#     l = 1 + floor(log(p, 2**64))
+#     el = Fp2(el)
+#     vs = [[(int(c) >> 64*i) % 2**64 for i in range(l)] for c in el]
+#     return vs
 
-def fmt_basis(name, P, Q):
-    vs = [
-            [field2limbs(T[0]), field2limbs(T[2])]
-            for T in (P,Q,P-Q)
-        ]
-    return Object('ec_basis_t', name, vs)
+# def fmt_basis(name, P, Q):
+#     vs = [
+#             [field2limbs(T[0]), field2limbs(T[2])]
+#             for T in (P,Q,P-Q)
+#         ]
+#     return Object('ec_basis_t', name, vs)
 
 bases = {
         'EVEN': 1<<f,
@@ -174,8 +174,10 @@ bases = {
 assert P.order() == Q.order()
 
 objs = ObjectFormatter([
-        fmt_basis(f'BASIS_{k}', ZZ(P.order()/v)*P, ZZ(Q.order()/v)*Q)
-        for k,v in bases.items()
+        Object('ec_basis_t', f'BASIS_{k}',
+            Basis(p, Fp2, ZZ(P.order()/v)*P, ZZ(Q.order()/v)*Q)
+        )
+            for k,v in bases.items()
     ] + [
         Object('ec_curve_t', 'CURVE_E0', [[[int(0)]], [[int(1)]]]),
         Object('ec_point_t', 'CURVE_E0_A24', [[[int(0)]], [[int(1)]]]),

@@ -74,11 +74,11 @@ void ladder3pt(ec_point_t* R, fp_t const m, ec_point_t const* P, ec_point_t cons
 	copy_point(&X2, PQ);
 
 	int i,j;
-	uint64_t t;
+	digit_t t;
 	for (i = 0; i < NWORDS_FIELD; i++)
 	{
 		t = 1;
-		for (j = 0 ; j < 64; j++)
+		for (j = 0 ; j < RADIX; j++)
 		{
 			swap_points(&X1, &X2, -((t & m[i]) == 0));
 			xDBLADD(&X0, &X1, &X0, &X1, &X2, A);

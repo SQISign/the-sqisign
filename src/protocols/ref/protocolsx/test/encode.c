@@ -53,11 +53,11 @@ static int test_ibz_encdec() {
 static void print_fp2(const fp2_t d, int len) {
     printf("re: ");
     for (int i = 0; i < len; ++i) {
-        printf("%016" PRIx64 " ", d.re[i]);
+        printf(HEX_FS, d.re[i]);
     } printf("\n");
     printf("im: ");
     for (int i = 0; i < len; ++i) {
-        printf("%016" PRIx64 " ", d.im[i]);
+        printf(HEX_FS, d.im[i]);
     } printf("\n");
 }
 static void print_pk(const public_key_t *pk) {

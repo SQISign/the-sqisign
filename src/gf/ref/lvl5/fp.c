@@ -1,8 +1,15 @@
+#include <assert.h>
 #include "include/fp.h"
 
-const uint64_t p[NWORDS_FIELD] =  { 0xffffffffffffffff, 0xFFFFFFFFFFFFFFFF, 0x994C68ADA6E1FFFF, 0xFAF0A29A781974CE, 0xFE3AC5904A0DEA65, 0x02BDBE6326507D01, 0x8C15B0036936E792, 0x255946A8869BC6 };
-const uint64_t R2[NWORDS_FIELD] = { 0x46E4E8A0C7549CBD, 0xCB993B5943E89EA5, 0x545AC09F2F1B55C8, 0x1ADB99DDACAA06EC, 0x87994B8955D8B8D4, 0x2CC2EA622F9E57C8, 0x2780B5F2DAF1003C, 0x1691676B8674B8 };
-const uint64_t pp[NWORDS_FIELD] = { 0x01, 0x00, 0x00, 0x00 };
+#ifdef RADIX_32
+const digit_t p[NWORDS_FIELD] =  { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xA6E1FFFF, 0x994C68AD, 0x781974CE, 0xFAF0A29A, 0x4A0DEA65, 0xFE3AC590, 0x26507D01, 0x02BDBE63, 0x6936E792, 0x8C15B003, 0xA8869BC6, 0x00255946 };
+const digit_t R2[NWORDS_FIELD] = { 0xC7549CBD, 0x46E4E8A0, 0x43E89EA5, 0xCB993B59, 0x2F1B55C8, 0x545AC09F, 0xACAA06EC, 0x1ADB99DD, 0x55D8B8D4, 0x87994B89, 0x2F9E57C8, 0x2CC2EA62, 0xDAF1003C, 0x2780B5F2, 0x6B8674B8, 0x00169167 };
+const digit_t pp[NWORDS_FIELD] = { 0x00000001, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
+#elif defined(RADIX_64)
+const digit_t p[NWORDS_FIELD] =  { 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x994C68ADA6E1FFFF, 0xFAF0A29A781974CE, 0xFE3AC5904A0DEA65, 0x02BDBE6326507D01, 0x8C15B0036936E792, 0x00255946A8869BC6 };
+const digit_t R2[NWORDS_FIELD] = { 0x46E4E8A0C7549CBD, 0xCB993B5943E89EA5, 0x545AC09F2F1B55C8, 0x1ADB99DDACAA06EC, 0x87994B8955D8B8D4, 0x2CC2EA622F9E57C8, 0x2780B5F2DAF1003C, 0x001691676B8674B8 };
+const digit_t pp[NWORDS_FIELD] = { 0x0000000000000001, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000 };
+#endif
 
 void fp_set(digit_t* x, const digit_t val)
 { // Set field element x = val, where val has wordsize
@@ -101,10 +108,19 @@ digit_t mp_shiftr(digit_t* x, const unsigned int shift, const unsigned int nword
 void mp_shiftl(digit_t* x, const unsigned int shift, const unsigned int nwords)
 { // Multiprecision left shift
 
-    for (int i = nwords-1; i > 0; i--) {
-        SHIFTL(x[i], x[i-1], shift, x[i], RADIX);
+    assert(shift < RADIX*nwords);
+
+    int shift_words = shift / RADIX;
+
+    for (int i = nwords-1; i > shift_words; i--) {
+        SHIFTL(x[i-shift_words], x[i-shift_words-1], shift % RADIX, x[i], RADIX);
     }
-    x[0] <<= shift;
+
+    x[shift_words] = x[0] << (shift % RADIX);
+
+    for (int i = shift_words - 1; i >= 0; i--) {
+        x[i] = 0;
+    }
 }
 
 static void fp_exp3div4(digit_t* out, const digit_t* a)
