@@ -1,139 +1,280 @@
 /** @file
- * 
+ *
  * @authors Antonin Leroux
- * 
- * @brief The id2iso algorithms 
+ *
+ * @brief The id2iso algorithms
  */
 
 #ifndef ID2ISO_H
 #define ID2ISO_H
 
-#include <intbig.h>
-#include <quaternion.h>
-#include <klpt.h>
+#include <biextension.h>
 #include <ec.h>
+#include <hd.h>
+#include <hd_splitting_transforms.h>
+#include <quaternion.h>
+#include <quaternion_constants.h>
+#include <quaternion_data.h>
+#include <sqisign_namespace.h>
 
 /** @defgroup id2iso_id2iso Ideal to isogeny conversion
  * @{
-*/
-
-/** @defgroup id2iso_iso_types Types for isogenies needed for the id2iso  
- * @{
-*/
-
-/** @brief Type for long chain of two isogenies
- * 
- * @typedef id2iso_long_two_isog
- * 
- * Represented as a vector ec_isog_even_t
-*/
-typedef struct id2iso_long_two_isog {
-    unsigned short length; ///< the number of smaller two isogeny chains
-    ec_isog_even_t *chain; ///< the chain of two isogeny
-} id2iso_long_two_isog_t;
-
-/** @brief Type for compressed long chain of two isogenies
- * 
- * @typedef id2iso_compressed_long_two_isog 
- * 
- * Represented as a vector of intbig
-*/
-typedef struct id2iso_compressed_long_two_isog {
-    unsigned short length; ///< the number of smaller two isogeny chains
-    ibz_t *zip_chain; ///< the chain of two isogeny, compressed
-    unsigned char bit_first_step ; ///< the bit for the first step
-} id2iso_compressed_long_two_isog_t;
-
-/** @}
-*/
+ */
+static const quat_represent_integer_params_t QUAT_represent_integer_params = {
+    .algebra = &QUATALG_PINFTY,                          /// The level-specific quaternion algebra
+    .order = &(EXTREMAL_ORDERS[0]),                      // The special extremal order O0
+    .primality_test_iterations = QUAT_primality_num_iter // precompted bound on the iteration number in primality tests
+};
 
 /*************************** Functions *****************************/
 
-
-/** @defgroup id2iso Constructors and Destructors
- * @{
-*/
-void id2iso_long_two_isog_init(id2iso_long_two_isog_t *isog, const size_t length);
-void id2iso_long_two_isog_finalize(id2iso_long_two_isog_t *isog);
-
-void id2iso_compressed_long_two_isog_init(id2iso_compressed_long_two_isog_t *zip, const size_t length);
-void id2iso_compressed_long_two_isog_finalize(id2iso_compressed_long_two_isog_t *zip);
-
-/** @}
-*/
-
 /** @defgroup id2iso_others Other functions needed for id2iso
  * @{
-*/
-
-/**
- * @brief Translating an ideal of norm a big power of 2 into the corresponding isogeny
- *
- * @param isog_zip Output : compression of the output isogeny  
- * @param basis_minus : odd torsion basis (in the end, this will be the basis pushed through the output isogeny)
- * @param basis_plus : odd torsion basis (in the end, this will be the basis pushed through the output isogeny)
- * @param domain : the starting curve (in the end, this will be the codomain of the output isogeny)
- * @param kernel_dual : the dual of the kernel of the last step of isog_start_two (in the end this will be the kernel of the dual of the last step of the output isogeny) 
- * @param gen_input : quaternion element, element of a maximal order O, generator of the O-ideal to be translated 
- * @param length : the length of the chain to be translated
- * @param lideal_start_small : a small ideal equivalent to lideal_start_two of right order equal to O
- * @param lideal_start_two : O0-ideal of norm a power of 2 equivalent to lideal_start_small, corresponding to an isogeny isog_start_two
- * @param gen_two element of O0, generator of lideal_start_two
- * @param Bpoo : the quaternion algebra
- * @returns a bit indicating if the computation succeeded
- *  /!\ the composition of isog_start_two and isog might be backtracking
- * lideal_start_two = O0 < gen_two , 2^*> 
- * lideal_start_small = O0 < conj(gen_two), * >
- * lideal_start_small = lideal_lideal_start_two * conj(gen_two) / 2^*  
- * The ideal to be translated is equal to O < gen_input, 2^e> where O = OR(lideal_start_small)  
- * 
- * assumes that the ideal given in input has exactly norm 2^e where e = length * f (where f = TORSION_PLUS_EVEN_POWER)
- * when used for compressing an isogeny, we assume that the curve given in input is normalized
- */
-int id2iso_ideal_to_isogeny_two_long_power_of_2(id2iso_compressed_long_two_isog_t *isog_zip, ec_curve_t *domain, ec_basis_t *basis_minus, ec_basis_t *basis_plus, ec_point_t *kernel_dual, const quat_alg_elem_t *gen_input, const int length, const quat_left_ideal_t *lideal_start_small, const quat_left_ideal_t *lideal_start_two, const quat_alg_elem_t *gen_two, const quat_alg_t *Bpoo);
-
-/**
- * @brief Translating an ideal of odd norm dividing p²-1 into the corresponding isogeny
- *
- * @param isog Output : the output isogeny 
- * @param basis_minus : a basis of ec points
- * @param basis_plus : a basis of ec points
- * @param domain : an elliptic curve
- * @param lideal_input : O0-ideal corresponding to the ideal to be translated 
- *  
- * compute  the isogeny starting from domain corresponding to ideal_input 
- * the coefficients extracted from the ideal are to be applied to basis_minus and basis_plus to compute the kernel of the isogeny. 
- *
  */
 
-void id2iso_ideal_to_isogeny_odd(ec_isog_odd_t *isog, const ec_curve_t *domain, const ec_basis_t *basis_plus,const ec_basis_t *basis_minus, const quat_left_ideal_t *lideal_input);
-
 /**
- * @brief Translating an ideal of norm a power of two dividing p²-1 into the corresponding isogeny
+ * @brief Scalar multiplication [x]P + [y]Q where x and y are stored inside an
+ * ibz_vec_2_t [x, y] and P, Q in E[2^f]
  *
- * @param isog Output : the output isogeny 
- * @param lideal_input : O0-ideal corresponding to the ideal to be translated 
- *  
+ * @param res Output: the point R = [x]P + [y]Q
+ * @param scalar_vec: a vector of ibz type elements (x, y)
+ * @param f: an integer such that P, Q are in E[2^f]
+ * @param PQ: an x-only basis x(P), x(Q) and x(P-Q)
+ * @param curve: the curve E the points P, Q, R are defined on
+ *
  */
-
-void id2iso_ideal_to_isogeny_even(ec_isog_even_t *isog, const quat_left_ideal_t *lideal_input);
-
+void ec_biscalar_mul_ibz_vec(ec_point_t *res,
+                             const ibz_vec_2_t *scalar_vec,
+                             const int f,
+                             const ec_basis_t *PQ,
+                             const ec_curve_t *curve);
 
 /**
- * @brief Translating a kernel on the curve E0, represented as two vectors with respect to the precomputed 2^f- and 3^e-torsion bases, into the corresponding O0-ideal
+ * @brief Translating an ideal of norm 2^f dividing p²-1 into the corresponding
+ * kernel coefficients
+ *
+ * @param ker_dlog Output : two coefficients indicating the decomposition of the
+ * kernel over the canonical basis of E0[2^f]
+ * @param lideal_input : O0-ideal corresponding to the ideal to be translated of
+ * norm 2^f
+ *
+ */
+void id2iso_ideal_to_kernel_dlogs_even(ibz_vec_2_t *ker_dlog, const quat_left_ideal_t *lideal_input);
+
+/**
+ * @brief Applies some 2x2 matrix on a basis of E[2^TORSION_EVEN_POWER]
+ *
+ * @param P the basis
+ * @param E the curve
+ * @param mat the matrix
+ * @param f TORSION_EVEN_POWER
+ * @returns 1 if success, 0 if error
+ *
+ * helper function, works in place
+ *
+ */
+int matrix_application_even_basis(ec_basis_t *P, const ec_curve_t *E, ibz_mat_2x2_t *mat, int f);
+
+/**
+ * @brief Applies some endomorphism of an alternate curve to E[f]
+ *
+ * @param P the basis
+ * @param index_alternate_curve index of the alternate order in the list of precomputed extremal
+ * orders
+ * @param E the curve (E is not required to be the alternate curve in question since in the end we
+ * only apply a matrix)
+ * @param theta the endomorphism
+ * @param f TORSION_EVEN_POWER
+ *
+ * helper function, works in place
+ *
+ */
+void endomorphism_application_even_basis(ec_basis_t *P,
+                                         const int index_alternate_curve,
+                                         const ec_curve_t *E,
+                                         const quat_alg_elem_t *theta,
+                                         int f);
+
+/**
+ * @brief Translating a kernel on the curve E0, represented as a vector with
+ * respect to the precomputed 2^f-torsion basis, into the corresponding O0-ideal
  *
  * @param lideal Output : the output O0-ideal
- * @param vec2 : length-2 vector giving the 2-power part of the kernel with respect to the precomputed TORSION_PLUS_2POWER basis
- * @param vec3 : length-2 vector giving the 3-power part of the kernel with respect to the precomputed TORSION_PLUS_3POWER basis
+ * @param f : exponent definining the norm of the ideal to compute
+ * @param vec2 : length-2 vector giving the 2-power part of the kernel with
+ * respect to the precomputed 2^f basis
  *
  */
-void id2iso_kernel_dlogs_to_ideal(quat_left_ideal_t *lideal, const ibz_vec_2_t *vec2, const ibz_vec_2_t *vec3);
+void id2iso_kernel_dlogs_to_ideal_even(quat_left_ideal_t *lideal, const ibz_vec_2_t *vec2, int f);
+
+/**
+ * @brief Change of basis matrix for full basis B2
+ * Finds mat such that:
+ * (mat*v).B2 = v.B1
+ * where "." is the dot product, defined as (v1,v2).(P,Q) = v1*P + v2*Q
+ *
+ * @param mat the computed change of basis matrix
+ * @param B1 the source basis for E[2^f]
+ * @param B2 the target basis for E[2^e]
+ * @param E the elliptic curve
+ * @param f 2^f is the order of the points of the input basis
+ *
+ * mat encodes the coordinates of the points of B1 in the basis B2
+ */
+void change_of_basis_matrix_tate(ibz_mat_2x2_t *mat, const ec_basis_t *B1, const ec_basis_t *B2, ec_curve_t *E, int f);
+
+/**
+ * @brief Change of basis matrix for full basis B2
+ * Finds mat such that:
+ * (mat*v).B1 = [2^e-f]*v.B2
+ * where "." is the dot product, defined as (v1,v2).(P,Q) = v1*P + v2*Q
+ *
+ * @param mat the computed change of basis matrix
+ * @param B1 the source basis for E[2^e]
+ * @param B2 the target basis for E[2^f]
+ * @param E the elliptic curve
+ * @param f 2^f is the order of the points of the input basis
+ *
+ * mat encodes the coordinates of the points of B1 in the basis B2, by
+ * applying change_of_basis_matrix_tate and inverting the outcome
+ */
+void change_of_basis_matrix_tate_invert(ibz_mat_2x2_t *mat,
+                                        const ec_basis_t *B1,
+                                        const ec_basis_t *B2,
+                                        ec_curve_t *E,
+                                        int f);
 
 /** @}
  */
+
+/** @defgroup id2iso_arbitrary Arbitrary isogeny evaluation
+ * @{
+ */
+/**
+ * @brief Function to find elements u, v, d1, d2, beta1, beta2 for the ideal to isogeny
+ *
+ * @param u Output: integer
+ * @param v Output: integer
+ * @param beta1 Output: quaternion element
+ * @param beta2 Output: quaternion element
+ * @param d1 Output: integer
+ * @param d2 Output: integer
+ * @param index_alternate_order_1 Output: small integer (index of an alternate order)
+ * @param index_alternate_order_2 Output: small integer (index of an alternate order)
+ * @param target : integer, target norm
+ * @param lideal : O0-ideal defining the search space
+ * @param Bpoo : quaternion algebra
+ * @param num_alternate_order number of alternate order we consider
+ * @returns 1 if the computation succeeds, 0 otherwise
+ *
+ * Let us write ti = index_alternate_order_i,
+ * we look for u,v,beta1,beta2,d1,d2,t1,t2
+ * such that u d1 + v d2 = target
+ * and where di = norm(betai)/norm(Ii), where the ideal Ii is equal to overbar{Ji} * lideal and
+ * betai is in Ii where Ji is a connecting ideal between the maximal order O0 and O_ti t1,t2 must be
+ * contained between 0 and num_alternate_order This corresponds to the function SuitableIdeals in
+ * the spec
+ */
+int find_uv(ibz_t *u,
+            ibz_t *v,
+            quat_alg_elem_t *beta1,
+            quat_alg_elem_t *beta2,
+            ibz_t *d1,
+            ibz_t *d2,
+            int *index_alternate_order_1,
+            int *index_alternate_order_2,
+            const ibz_t *target,
+            const quat_left_ideal_t *lideal,
+            const quat_alg_t *Bpoo,
+            int num_alternate_order);
+
+/**
+ * @brief Computes an arbitrary isogeny of fixed degree starting from E0
+ * and evaluates it a list of points of the form (P1,0) or (0,P2).
+ *
+ * @param lideal Output : an ideal of norm u
+ * @param u : integer
+ * @param small : bit indicating if we the value of u is "small" meaning that we
+ expect it to be
+ * around sqrt{p}, in that case we use a length slightly above
+ * @param E34 Output: the codomain curve
+ * @param P12 Input/Output: pointer to points to be pushed through the isogeny
+ (in-place)
+ * @param numP: length of the list of points given in P12 (can be zero)
+ * @param index_alternate_order : index of the special extremal order to be used (in the list of
+ these orders)
+ * @returns the length of the chain if the computation succeeded, zero upon
+ failure
+ *
+ * F is an isogeny encoding an isogeny [adjust]*phi : E0 -> Eu of degree u
+ * note that the codomain of F can be either Eu x Eu' or Eu' x Eu for some curve
+ Eu'
+ */
+int fixed_degree_isogeny_and_eval(quat_left_ideal_t *lideal,
+                                  const ibz_t *u,
+                                  bool small,
+                                  theta_couple_curve_t *E34,
+                                  theta_couple_point_t *P12,
+                                  size_t numP,
+                                  const int index_alternate_order);
+
+/**
+ * @brief Translating an ideal into a representation of the corresponding
+ * isogeny
+ *
+ * @param beta1 Output: quaternion element
+ * @param beta2 Output: quaternion element
+ * @param u Output: integer
+ * @param v Output: integer
+ * @param d1 Output: integer
+ * @param d2 Output: integer
+ * @param codomain the codomain of the isogeny corresponding to lideal
+ * @param basis Output : evaluation of the canonical basis of E0 through the
+ * ideal corresponding to lideal
+ * @param lideal : O0 - ideal in input
+ * @param Bpoo : the quaternion algebra
+ * @returns 1 if the computation succeeded, 0 otherwise
+ *
+ * Compute the codomain and image on the basis of E0 of the isogeny
+ * E0 -> codomain corresponding to lideal
+ *
+ * There is some integer e >= 0 such that
+ * 2^e * u, 2^e * v,beta1, beta2, d1, d2 are the output of find_uv
+ * on input target = 2^TORSION_PLUS_EVEN_POWER and lideal
+ *
+ * codomain and basis are computed with the help of a dimension 2 isogeny
+ * of degree 2^TORSION_PLUS_EVEN_POWER - e using a Kani diagram
+ *
+ */
+int dim2id2iso_ideal_to_isogeny_clapotis(quat_alg_elem_t *beta1,
+                                         quat_alg_elem_t *beta2,
+                                         ibz_t *u,
+                                         ibz_t *v,
+                                         ibz_t *d1,
+                                         ibz_t *d2,
+                                         ec_curve_t *codomain,
+                                         ec_basis_t *basis,
+                                         const quat_left_ideal_t *lideal,
+                                         const quat_alg_t *Bpoo);
+
+/**
+ * @brief Translating an ideal into a representation of the corresponding
+ * isogeny
+ *
+ * @param basis Output : evaluation of the canonical basis of E0 through the
+ * ideal corresponding to lideal
+ * @param lideal : ideal in input
+ * @param codomain
+ * @returns 1 if the computation succeeds, 0 otherwise
+ *
+ * This is a wrapper around the ideal to isogeny clapotis function
+ */
+int dim2id2iso_arbitrary_isogeny_evaluation(ec_basis_t *basis, ec_curve_t *codomain, const quat_left_ideal_t *lideal);
+
 /** @}
  */
 
-
+/** @}
+ */
 
 #endif

@@ -3,20 +3,27 @@
 #ifndef api_h
 #define api_h
 
-#define CRYPTO_SECRETKEYBYTES 1138
-#define CRYPTO_PUBLICKEYBYTES   96
-#define CRYPTO_BYTES           263
+#include <sqisign_namespace.h>
 
-#define CRYPTO_ALGNAME "lvl3"
+#define CRYPTO_SECRETKEYBYTES 529
+#define CRYPTO_PUBLICKEYBYTES 97
+#define CRYPTO_BYTES 224
 
+#define CRYPTO_ALGNAME "SQIsign_lvl3"
+
+#if defined(ENABLE_SIGN)
+SQISIGN_API
 int
 crypto_sign_keypair(unsigned char *pk, unsigned char *sk);
 
+SQISIGN_API
 int
 crypto_sign(unsigned char *sm, unsigned long long *smlen,
             const unsigned char *m, unsigned long long mlen,
             const unsigned char *sk);
+#endif
 
+SQISIGN_API
 int
 crypto_sign_open(unsigned char *m, unsigned long long *mlen,
                  const unsigned char *sm, unsigned long long smlen,

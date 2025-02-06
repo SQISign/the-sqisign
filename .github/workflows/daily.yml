@@ -1,0 +1,54 @@
+name: Benchmarks (Daily Workflow)
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # This cron expression means "run at midnight UTC every day"
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  benchmarks:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    strategy:
+      matrix:
+        platform: [x64, arm64]
+        toolchain: [""]
+        sqisign_build_type: [ref]
+        include:
+          - platform: x64
+            toolchain: ""
+            sqisign_build_type: broadwell
+            sqisign_test_reps: 10
+          - platform: x64
+            toolchain: .cmake/32bit.cmake
+            sqisign_build_type: ref
+            sqisign_test_reps: 10
+
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }}
+
+    - name: Build
+    # Build your program with the given configuration
+      run: |
+        if [ -n "${{ matrix.toolchain }}" ]; then
+            cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+        fi
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Run benchmarks in apps folder
+      run: |
+        build/apps/benchmark_lvl1 50
+        build/apps/benchmark_lvl3 20
+        build/apps/benchmark_lvl5 10
+
+    - name: Run Benchmarks (make bm)
+      run: cd build && make bm

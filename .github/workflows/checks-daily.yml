@@ -1,0 +1,19 @@
+name: Daily workflow for various checks
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # This cron expression means "run at midnight UTC every day"
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt -y update && sudo apt -y install gcc cmake libgmp-dev scala
+
+    - name: Check namespace
+      run: scripts/check_namespace.sh

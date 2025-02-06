@@ -1,0 +1,189 @@
+name: Known Answer Tests (KAT)
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'The commit SHA to run the workflow on'
+        required: true
+        type: string
+
+jobs:
+  x86-KAT:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    strategy:
+      matrix:
+        compiler: [gcc]
+        build_type: [Release]
+        platform: [x64]
+        #fast_math: [-ffast-math, -fno-fast-math]
+        #fp_contract: [-ffp-contract=on, -ffp-contract=fast, -ffp-contract=off]
+        fast_math: [""]
+        fp_contract: [""]
+        toolchain: ["", ".cmake/32bit.cmake"]
+        sqisign_build_type: [ref]
+        gf_radix: [AUTO, 32]
+        gmp_library: [SYSTEM, MINI]
+
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit_sha }}
+
+      ##    - name: Install dependencies Valgrind, GMP, Doxygen, TeX, gcc-multilib
+      ##      run: |
+      ##          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex gcc-multilib
+
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=${{matrix.compiler}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DGF_RADIX=${{ matrix.gf_radix }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -DCMAKE_C_FLAGS="${{ matrix.fast_math }} ${{ matrix.fp_contract }}"
+
+      - name: Build
+        # Build your program with the given configuration
+        run: |
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
+          cmake --build ${{github.workspace}}/build --parallel 8 --config ${{matrix.build_type}}
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -R KAT$ -j3 -C ${{matrix.build_type}}
+
+  broadwell-KAT:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    strategy:
+      matrix:
+        compiler: [clang, gcc]
+        build_type: [Release]
+        platform: [x64]
+        #fast_math: [ON, OFF]
+        #fp_contract: [ON, FAST, OFF]
+        fast_math: [""]
+        fp_contract: [""]
+        toolchain: [""]
+        sqisign_build_type: [broadwell]
+        gf_radix: [AUTO]
+        gmp_library: [SYSTEM, MINI]
+  
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
+  
+    steps:
+      - uses: actions/checkout@v4
+  
+      ##    - name: Install dependencies Valgrind, GMP, Doxygen, TeX, gcc-multilib
+      ##      run: |
+      ##          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex gcc-multilib
+  
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=${{matrix.compiler}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DGF_RADIX=${{ matrix.gf_radix }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -DCMAKE_C_FLAGS="${{ matrix.fast_math }} ${{ matrix.fp_contract }}"
+  
+      - name: Build
+        # Build your program with the given configuration
+        run: |
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
+          cmake --build ${{github.workspace}}/build --parallel 8 --config ${{matrix.build_type}}
+  
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -R KAT$ -j3 -C ${{matrix.build_type}}
+
+  arm64-KAT:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    strategy:
+      matrix:
+        compiler: [clang, gcc]
+        build_type: [Release]
+        platform: [arm64]
+        #fast_math: [ON, OFF]
+        #fp_contract: [ON, FAST, OFF]
+        fast_math: [""]
+        fp_contract: [""]
+        toolchain: [""]
+        sqisign_build_type: [ref]
+        gf_radix: [AUTO]
+        gmp_library: [SYSTEM, MINI]
+  
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
+  
+    steps:
+      - uses: actions/checkout@v4
+  
+      ##    - name: Install dependencies Valgrind, GMP, Doxygen, TeX, gcc-multilib
+      ##      run: |
+      ##          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex gcc-multilib
+  
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=${{matrix.compiler}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DGF_RADIX=${{ matrix.gf_radix }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -DCMAKE_C_FLAGS="${{ matrix.fast_math }} ${{ matrix.fp_contract }}"
+  
+      - name: Build
+        # Build your program with the given configuration
+        run: |
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
+          cmake --build ${{github.workspace}}/build --parallel 8 --config ${{matrix.build_type}}
+  
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -R KAT$ -j3 -C ${{matrix.build_type}}
+
+  DebugKAT:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    strategy:
+      matrix:
+        compiler: [clang, gcc]
+        build_type: [Debug]
+        platform: [x64]
+        #fast_math: [OFF]
+        #fp_contract: [FAST]
+        fast_math: [""]
+        fp_contract: [""]
+        toolchain: [""]
+        sqisign_build_type: [ref, broadwell]
+        gf_radix: [AUTO]
+        gmp_library: [SYSTEM]
+  
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
+  
+    steps:
+      - uses: actions/checkout@v4
+  
+      ##    - name: Install dependencies Valgrind, GMP, Doxygen, TeX, gcc-multilib
+      ##      run: |
+      ##          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex gcc-multilib
+  
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=${{matrix.compiler}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DGF_RADIX=${{ matrix.gf_radix }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -DCMAKE_C_FLAGS="${{ matrix.fast_math }} ${{ matrix.fp_contract }}"
+  
+      - name: Build
+        # Build your program with the given configuration
+        run: |
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
+          cmake --build ${{github.workspace}}/build --parallel 8 --config ${{matrix.build_type}}
+  
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -R KAT$ -j3 -C ${{matrix.build_type}}
+  

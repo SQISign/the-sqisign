@@ -1,29 +1,41 @@
 #ifndef FP2_H
 #define FP2_H
 
-#include "fp.h"
+#define NO_FP2X_MUL
+#define NO_FP2X_SQR
 
-// Structure for representing elements in GF(p^2)
-typedef struct fp2_t {
-    fp_t re, im;
-} fp2_t;
+#include <fp2x.h>
 
-void fp2_set(fp2_t* x, const digit_t val);
-bool fp2_is_zero(const fp2_t* a);
-bool fp2_is_equal(const fp2_t* a, const fp2_t* b);
-void fp2_copy(fp2_t* x, const fp2_t* y);
-fp2_t fp2_non_residue();
-void fp2_add(fp2_t* x, const fp2_t* y, const fp2_t* z);
-void fp2_sub(fp2_t* x, const fp2_t* y, const fp2_t* z);
-void fp2_neg(fp2_t* x, const fp2_t* y);
-void fp2_mul(fp2_t* x, const fp2_t* y, const fp2_t* z);
-void fp2_sqr(fp2_t* x, const fp2_t* y);
-void fp2_inv(fp2_t* x);
-bool fp2_is_square(const fp2_t* x);
-void fp2_frob(fp2_t* x, const fp2_t* y);
-void fp2_sqrt(fp2_t* x);
-void fp2_tomont(fp2_t* x, const fp2_t* y);
-void fp2_frommont(fp2_t* x, const fp2_t* y);
-int fp2_cmp(fp2_t* x, fp2_t* y);
+extern void fp2_sq_c0(fp2_t *out, const fp2_t *in);
+extern void fp2_sq_c1(fp_t *out, const fp2_t *in);
+
+extern void fp2_mul_c0(fp_t *out, const fp2_t *in0, const fp2_t *in1);
+extern void fp2_mul_c1(fp_t *out, const fp2_t *in0, const fp2_t *in1);
+
+static inline void
+fp2_mul(fp2_t *x, const fp2_t *y, const fp2_t *z)
+{
+    fp_t t;
+
+    fp2_mul_c0(&t, y, z);     // c0 = a0*b0 - a1*b1
+    fp2_mul_c1(&x->im, y, z); // c1 = a0*b1 + a1*b0
+    x->re.arr[0] = t.arr[0];
+    x->re.arr[1] = t.arr[1];
+    x->re.arr[2] = t.arr[2];
+    x->re.arr[3] = t.arr[3];
+}
+
+static inline void
+fp2_sqr(fp2_t *x, const fp2_t *y)
+{
+    fp2_t t;
+
+    fp2_sq_c0(&t, y);     // c0 = (a0+a1)(a0-a1)
+    fp2_sq_c1(&x->im, y); // c1 = 2a0*a1
+    x->re.arr[0] = t.re.arr[0];
+    x->re.arr[1] = t.re.arr[1];
+    x->re.arr[2] = t.re.arr[2];
+    x->re.arr[3] = t.re.arr[3];
+}
 
 #endif

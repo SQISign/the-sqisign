@@ -1,57 +1,70 @@
 # SQIsign
 
-This library is a C implementation of SQIsign, short for Short Quaternion and Isogeny Signature (from isogeny graphs of supersingular elliptic curves).
+This library is a C implementation of SQIsign.
 
 ## Requirements
 
-- CMake (version 3.5 or later)
-- C99-compatible compiler
-- Valgrind (for dynamic testing)
-- Clang static analyzer (version 10 or later, for static analysis)
-- GMP (version 6.1.2 or later)
+- CMake (version 3.13 or later)
+- C11-compatible compiler
+- GMP (version 6.0.0 or later)
+
+### Pre-computation
+
+The constant values in the `src/precomp` directory were generated using the
+pre-computation scripts in the `scripts/precomp` directory. It is not necessary
+to execute these scripts to compile the project. The scripts have the following
+requirements:
+- [two-isogenies](https://github.com/ThetaIsogenies/two-isogenies)
+  (`Theta-SageMath` version).
+- [deuring-2D](https://github.com/Jonathke/deuring-2D)
 
 ## Build
 
-- `mkdir -p build`
-- `cd build`
-- `cmake -DSQISIGN_BUILD_TYPE=<ref/broadwell> ..`
-- `make`
+For a generic build
+```
+$ mkdir -p build
+$ cd build
+$ cmake -DSQISIGN_BUILD_TYPE=ref ..
+$ make
+$ make test
+```
+
+An optimized executable with debug code and assertions disabled can be built
+replacing the `cmake` command above by
+```
+cmake -DSQISIGN_BUILD_TYPE=<ref/broadwell> -DCMAKE_BUILD_TYPE=Release ..
+```
 
 ## Build options
 
 CMake build options can be specified with `-D<BUILD_OPTION>=<VALUE>`.
 
-### ENABLE_TESTS
+### SQISIGN_BUILD_TYPE
 
-Builds a test harness for the library, the default value is `ON`.
+Specifies the build type for which SQIsign is built. The currently supported values are:
+- `ref`: builds the plain reference implementation.
+- `opt`: builds the optimized implementation which is the same as the reference
+  implementation.
+- `broadwell`: builds an additional optimized implementation targeting the Intel
+  Broadwell architecture (and later). The optimizations are applied to the
+  finite field arithmetic.
 
-### ENABLE_CT_TESTING
+### GMP_LIBRARY
 
-Builds the library with instrumentation for constant-time behavior testing, the default value is `OFF`. Valgrind development files are used for this build option.
+If set to `SYSTEM` (by default), the gmp library on the system is dynamically linked.
 
-### ENABLE_GMP_BUILD
-
-If set to `OFF` (by default), the gmp library on the system is dynamically linked.
-If set to `ON`, a custom gmp library is linked, which is built as part of the overall build process. 
-
-In the latter case, the following further options are available:
+If set to `BUILD`, a custom gmp library is linked, which is built as part of the overall build process.
+In this case, the following further options are available:
 - `ENABLE_GMP_STATIC`: Does static linking against gmp. The default is `OFF`.
 - `GMP_BUILD_CONFIG_ARGS`: Provides additional config arguments for the gmp build (for example `--disable-assembly`). By default, no config arguments are provided.
 
-### ENABLE_DOC_TARGET
-If set to `ON`, a doc target is available that builds API documentation. Note that a doxygen installation is required if set to `ON`.
+If set to `MINI`, the mini-gmp library is used, whose sources are included in the repository, in the folder `src/mini-gmp`. In this case, no copies of the full gmp library (system or custom-built) are required.
 
-The default is `OFF`.
+### ENABLE_SIGN
 
-### SQISIGN_BUILD_TYPE
-
-Specifies the build type for which SQIsign is built. The currently supported flags are:
-- `ref`, which builds the plain C reference implementation.
-- `broadwell`, which builds an additional implementation with GF assembly optimized code for the Intel Broadwell architecture.
-
-### SQISIGN_TEST_REPS
-
-Specifies and overrides the number of (self-)test repetitions to be run.
+If set to `ON` (default), SQIsign is built with signature and verification functionality.
+If set to `OFF`, SQIsign is built with verification functionality only.
+In the latter case, GMP is no longer a dependency.
 
 ### CMAKE_BUILD_TYPE
 
@@ -66,183 +79,138 @@ Can be used to specify special build types. The options are:
 
 The default build type uses the flags `-O3 -Wstrict-prototypes -Wno-error=strict-prototypes -fvisibility=hidden -Wno-error=implicit-function-declaration -Wno-error=attributes`. (Notice that assertions remain enabled in this configuration, which harms performance.)
 
-
-## Build artifacts
-
-The following libraries are built:
-
-- `libsqisign_common_sys.a`: library with common crypto - AES, Keccak and system random number generator.
-- `libsqisign_common_test.a`: library with common crypto for deterministic tests - AES, Keccak and CTR-DRBG PRNG.
-- `libsqisign_<level>.a`: library for `SQIsign_<level>`.
-- `libsqisign_<level>_test`: library for `SQIsign_<level>`, only for test, using the deterministic CTR-DRBG as backend.
-- `libsqisign_<level>_nistapi.a`: library for `SQIsign_<level>` against the NIST API.
-- `libsqisign_<level>_nistapi_test.a`: library for `SQIsign_<level>` against the NIST API. Only for test, using the deterministic CTR-DRBG as backend.
-- `libsqisign_gf_<level>.a`: gf sub-library, generic or for `<level>`
-- `libsqisign_ec_<level>.a`: ec sub-library, generic or for `<level>`
-- `libsqisign_klpt_<level>.a`: klpt sub-library, generic or for `<level>`
-- `libsqisign_intbig_generic.a`: intbig sub-library, generic
-- `libsqisign_quaternion_generic.a`: quaternion sub-library, generic
-- `libsqisign_id2iso_<level>.a`: id2iso sub-library, generic or for `<level>`
-
-The following test apps are built:
-- `sqisign_bench_<level>`: Benchmarking suites.
-- `sqisign_test_kat_<level>`: KAT test suites.
-- `sqisign_test_scheme_<level>`: Self-test suites.
-- `sqisign_test_prof_<level>`: Profiling suites.
-
-More apps are built in folder `build/apps`:
-
-- `PQCgenKAT_sign_<param>`: App for generating NIST KAT.
-- `example_nistapi_<param>`: Example app using the NIST API.
-
 ## Test
 
-In the build directory, run: `make test` or `ctest`.
+In the build directory, run `make test` or `ctest`.
 
 The test harness consists of the following units:
 
-- KAT test: tests against the KAT files in the `KAT` folder - `SQIsign_<level>_KAT`
-- Self-tests: runs random self-tests (key-generation, signing and verifying) - `SQIsign_<level>_SELFTEST`
+- KAT test: `SQIsign_<level>_KAT`- tests against the KAT files in the `KAT`
+  directory.
+- Self-tests: `SQIsign_<level>_SELFTEST` - runs random self-tests
+  (key generation, signature and verification).
 - Sub-library specific unit-tests.
 
-Note that, ctest has a default timeout of 1500s, which is applied to all tests except the KAT tests. To override the default timeout, run `ctest --timeout <seconds>`.
+Note that, `ctest` has a default timeout of 1500s, which is applied to all tests
+except the KAT tests. To override the default timeout, run
+`ctest --timeout <seconds>`.
 
 ## Known Answer Tests (KAT)
 
-KAT are available in folder `KAT`. They can be generated by running the apps built in the `apps` folder:
-
-- `apps/PQCgenKAT_sign_<level>`
+KAT are available in the `KAT` directory. They can be generated by running the
+apps built in the `apps` directory:
+```
+apps/PQCgenKAT_sign_<level>
+```
 
 A successful execution will generate the `.req` and `.rsp` files.
 
-A full KAT test is done as part of the test harness (see previous section).
+A full KAT test is done as part of the test harness (see the [Test](#test)
+section).
 
 ## Benchmarks
 
-A benchmarking suite is built and runs with the following command:
+A benchmarking suite is built and can be executed with the following command:
+```
+apps/benchmark_<level> [--iterations=<iterations>]
+```
+where `<level>` specifies the SQIsign parameter set and `<iterations>` is the
+number of iterations used for benchmarking; if the `--iterations` option is
+omitted, a default of 10 iterations is used.
 
-- `test/sqisign_bench_<param> <runs>`, where params specifies the SQIsign parameter set and runs the number of benchmark runs.
-
-The benchmarks profile the `KeyGen`, `Sign` and `Verify` functions. The results are reported in CPU cycles if available on the host platform, and timing in nanoseconds otherwise.
+The benchmarks profile the key generation, signature and verification functions. The results are reported in CPU cycles if available on the host platform, and timing in nanoseconds otherwise.
 
 ## Examples
 
-Example code that demonstrates how to use SQIsign are available in the `apps` folder:
-
-- `apps/example_nistapi.c`: Example with the NIST API.
+Example code that demonstrates how to use SQIsign with the NIST API is available
+in `apps/example_nistapi.c`.
 
 ## Project Structure
 
-The SQIsign library consists of a number of sub-libraries used to implement the final SQIsign library.
+The source code consists of a number of sub-libraries used to implement the
+final SQIsign library:
+- `common`: common code for hash function, seed expansion, PRNG, memory handling.
+- `mp`: code for saturated-representation multiprecision arithmetic.
+- `gf`: GF(p^2) and GF(p) arithmetic.
+- `ec`: elliptic curves, isogenies and pairings. Everything that is purely
+   finite-fieldy.
+- `precomp`: constants and precomputed values.
+- `quaternion`: quaternion orders and ideals.
+- `hd`: code to compute (2,2)-isogenies in the theta model.
+- `id2iso`: code for Ideal <-> Iso.
+- `verification`: code for the verification protocol.
+- `signature`: code for the key generation and signature protocols.
 
 The dependencies are depicted below.
 ```
-    ┌─┬──────┬─┐           ┌─┬────┬─┐            ┌─┬──────┬─┐
-    │ ├──────┤ │           │ ├────┤ │            │ ├──────┤ │
-    │ │Keygen│ │           │ │Sign│ │            │ │Verify│ │
-    │ ├──────┤ │           │ ├────┤ │            │ ├──────┤ │
-    └─┴───┬──┴─┘           └─┴─┬──┴─┘            └─┴───┬──┴─┘
-          │                    │                       │
-          │                    │                       │
-          ├────────────────────┼─────────────────┐     │
-          │                    │                 │     │
-          │                    │                 │     │
-      ┌───▼──┐          ┌──────▼────────┐   ┌────▼─────▼───────────┐
-      │ PRNG ◄────┬─────┤ Iso <-> Ideal ├───►   Elliptic Curves,   │
-      └───▲──┘    │     └──────┬────────┘   │ Pairings & Isogenies │
-          │       │            │            └───▲──────┬───────────┘
-          │       │            │                │      │
-      ┌───┴──┐    │            │                │      │
-      │ KLPT ◄────┘            │     ┌──────────┘      │
-      └───┬──┘                 │     │                 │
-          │                    │     │                 │
-┌─────────▼─────────┐          │     │                 │
-│ Quaternion orders │          │     │            ┌────▼───┐
-│     and ideals    │          │     │            │ GF(p²) │
-└─────────┬─────────┘          │     │            └────┬───┘
-          │           ┌─┬──────▼─────┴──┬─┐            │
-    ┌─────▼─────┐     │ ├───────────────┤ │      ┌─────▼─────┐
-    │ MP BigInt │     │ │Precomputations│ │      │ FP BigInt │
-    └───────────┘     │ ├───────────────┤ │      └───────────┘
-                      └─┴───────────────┴─┘                       
+ ┌─┬──────────┬─┐        ┌─┬──────────┬─┐      ┌─┬──────────┬─┐
+ │ ├──────────┤ │        │ ├──────────┤ │      │ ├──────────┤ │
+ │ │  Keygen  │ │        │ │   Sign   │ │      │ │  Verify  │ │
+ │ ├──────────┤ │        │ ├──────────┤ │      │ ├──────────┤ │
+ └─┴────┬─────┴─┘        └─┴────┬─────┴─┘      └─┴────┬─────┴─┘
+        │                       │                     │
+        └──────────────────┐    │                     │
+                           │    │                     │
+┌─────────────────┐    ┌───▼────▼────────┐            │
+│                 │    │                 │            │
+│   Quaternions   ◄────┤  Ideal <-> Iso  ├────────┐   │
+│                 │    │                 │        │   │
+└────────┬────────┘    └────────┬────────┘        │   │
+         │                      │                 │   │
+         │                      │     ┌───────────────┘
+         │                      │     │           │
+┌────────▼────────┐    ┌────────▼─────▼──┐    ┌───▼────────────┐
+│                 │    │                 │    │                │
+│ Multiprecision  │    │       2D        ├────► Precomputation │
+│ integers (GMP)  │    │    Isogenies    │    │                │
+│                 │    │                 │    │                │
+└─────────────────┘    └────────┬────────┘    └───▲────────────┘
+                                │                 │
+                                │                 │
+                                │                 │
+                       ┌────────▼────────┐        │
+                       │                 │        │
+                       │ Elliptic curves ├────────┘
+                       │   & isogenies   │
+                       │                 │
+                       └──┬───────────┬──┘
+                          │           │
+                          │           │
+                          │           │
+              ┌───────────▼───┐   ┌───▼───────────┐
+              │     GF(p)     │   │     Fixed     │
+              │       &       │   │   precision   │
+              │    GF(p^2)    │   │   integers    │
+              └───────────────┘   └───────────────┘
 ```
 
-There are the following sub-libraries:
+## Cortex-M4 implementation
 
-- `common`: common code for AES, SHAKE, (P)RNG, memory handling
-- `ec`: elliptic curves, isogenies and pairings
-- `gf`: GF(p^2) and GF(p) arithmetic, including FP BigInt
-- `id2iso`: code for Iso <-> Ideal
-- `klpt`: implementation of KLPT
-- `quaternion`: quaternion orders and ideals
-- `intbig`: multi-precision big integers
-- `precomp`: precomputed constants
-- `protocols`: protocol implementation
+Verification routines are supported in 32-bit embedded architectures running on bare metal environments such as the ARM Cortex-M4, but they are not directly supported by the build system of the present repository. The [pqm4 project](https://github.com/mupq/pqm4) is supported for evaluating SQIsign verification in the ARM Cortex-M4.
 
+pqm4 assumes that the full NIST API (keypair generation, signing and verification) is available. Since only verification is supported, the remaining routines are mocked and must meet certain constraints, such as sharing the public key, signing a prespecified message and being of a specific size used by the testing and benchmarking binaries of pqm4. Therefore, additional KATs must be generated specifically for pqm4, which is done by a dedicated KAT generator for pqm4, found in `apps/PQCgenKAT_sign_pqm4.c`.
 
-### Folder structure
+A copy of the most recent version of pqm4 as of the round 2 submission deadline, including an implementation of SQIsign verification generated directly from this repository using the procedure explained next, is made available [here](https://github.com/SQISign/the-sqisign-pqm4), in the `sqisign` branch.
 
-Folder levels after `src`:
-```
-SQIsign
-└── src
-    ├── lib_1
-    │   ├── broadwell
-    │   │   ├── generic
-    │   │   └── lvl1
-    │   ├── opt
-    │   │   ├── generic
-    │   │   └── lvl1
-    │   └── ref
-    │       └── generic
-    ├── lib_2
-    │   ├── broadwell
-    │   │   └── generic
-    │   ├── opt
-    │   │   └── generic
-    │   └── ref
-    │       └── generic
-    └── lib_n
-        ├── broadwell
-        │   └── generic
-        ├── opt
-        │   └── generic
-        └── ref
-            └── generic
-```
+If changes are made to the library, the `scripts/gen_pqm4_sources.sh` shell script can be run, from the root folder of the repository, to generate a pqm4-compatible folder structure in `src/pqm4/sqisign_lvl{1,3,5}`, which can then be copied to the `crypto_sign` folder of pqm4. Note that the pqm4 KAT generator is automatically run by this script.
 
-Level 1: Library (e.g. quaternion). A `CMakeLists.txt` file with entry `include(${SELECT_IMPL_TYPE})` takes care of including the implementation Level 2.
+## Acknowledgements
 
-Level 2: Implementation type: reference C (ref), optimized C (opt), ASM-optimized (e.g. broadwell, neon, m4). A `CMakeLists.txt` file entry with `include(${SELECT_SQISIGN_VARIANT})` takes care of including the SQIsign variant.
-
-Level 3: SQIsign variant -> generic code or code for a specific parameter set (e.g. lvl1). 
-
-
-Other folders:
-- `apps`: Applications: KAT generation application, examples
-- `include`: SQIsign public header files
-- `KAT`: Known Answer Test files
-- `test`: SQIsign test code
-
-### Sub-library headers
-
-Sub-libraries can define their own headers, which may be different between the implementation types. These header files are used sub-library-internally and by other dependent sub-libraries. The convention is to put the headers in an `include` folder of the sub-library src directory. For example, `src/intbig/ref/generic/include/intbig.h`.
-
-### Sub-library unit tests
-
-Sub-libraries can implement their own, self-contained unit tests. The convention is to put the unit tests in a `test` folder of the sub-library `src` directory. For example, `src/intbig/ref/generic/test/test_intbig.c`.
-
-### Shared implementation types
-
-It is possible to share implementations between implementation types. For example, the broadwell optimized implementation might use the same code as the reference implementation except in the GF module.
+The reference implementation for finite field arithemtic (i.e., `src/gf/ref`)
+was generated using [modarith](https://github.com/mcarrickscott/modarith) by
+Michael Scott.
 
 ## License
 
 SQIsign is licensed under Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-Third party code is used in some test and common code files:
+Third party code is used in some files:
 
 - `src/common/aes_c.c`; MIT: "Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>"
-- `src/common/fips202.c`: Public Domain
+- `src/common/fips202.c`: CC0: Copyright (c) 2023, the PQClean team
 - `src/common/randombytes_system.c`: MIT: Copyright (c) 2017 Daan Sprenkels <hello@dsprenkels.com>
-- `apps/PQCgenKAT_sign.c`, `common/randombytes_ctrdrbg.c`, `test/test_kat.c`: by NIST (Public Domain)
+- `src/common/broadwell/{aes_ni.c, vaes256_key_expansion.S}`: Apache-2.0: Copyright 2019 Amazon.com, Inc.
+- `src/common/broadwell/ctr_drbg.c`: ISC: Copyright (c) 2017, Google Inc.
+- `src/mini-gmp/mini-gmp.c` and `src/mini-gmp/mini-gmp.h`: LGPLv3: Copyright 1991-1997, 1999-2022 Free Software Foundation, Inc.
+- `src/quaternion/ref/generic/dpe.h`: LGPLv3: Copyright (C) 2004-2024 Patrick Pelissier, Paul Zimmermann, LORIA/INRIA
+- `apps/PQCgenKAT_sign.c`, `apps/PQCgenKAT_sign_pqm4.c`, `src/common/ref/randombytes_ctrdrbg.c`, `test/test_kat.c`: by NIST (Public Domain)

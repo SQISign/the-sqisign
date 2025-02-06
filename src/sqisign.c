@@ -1,79 +1,106 @@
-#include <protocols.h>
+#include <sig.h>
 #include <string.h>
+#include <encoded_sizes.h>
+#include <verification.h>
+#if defined(ENABLE_SIGN)
+#include <signature.h>
+#endif
 
-int sqisign_keypair(unsigned char *pk, unsigned char *sk) { 
-    int ret;
+#if defined(ENABLE_SIGN)
+SQISIGN_API
+int
+sqisign_keypair(unsigned char *pk, unsigned char *sk)
+{
+    int ret = 0;
     secret_key_t skt;
     public_key_t pkt = { 0 };
     secret_key_init(&skt);
 
     ret = !protocols_keygen(&pkt, &skt);
 
-    secret_key_encode(sk, &skt, &pkt);
-    public_key_encode(pk, &pkt);
+    secret_key_to_bytes(sk, &skt, &pkt);
+    public_key_to_bytes(pk, &pkt);
     secret_key_finalize(&skt);
     return ret;
 }
 
-int sqisign_sign(unsigned char *sm,
-              unsigned long long *smlen, const unsigned char *m,
-              unsigned long long mlen, const unsigned char *sk) {
+SQISIGN_API
+int
+sqisign_sign(unsigned char *sm,
+             unsigned long long *smlen,
+             const unsigned char *m,
+             unsigned long long mlen,
+             const unsigned char *sk)
+{
     int ret = 0;
     secret_key_t skt;
     public_key_t pkt = { 0 };
     signature_t sigt;
     secret_key_init(&skt);
-    signature_init(&sigt);
-    secret_key_decode(&skt, &pkt, sk);
+    secret_key_from_bytes(&skt, &pkt, sk);
 
-    ret = !protocols_sign(&sigt, &pkt, &skt, m, mlen);
-    signature_encode(sm, &sigt);
+    memmove(sm + SIGNATURE_BYTES, m, mlen);
 
-    memcpy(sm + SIGNATURE_LEN, m, mlen);
-    *smlen = SIGNATURE_LEN + mlen;
-
-    secret_key_finalize(&skt);
-    signature_finalize(&sigt);
-    return ret;
-}
-
-int sqisign_open(unsigned char *m,
-              unsigned long long *mlen, const unsigned char *sm,
-              unsigned long long smlen, const unsigned char *pk) { 
-    int ret = 0;
-    public_key_t pkt = { 0 };
-    signature_t sigt;
-    signature_init(&sigt);
-
-    public_key_decode(&pkt, pk);
-    signature_decode(&sigt, sm);
-
-    ret = !protocols_verif(&sigt, &pkt, sm + SIGNATURE_LEN, smlen - SIGNATURE_LEN);
-
-    if (!ret) {
-        *mlen = smlen - SIGNATURE_LEN;
-        memmove(m, sm + SIGNATURE_LEN, *mlen);
+    ret = !protocols_sign(&sigt, &pkt, &skt, sm + SIGNATURE_BYTES, mlen);
+    if (ret != 0) {
+        *smlen = 0;
+        goto err;
     }
 
-    signature_finalize(&sigt);
+    signature_to_bytes(sm, &sigt);
+    *smlen = SIGNATURE_BYTES + mlen;
+
+err:
+    secret_key_finalize(&skt);
+    return ret;
+}
+#endif
+
+SQISIGN_API
+int
+sqisign_open(unsigned char *m,
+             unsigned long long *mlen,
+             const unsigned char *sm,
+             unsigned long long smlen,
+             const unsigned char *pk)
+{
+    int ret = 0;
+    public_key_t pkt = { 0 };
+    signature_t sigt;
+
+    public_key_from_bytes(&pkt, pk);
+    signature_from_bytes(&sigt, sm);
+
+    ret = !protocols_verify(&sigt, &pkt, sm + SIGNATURE_BYTES, smlen - SIGNATURE_BYTES);
+
+    if (!ret) {
+        *mlen = smlen - SIGNATURE_BYTES;
+        memmove(m, sm + SIGNATURE_BYTES, *mlen);
+    } else {
+        *mlen = 0;
+        memset(m, 0, smlen - SIGNATURE_BYTES);
+    }
+
     return ret;
 }
 
-int sqisign_verify(const unsigned char *m,
-                unsigned long long mlen, const unsigned char *sig,
-                unsigned long long siglen, const unsigned char *pk) {
+SQISIGN_API
+int
+sqisign_verify(const unsigned char *m,
+               unsigned long long mlen,
+               const unsigned char *sig,
+               unsigned long long siglen,
+               const unsigned char *pk)
+{
 
     int ret = 0;
     public_key_t pkt = { 0 };
     signature_t sigt;
-    signature_init(&sigt);
 
-    public_key_decode(&pkt, pk);
-    signature_decode(&sigt, sig);
+    public_key_from_bytes(&pkt, pk);
+    signature_from_bytes(&sigt, sig);
 
-    ret = !protocols_verif(&sigt, &pkt, m, mlen);
+    ret = !protocols_verify(&sigt, &pkt, m, mlen);
 
-    signature_finalize(&sigt);
     return ret;
 }
-

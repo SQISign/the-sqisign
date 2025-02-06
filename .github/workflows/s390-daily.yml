@@ -1,0 +1,33 @@
+name: Big-endian s390x test (Daily Workflow)
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # This cron expression means "run at midnight UTC every day"
+
+jobs:
+  s390-be:
+    strategy:
+      matrix:
+        BUILD_TYPE: [Debug, Release]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Setup multiarch/qemu-user-static
+      run: |
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    - name: Run build and tests in s390x container
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/workspace multiarch/ubuntu-core:s390x-focal bash -c "
+          set -x &&
+          cd /workspace &&
+          ls -l . &&
+          uname -a &&
+          lscpu | grep Endian &&
+          apt -y update &&
+          apt -y install cmake gcc libgmp-dev &&
+          cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.BUILD_TYPE }} -DSQISIGN_BUILD_TYPE=ref &&
+          cmake --build build --config ${{ matrix.BUILD_TYPE }} &&
+          cd /workspace/build &&
+          ctest -j4 -C ${{ matrix.BUILD_TYPE }}
+        "
