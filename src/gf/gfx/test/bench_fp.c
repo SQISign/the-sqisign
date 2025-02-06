@@ -17,7 +17,7 @@ fp_run(int iterations)
     int n, i;
     uint64_t cycles1, cycles2;
     fp_t a, b;
-    uint8_t tmp[32];
+    uint8_t tmp[FP_ENCODED_BYTES];
 
     fp_random_test(&a);
     fp_random_test(&b);
