@@ -2,113 +2,179 @@ name: CMake
 
 on:
   push:
-    branches: [ '*' ]
-  pull_request:
-    branches: [ "main" ]
+    branches: ["**"]
+#  pull_request:
+#    branches: [ "main" ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
   build:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
+        platform: [x64, arm64]
+        toolchain: [""]
         sqisign_build_type: [ref]
         sqisign_test_reps: [10]
+        gf_radix: [AUTO, 32]
+        enable_sign: [ON]
+        gmp_library: [SYSTEM]
+        include:
+          - platform: x64
+            toolchain: ""
+            sqisign_build_type: broadwell
+            sqisign_test_reps: 10
+            gf_radix: AUTO
+            enable_sign: ON
+            gmp_library: SYSTEM
+          - platform: x64
+            toolchain: .cmake/32bit.cmake
+            sqisign_build_type: ref
+            sqisign_test_reps: 10
+            gf_radix: 32
+            enable_sign: ON
+            gmp_library: BUILD # Redundant, as it's set in .cmake/32bit.cmake
+          - platform: x64
+            toolchain: ""
+            sqisign_build_type: ref
+            sqisign_test_reps: 10
+            gf_radix: AUTO
+            enable_sign: OFF
+            gmp_library: SYSTEM
+          - platform: x64
+            toolchain: ""
+            sqisign_build_type: ref
+            sqisign_test_reps: 10
+            gf_radix: AUTO
+            enable_sign: ON
+            gmp_library: MINI
+
+    runs-on: [self-hosted, "${{ matrix.platform }}"]
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install dependencies Valgrind, GMP, Doxygen, TeX
-      run: |
-          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex
-          echo "Valgrind installed"
+      - uses: actions/checkout@v4
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }}
+      ##    - name: Install dependencies Valgrind, GMP, Doxygen, TeX, gcc-multilib
+      ##      run: |
+      ##          sudo apt update && sudo apt --fix-missing install valgrind libgmp-dev doxygen texlive-xetex gcc-multilib
 
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      - name: Set up environment for ccache
+        run: echo "PATH=/usr/lib/ccache:$PATH" >> $GITHUB_ENV
 
-    - name: Build documentation
-      # Create html and latex documentation, TODO: do we need different docs for ref and opt?
-      run: doxygen Doxyfile && cd latex && xelatex refman
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }} -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
 
-    - name: Upload latex documentation
-      uses: actions/upload-artifact@v3
-      with:
-        name: docs
-        path: latex/refman.pdf
+      - name: Build
+        # Build your program with the given configuration
+        run: |
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
+          cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -j4 -C ${{env.BUILD_TYPE}}
-    
-    - name: Examples
-      working-directory: ${{github.workspace}}/build/apps
-      run: |
+      - name: Build documentation
+        # Create html and latex documentation, TODO: do we need different docs for ref and opt?
+        if: ${{ ((matrix.gf_radix != 32) && (matrix.enable_sign == 'ON') && (matrix.gmp_library == 'SYSTEM')) }}
+        run: doxygen Doxyfile && cd latex && xelatex refman
+
+      - name: Upload latex documentation
+        if: ${{ ((matrix.gf_radix != 32) && (matrix.enable_sign == 'ON') && (matrix.gmp_library == 'SYSTEM')) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ matrix.platform }}-${{ matrix.sqisign_build_type }}
+          path: latex/refman.pdf
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -j16 -C ${{env.BUILD_TYPE}} -E "KAT$"
+
+      - name: Examples
+        working-directory: ${{github.workspace}}/build/apps
+        run: |
           ./example_nistapi_lvl1
           ./example_nistapi_lvl3
           ./example_nistapi_lvl5
+        if: ${{ matrix.enable_sign == 'ON' }}
 
-    - name: CT-Tests
-      # TODO: re-enable for those tests that should be ct
-      if: false
-      run: |
+      - name: Release build & test
+        run: |
           rm -rf build
-          cmake -Bbuild -DENABLE_CT_TESTING=ON -DCMAKE_BUILD_TYPE=Debug -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }}
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=Release -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1 -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
           cmake --build build
-          # valgrind --track-origins=yes build/
-          # valgrind --track-origins=yes build/
-          # valgrind --track-origins=yes build/
-          # valgrind --track-origins=yes build/
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
 
-    - name: Memcheck
-      run: |
+      - name: Memcheck
+        run: |
           rm -rf build
-          cmake -Bbuild -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=${{ matrix.sqisign_test_reps }}
+          cmake -Bbuild -DSQISIGN_TEST_REPS=1 -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DSQISIGN_TEST_REPS=1 -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
           cmake --build build
-          ctest -T memcheck --test-dir build
-      if: false
+          valgrind --error-exitcode=1 --max-stackframe=4116160 ./build/test/sqisign_test_scheme_lvl3
+          valgrind --error-exitcode=1 --max-stackframe=4116160 ./build/test/sqisign_test_scheme_lvl1
+          valgrind --error-exitcode=1 --max-stackframe=4116160 ./build/test/sqisign_test_scheme_lvl5
+        if: ${{ matrix.toolchain == '' && matrix.platform == 'arm64' && matrix.gf_radix == 'AUTO' }} 
 
-    - name: Address Sanitizer ASAN
-      run: |
+      - name: Build shared libraries
+        run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=ASAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
+          cmake -Bbuild -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} -DCMAKE_C_COMPILER=clang ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
           cmake --build build
-          ctest -j4 -v --test-dir build
+          find . -name '*.so' | grep so
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
 
-    # MSAN needs instrumented gmp
-    - name: Memory Sanitizer MSAN
-      run: |
+      - name: Address Sanitizer ASAN
+        run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=MSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=ASAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1 -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
           cmake --build build
-          ctest -j4 -v --test-dir build
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
 
-      if: false
-
-    - name: Leak Sanitizer LSAN
-      run: |
+      # MSAN needs instrumented gmp
+      - name: Memory Sanitizer MSAN
+        run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=LSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=MSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1 -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
           cmake --build build
-          ctest -j4 -v --test-dir build
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+        if: ${{ matrix.gmp_library == 'MINI' }}
 
-    - name: Undefined Behavior Sanitizer UBSAN
-      run: |
+      - name: Leak Sanitizer LSAN
+        run: |
           rm -rf build
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=UBSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=LSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1 -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
           cmake --build build
-          ctest -j4 -v --test-dir build
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+
+      - name: Undefined Behavior Sanitizer UBSAN
+        run: |
+          rm -rf build
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=UBSAN -DSQISIGN_BUILD_TYPE=${{ matrix.sqisign_build_type }} -DCMAKE_C_COMPILER=clang -DSQISIGN_TEST_REPS=1 -DGF_RADIX=${{ matrix.gf_radix }} -DENABLE_SIGN=${{ matrix.enable_sign }} -DGMP_LIBRARY=${{ matrix.gmp_library }} ${{ matrix.toolchain && format('-DCMAKE_TOOLCHAIN_FILE={0}', matrix.toolchain) || '' }} -G Ninja
+          if [ -n "${{ matrix.toolchain }}" ]; then
+              cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
+          fi
+          cmake --build build
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"

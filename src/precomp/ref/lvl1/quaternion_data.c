@@ -1,20 +1,3176 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <quaternion_data.h>
+const ibz_t QUAT_prime_cofactor = 
 #if 0
-#elif 8*DIGIT_LEN == 16
-const quat_alg_t QUATALG_PINFTY = {{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xffff,0xffff,0xffff,0xffff,0x47ff,0x3551,0x9e49,0x252c,0x7437,0x8740,0xa865,0x33a6,0xd98c,0x6b95,0x9e28,0x34e2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xffff,0xffff,0xffff,0xffff,0x47ff,0x3551,0x9e49,0x252c,0x7437,0x8740,0xa865,0x33a6,0xd98c,0x6b95,0x9e28,0x34e2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xffff,0xffff,0xffff,0xffff,0x47ff,0x3551,0x9e49,0x252c,0x7437,0x8740,0xa865,0x33a6,0xd98c,0x6b95,0x9e28,0x34e2}}}}}};
-const quat_order_t MAXORD_O0 = {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}};
-const quat_p_extremal_maximal_order_t STANDARD_EXTREMAL_ORDER = {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x1};
-const quat_p_extremal_maximal_order_t ALTERNATE_EXTREMAL_ORDERS[7] = {{{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf508,0x9173,0xfad5,0xf531,0xa571,0xc66d,0x411,0x86fc}}}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf508,0x9173,0xfad5,0xf531,0xa571,0xc66d,0x411,0x86fc}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xfa84,0xc8b9,0xfd6a,0xfa98,0xd2b8,0xe336,0x208,0x437e}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xfa84,0xc8b9,0xfd6a,0xfa98,0xd2b8,0xe336,0x208,0x437e}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x2820,0x8fdc,0xf7b4,0x7a9e,0xa5b,0xd77d,0xbc5f,0x3efd,0xf98b,0xf3a,0x3056,0x334a,0x40,0x4f65,0x662d,0x2396}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x1410,0x47ee,0x7bda,0xbd4f,0x852d,0xebbe,0xde2f,0x9f7e,0x7cc5,0x79d,0x182b,0x19a5,0x8020,0xa7b2,0x3316,0x11cb}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x9a27,0x95c,0xc884,0x91ff,0xef4b,0xc1ca,0xfabb,0x33b8,0xf98b,0xf3a,0x3056,0x334a,0x40,0x4f65,0x662d,0x2396}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xfa84,0xc8b9,0xfd6a,0xfa98,0xd2b8,0xe336,0x208,0x437e}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf508,0x9173,0xfad5,0xf531,0xa571,0xc66d,0x411,0x86fc}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x1bf2,0xcff,0x5e61,0xd13e,0x361f,0x2b64,0x8348,0x1689}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x3}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf38c,0x430,0x268d,0xa0fd,0x3891,0xcb70,0xeebe,0x3738}}}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf38c,0x430,0x268d,0xa0fd,0x3891,0xcb70,0xeebe,0x3738}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x79c6,0x8218,0x9346,0xd07e,0x1c48,0x65b8,0x775f,0x1b9c}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x8a48,0x4e19,0xb498,0x4481,0x645a,0x6523,0xf47f,0xebd5,0x568c,0xd118,0x8fdd,0x4c28,0x44ef,0xa6c5,0xc19f,0x5f4}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe677,0x2da9,0x96e8,0xe7c7,0xfb55,0xa06f,0x1078,0xa192}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x79c6,0x8218,0x9346,0xd07e,0x1c48,0x65b8,0x775f,0x1b9c}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf38c,0x430,0x268d,0xa0fd,0x3891,0xcb70,0xeebe,0x3738}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe677,0x2da9,0x96e8,0xe7c7,0xfb55,0xa06f,0x1078,0xa192}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0xd}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x2d2,0xe639,0x8fd6,0x201e,0x74ca,0xa699,0x7a91,0x3c02}}}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x2d2,0xe639,0x8fd6,0x201e,0x74ca,0xa699,0x7a91,0x3c02}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x8169,0x731c,0x47eb,0x100f,0xba65,0xd34c,0x3d48,0x1e01}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xfa22,0xccc5,0xe86d,0x485c,0x6189,0x3a24,0xf08a,0x534d,0xf56d,0xb7c3,0x9377,0x7de4,0xd766,0x3586,0x94bd,0x708}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xfd11,0xe662,0x7436,0xa42e,0x30c4,0x1d12,0xf845,0xa9a6,0xfab6,0xdbe1,0x49bb,0x3ef2,0x6bb3,0x9ac3,0x4a5e,0x384}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x4a50,0xb78f,0x9382,0x4472,0xe7e4,0xd139,0xb64d,0x1794,0xf56d,0xb7c3,0x9377,0x7de4,0xd766,0x3586,0x94bd,0x708}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x8169,0x731c,0x47eb,0x100f,0xba65,0xd34c,0x3d48,0x1e01}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x2d2,0xe639,0x8fd6,0x201e,0x74ca,0xa699,0x7a91,0x3c02}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x5fa4,0x2a6d,0xa9d6,0x7d4,0xf34a,0xd1d4,0x7478,0x7772}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x13}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xb00,0x5f26,0xd2c4,0x9c87,0xbe9e,0xebb0,0x6685,0x30af}}}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xb00,0x5f26,0xd2c4,0x9c87,0xbe9e,0xebb0,0x6685,0x30af}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x580,0x2f93,0xe962,0x4e43,0x5f4f,0xf5d8,0xb342,0x1857}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x580,0x2f93,0xe962,0x4e43,0x5f4f,0xf5d8,0xb342,0x1857}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x8000,0xa23c,0xce8,0xecd5,0x8721,0x2bf1,0xc989,0xe09b,0x202a,0x4453,0xaf22,0xd70b,0xc07f,0xc644,0x1f4f,0x4a1}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x4000,0x511e,0x8674,0xf66a,0xc390,0x95f8,0xe4c4,0x704d,0x9015,0x2229,0xd791,0xeb85,0x603f,0xe322,0x8fa7,0x250}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x9fff,0x7f60,0xf4db,0xdf95,0xdc35,0x6681,0x43d0,0xd71b,0x202a,0x4453,0xaf22,0xd70b,0xc07f,0xc644,0x1f4f,0x4a1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x580,0x2f93,0xe962,0x4e43,0x5f4f,0xf5d8,0xb342,0x1857}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xb00,0x5f26,0xd2c4,0x9c87,0xbe9e,0xebb0,0x6685,0x30af}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0xc002,0x45b7,0x301a,0x1a7e,0x55d8,0x8adf,0xb71,0x1301}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x17}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xd48,0x934e,0xa756,0x46b3,0xb5a0,0xfcd8,0x6d15,0x3c16}}}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xd48,0x934e,0xa756,0x46b3,0xb5a0,0xfcd8,0x6d15,0x3c16}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x6a4,0x49a7,0xd3ab,0x2359,0x5ad0,0xfe6c,0x368a,0x1e0b}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x3220,0x6448,0xcbb6,0x8a9b,0x94f0,0xb96d,0x8e3,0xfea8,0xf1b,0x3c36,0x16c,0x2c52,0x62cb,0x9e64,0x428c,0x70d}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x167f,0x8798,0xcb5d,0xabbe,0x4d9,0x4e90,0xf28c,0xd0b7,0xf1a,0x3c36,0x16c,0x2c52,0x62cb,0x9e64,0x428c,0x70d}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x6a4,0x49a7,0xd3ab,0x2359,0x5ad0,0xfe6c,0x368a,0x1e0b}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xd48,0x934e,0xa756,0x46b3,0xb5a0,0xfcd8,0x6d15,0x3c16}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -9, ._mp_d = (mp_limb_t[]) {0x1ba1,0xdcb0,0x58,0xdedd,0x9016,0x6add,0x1657,0x2df0,0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x1d}, {{{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x5bbe,0x15d7,0x57f9,0x4168,0xa74e,0xc5bc,0xa151,0x546e,0x12}}}, {{{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x5bbe,0x15d7,0x57f9,0x4168,0xa74e,0xc5bc,0xa151,0x546e,0x12}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0xaddf,0x8aeb,0x2bfc,0x20b4,0x53a7,0xe2de,0x50a8,0x2a37,0x9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 17, ._mp_d = (mp_limb_t[]) {0x5082,0x3302,0x52ea,0x72c4,0x1346,0xc4d9,0xa79c,0x6dbe,0xe980,0xaf26,0xa05e,0x2cb3,0x9be1,0x401c,0xbc96,0xfdb3,0xa7}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 17, ._mp_d = (mp_limb_t[]) {0x458f,0x2b52,0x290a,0x2bf3,0x5bd4,0x1e47,0x68e5,0xd1e8,0xfc86,0xface,0x7a4d,0xc6d6,0xaabc,0x37d3,0xc371,0xb301,0x40}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0xaddf,0x8aeb,0x2bfc,0x20b4,0x53a7,0xe2de,0x50a8,0x2a37,0x9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x5bbe,0x15d7,0x57f9,0x4168,0xa74e,0xc5bc,0xa151,0x546e,0x12}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -9, ._mp_d = (mp_limb_t[]) {0x49ba,0xb00c,0x43bb,0xdadd,0xcbf9,0xaceb,0x528d,0xeae9,0x58}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x94}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x25}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xc6aa,0xc7ce,0xf488,0x73ee,0x2bc9,0xe445,0x2ef7,0xae5e}}}, {{{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xc6aa,0xc7ce,0xf488,0x73ee,0x2bc9,0xe445,0x2ef7,0xae5e}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x6355,0x63e7,0x7a44,0xb9f7,0x95e4,0xf222,0x177b,0x572f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xb472,0x4fe1,0x2240,0x9939,0xb1f0,0xce40,0x7e04,0xed63,0x23c2,0x49d2,0x127e,0x9326,0xd832,0xc07b,0x153f,0x3b62}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x6f69,0xb851,0xe08a,0xb75a,0x497c,0x1ca3,0x7b44,0x874d,0x5659,0xee23,0xcb8e,0x9bf7,0x671f,0xd84d,0x4d47,0x251d}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x6355,0x63e7,0x7a44,0xb9f7,0x95e4,0xf222,0x177b,0x572f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xc6aa,0xc7ce,0xf488,0x73ee,0x2bc9,0xe445,0x2ef7,0xae5e}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0xaf2,0xccdd,0xa6eb,0x4346,0x2dcd,0x2229,0x9bf7,0x6885,0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x29}};
-#elif 8*DIGIT_LEN == 32
-const quat_alg_t QUATALG_PINFTY = {{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xffffffff,0xffffffff,0x355147ff,0x252c9e49,0x87407437,0x33a6a865,0x6b95d98c,0x34e29e28}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xffffffff,0xffffffff,0x355147ff,0x252c9e49,0x87407437,0x33a6a865,0x6b95d98c,0x34e29e28}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xffffffff,0xffffffff,0x355147ff,0x252c9e49,0x87407437,0x33a6a865,0x6b95d98c,0x34e29e28}}}}}};
-const quat_order_t MAXORD_O0 = {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}};
-const quat_p_extremal_maximal_order_t STANDARD_EXTREMAL_ORDER = {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x1};
-const quat_p_extremal_maximal_order_t ALTERNATE_EXTREMAL_ORDERS[7] = {{{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x9173f508,0xf531fad5,0xc66da571,0x86fc0411}}}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x9173f508,0xf531fad5,0xc66da571,0x86fc0411}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc8b9fa84,0xfa98fd6a,0xe336d2b8,0x437e0208}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc8b9fa84,0xfa98fd6a,0xe336d2b8,0x437e0208}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x8fdc2820,0x7a9ef7b4,0xd77d0a5b,0x3efdbc5f,0xf3af98b,0x334a3056,0x4f650040,0x2396662d}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x47ee1410,0xbd4f7bda,0xebbe852d,0x9f7ede2f,0x79d7cc5,0x19a5182b,0xa7b28020,0x11cb3316}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x95c9a27,0x91ffc884,0xc1caef4b,0x33b8fabb,0xf3af98b,0x334a3056,0x4f650040,0x2396662d}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc8b9fa84,0xfa98fd6a,0xe336d2b8,0x437e0208}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x9173f508,0xf531fad5,0xc66da571,0x86fc0411}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0xcff1bf2,0xd13e5e61,0x2b64361f,0x16898348}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x3}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x430f38c,0xa0fd268d,0xcb703891,0x3738eebe}}}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x430f38c,0xa0fd268d,0xcb703891,0x3738eebe}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x821879c6,0xd07e9346,0x65b81c48,0x1b9c775f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x4e198a48,0x4481b498,0x6523645a,0xebd5f47f,0xd118568c,0x4c288fdd,0xa6c544ef,0x5f4c19f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2da9e677,0xe7c796e8,0xa06ffb55,0xa1921078}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x821879c6,0xd07e9346,0x65b81c48,0x1b9c775f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x430f38c,0xa0fd268d,0xcb703891,0x3738eebe}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2da9e677,0xe7c796e8,0xa06ffb55,0xa1921078}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0xd}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xe63902d2,0x201e8fd6,0xa69974ca,0x3c027a91}}}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xe63902d2,0x201e8fd6,0xa69974ca,0x3c027a91}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x731c8169,0x100f47eb,0xd34cba65,0x1e013d48}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xccc5fa22,0x485ce86d,0x3a246189,0x534df08a,0xb7c3f56d,0x7de49377,0x3586d766,0x70894bd}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe662fd11,0xa42e7436,0x1d1230c4,0xa9a6f845,0xdbe1fab6,0x3ef249bb,0x9ac36bb3,0x3844a5e}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xb78f4a50,0x44729382,0xd139e7e4,0x1794b64d,0xb7c3f56d,0x7de49377,0x3586d766,0x70894bd}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x731c8169,0x100f47eb,0xd34cba65,0x1e013d48}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xe63902d2,0x201e8fd6,0xa69974ca,0x3c027a91}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x2a6d5fa4,0x7d4a9d6,0xd1d4f34a,0x77727478}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x13}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x5f260b00,0x9c87d2c4,0xebb0be9e,0x30af6685}}}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x5f260b00,0x9c87d2c4,0xebb0be9e,0x30af6685}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2f930580,0x4e43e962,0xf5d85f4f,0x1857b342}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2f930580,0x4e43e962,0xf5d85f4f,0x1857b342}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xa23c8000,0xecd50ce8,0x2bf18721,0xe09bc989,0x4453202a,0xd70baf22,0xc644c07f,0x4a11f4f}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x511e4000,0xf66a8674,0x95f8c390,0x704de4c4,0x22299015,0xeb85d791,0xe322603f,0x2508fa7}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x7f609fff,0xdf95f4db,0x6681dc35,0xd71b43d0,0x4453202a,0xd70baf22,0xc644c07f,0x4a11f4f}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2f930580,0x4e43e962,0xf5d85f4f,0x1857b342}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x5f260b00,0x9c87d2c4,0xebb0be9e,0x30af6685}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x45b7c002,0x1a7e301a,0x8adf55d8,0x13010b71}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x17}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x934e0d48,0x46b3a756,0xfcd8b5a0,0x3c166d15}}}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x934e0d48,0x46b3a756,0xfcd8b5a0,0x3c166d15}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x49a706a4,0x2359d3ab,0xfe6c5ad0,0x1e0b368a}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x64483220,0x8a9bcbb6,0xb96d94f0,0xfea808e3,0x3c360f1b,0x2c52016c,0x9e6462cb,0x70d428c}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x8798167f,0xabbecb5d,0x4e9004d9,0xd0b7f28c,0x3c360f1a,0x2c52016c,0x9e6462cb,0x70d428c}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x49a706a4,0x2359d3ab,0xfe6c5ad0,0x1e0b368a}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x934e0d48,0x46b3a756,0xfcd8b5a0,0x3c166d15}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -5, ._mp_d = (mp_limb_t[]) {0xdcb01ba1,0xdedd0058,0x6add9016,0x2df01657,0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x1d}, {{{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x15d75bbe,0x416857f9,0xc5bca74e,0x546ea151,0x12}}}, {{{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x15d75bbe,0x416857f9,0xc5bca74e,0x546ea151,0x12}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x8aebaddf,0x20b42bfc,0xe2de53a7,0x2a3750a8,0x9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x33025082,0x72c452ea,0xc4d91346,0x6dbea79c,0xaf26e980,0x2cb3a05e,0x401c9be1,0xfdb3bc96,0xa7}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x2b52458f,0x2bf3290a,0x1e475bd4,0xd1e868e5,0xfacefc86,0xc6d67a4d,0x37d3aabc,0xb301c371,0x40}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x8aebaddf,0x20b42bfc,0xe2de53a7,0x2a3750a8,0x9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x15d75bbe,0x416857f9,0xc5bca74e,0x546ea151,0x12}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -5, ._mp_d = (mp_limb_t[]) {0xb00c49ba,0xdadd43bb,0xacebcbf9,0xeae9528d,0x58}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x94}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x25}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc7cec6aa,0x73eef488,0xe4452bc9,0xae5e2ef7}}}, {{{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc7cec6aa,0x73eef488,0xe4452bc9,0xae5e2ef7}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x63e76355,0xb9f77a44,0xf22295e4,0x572f177b}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x4fe1b472,0x99392240,0xce40b1f0,0xed637e04,0x49d223c2,0x9326127e,0xc07bd832,0x3b62153f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xb8516f69,0xb75ae08a,0x1ca3497c,0x874d7b44,0xee235659,0x9bf7cb8e,0xd84d671f,0x251d4d47}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x63e76355,0xb9f77a44,0xf22295e4,0x572f177b}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc7cec6aa,0x73eef488,0xe4452bc9,0xae5e2ef7}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0xccdd0af2,0x4346a6eb,0x22292dcd,0x68859bf7,0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x29}};
-#elif 8*DIGIT_LEN == 64
-const quat_alg_t QUATALG_PINFTY = {{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xffffffffffffffff,0x252c9e49355147ff,0x33a6a86587407437,0x34e29e286b95d98c}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xffffffffffffffff,0x252c9e49355147ff,0x33a6a86587407437,0x34e29e286b95d98c}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xffffffffffffffff,0x252c9e49355147ff,0x33a6a86587407437,0x34e29e286b95d98c}}}}}};
-const quat_order_t MAXORD_O0 = {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}};
-const quat_p_extremal_maximal_order_t STANDARD_EXTREMAL_ORDER = {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x1};
-const quat_p_extremal_maximal_order_t ALTERNATE_EXTREMAL_ORDERS[7] = {{{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xf531fad59173f508,0x86fc0411c66da571}}}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xf531fad59173f508,0x86fc0411c66da571}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xfa98fd6ac8b9fa84,0x437e0208e336d2b8}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xfa98fd6ac8b9fa84,0x437e0208e336d2b8}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7a9ef7b48fdc2820,0x3efdbc5fd77d0a5b,0x334a30560f3af98b,0x2396662d4f650040}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xbd4f7bda47ee1410,0x9f7ede2febbe852d,0x19a5182b079d7cc5,0x11cb3316a7b28020}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x91ffc884095c9a27,0x33b8fabbc1caef4b,0x334a30560f3af98b,0x2396662d4f650040}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xfa98fd6ac8b9fa84,0x437e0208e336d2b8}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xf531fad59173f508,0x86fc0411c66da571}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xd13e5e610cff1bf2,0x168983482b64361f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x3}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xa0fd268d0430f38c,0x3738eebecb703891}}}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xa0fd268d0430f38c,0x3738eebecb703891}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd07e9346821879c6,0x1b9c775f65b81c48}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x4481b4984e198a48,0xebd5f47f6523645a,0x4c288fddd118568c,0x5f4c19fa6c544ef}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xe7c796e82da9e677,0xa1921078a06ffb55}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd07e9346821879c6,0x1b9c775f65b81c48}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xa0fd268d0430f38c,0x3738eebecb703891}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xe7c796e82da9e677,0xa1921078a06ffb55}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0xd}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x201e8fd6e63902d2,0x3c027a91a69974ca}}}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x201e8fd6e63902d2,0x3c027a91a69974ca}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x100f47eb731c8169,0x1e013d48d34cba65}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x485ce86dccc5fa22,0x534df08a3a246189,0x7de49377b7c3f56d,0x70894bd3586d766}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xa42e7436e662fd11,0xa9a6f8451d1230c4,0x3ef249bbdbe1fab6,0x3844a5e9ac36bb3}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x44729382b78f4a50,0x1794b64dd139e7e4,0x7de49377b7c3f56d,0x70894bd3586d766}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x100f47eb731c8169,0x1e013d48d34cba65}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x201e8fd6e63902d2,0x3c027a91a69974ca}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0x7d4a9d62a6d5fa4,0x77727478d1d4f34a}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x13}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x9c87d2c45f260b00,0x30af6685ebb0be9e}}}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x9c87d2c45f260b00,0x30af6685ebb0be9e}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x4e43e9622f930580,0x1857b342f5d85f4f}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x4e43e9622f930580,0x1857b342f5d85f4f}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xecd50ce8a23c8000,0xe09bc9892bf18721,0xd70baf224453202a,0x4a11f4fc644c07f}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xf66a8674511e4000,0x704de4c495f8c390,0xeb85d79122299015,0x2508fa7e322603f}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xdf95f4db7f609fff,0xd71b43d06681dc35,0xd70baf224453202a,0x4a11f4fc644c07f}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x4e43e9622f930580,0x1857b342f5d85f4f}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x9c87d2c45f260b00,0x30af6685ebb0be9e}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0x1a7e301a45b7c002,0x13010b718adf55d8}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x17}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x46b3a756934e0d48,0x3c166d15fcd8b5a0}}}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x46b3a756934e0d48,0x3c166d15fcd8b5a0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x2359d3ab49a706a4,0x1e0b368afe6c5ad0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x8a9bcbb664483220,0xfea808e3b96d94f0,0x2c52016c3c360f1b,0x70d428c9e6462cb}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xabbecb5d8798167f,0xd0b7f28c4e9004d9,0x2c52016c3c360f1a,0x70d428c9e6462cb}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x2359d3ab49a706a4,0x1e0b368afe6c5ad0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x46b3a756934e0d48,0x3c166d15fcd8b5a0}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -3, ._mp_d = (mp_limb_t[]) {0xdedd0058dcb01ba1,0x2df016576add9016,0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x1d}, {{{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x416857f915d75bbe,0x546ea151c5bca74e,0x12}}}, {{{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x416857f915d75bbe,0x546ea151c5bca74e,0x12}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x20b42bfc8aebaddf,0x2a3750a8e2de53a7,0x9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x72c452ea33025082,0x6dbea79cc4d91346,0x2cb3a05eaf26e980,0xfdb3bc96401c9be1,0xa7}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x2bf3290a2b52458f,0xd1e868e51e475bd4,0xc6d67a4dfacefc86,0xb301c37137d3aabc,0x40}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x20b42bfc8aebaddf,0x2a3750a8e2de53a7,0x9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x416857f915d75bbe,0x546ea151c5bca74e,0x12}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -3, ._mp_d = (mp_limb_t[]) {0xdadd43bbb00c49ba,0xeae9528dacebcbf9,0x58}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x94}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x25}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x73eef488c7cec6aa,0xae5e2ef7e4452bc9}}}, {{{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x73eef488c7cec6aa,0xae5e2ef7e4452bc9}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xb9f77a4463e76355,0x572f177bf22295e4}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x993922404fe1b472,0xed637e04ce40b1f0,0x9326127e49d223c2,0x3b62153fc07bd832}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xb75ae08ab8516f69,0x874d7b441ca3497c,0x9bf7cb8eee235659,0x251d4d47d84d671f}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xb9f77a4463e76355,0x572f177bf22295e4}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}}}}, {{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x73eef488c7cec6aa,0xae5e2ef7e4452bc9}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x4346a6ebccdd0af2,0x68859bf722292dcd,0x2}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}}}, {{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}, {{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}, {{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}}}, 0x29}};
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x41,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x41,0x0,0x0,0x0,0x0,0x0,0x0,0x8000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x41,0x0,0x0,0x800000000000000}}}
 #endif
+;
+const quat_alg_t QUATALG_PINFTY = {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0x4ff}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0xffffffff,0x4ffffff}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xffffffffffffffff,0xffffffffffffffff,0xffffffffffffffff,0x4ffffffffffffff}}}
+#endif
+};
+const quat_p_extremal_maximal_order_t EXTREMAL_ORDERS[7] = {{{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 1}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x10000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x0,0x1000000000000000}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x10000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x0,0x1000000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x8000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x0,0x800000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -16, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x80000000000000}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x8000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x0,0x800000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x0,0x0,0x0,0x10000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x0,0x1000000000000000}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 5}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x78d4,0x7b85,0x7a64,0xf5f2,0x29b9,0x3696,0x6101,0xb874}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7b8578d4,0xf5f27a64,0x369629b9,0xb8746101}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xf5f27a647b8578d4,0xb8746101369629b9}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x78d4,0x7b85,0x7a64,0xf5f2,0x29b9,0x3696,0x6101,0xb874}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7b8578d4,0xf5f27a64,0x369629b9,0xb8746101}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xf5f27a647b8578d4,0xb8746101369629b9}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xbc6a,0x3dc2,0x3d32,0xfaf9,0x14dc,0x9b4b,0x3080,0x5c3a}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3dc2bc6a,0xfaf93d32,0x9b4b14dc,0x5c3a3080}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xfaf93d323dc2bc6a,0x5c3a30809b4b14dc}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x7d47,0x6fa4,0x2ad5,0x95ad,0x8a4b,0x49be,0x77e7,0xc898,0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x6fa47d47,0x95ad2ad5,0x49be8a4b,0xc89877e7,0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x95ad2ad56fa47d47,0xc89877e749be8a4b,0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x3f47,0x7060,0x5e29,0x3e35,0xd950,0x2a1b,0x10ae,0x78dd,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x280}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x70603f47,0x3e355e29,0x2a1bd950,0x78dd10ae,0x0,0x0,0x0,0x2800000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3e355e2970603f47,0x78dd10ae2a1bd950,0x0,0x280000000000000}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xbc6a,0x3dc2,0x3d32,0xfaf9,0x14dc,0x9b4b,0x3080,0x5c3a}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3dc2bc6a,0xfaf93d32,0x9b4b14dc,0x5c3a3080}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xfaf93d323dc2bc6a,0x5c3a30809b4b14dc}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x11}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x11}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x11}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x3fe7,0x28ee,0x26e8,0xb194,0x6d7a,0xaf58,0xe568,0xd6d}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x28ee3fe7,0xb19426e8,0xaf586d7a,0xd6de568}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xb19426e828ee3fe7,0xd6de568af586d7a}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x78d4,0x7b85,0x7a64,0xf5f2,0x29b9,0x3696,0x6101,0xb874}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7b8578d4,0xf5f27a64,0x369629b9,0xb8746101}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xf5f27a647b8578d4,0xb8746101369629b9}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x7d47,0x6fa4,0x2ad5,0x95ad,0x8a4b,0x49be,0x77e7,0xc898,0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x6fa47d47,0x95ad2ad5,0x49be8a4b,0xc89877e7,0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x95ad2ad56fa47d47,0xc89877e749be8a4b,0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x11}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x11}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x11}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 17}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe5e2,0x7715,0xa8e6,0x3c6f,0x9078,0x872b,0x9bec,0x1794}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7715e5e2,0x3c6fa8e6,0x872b9078,0x17949bec}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x3c6fa8e67715e5e2,0x17949bec872b9078}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe5e2,0x7715,0xa8e6,0x3c6f,0x9078,0x872b,0x9bec,0x1794}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7715e5e2,0x3c6fa8e6,0x872b9078,0x17949bec}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x3c6fa8e67715e5e2,0x17949bec872b9078}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf2f1,0x3b8a,0xd473,0x1e37,0xc83c,0x4395,0x4df6,0xbca}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3b8af2f1,0x1e37d473,0x4395c83c,0xbca4df6}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1e37d4733b8af2f1,0xbca4df64395c83c}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x307a,0x74c8,0x8082,0xb034,0x4e8a,0xc43a,0x399a,0x9ab}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x74c8307a,0xb0348082,0xc43a4e8a,0x9ab399a}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xb034808274c8307a,0x9ab399ac43a4e8a}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0x954f,0x6bc9,0xca46,0x3d25,0x431b,0x46ed,0x8229,0x4f5,0xe453,0x6eb3,0x4530,0xeb3e,0x5306,0xb3e4,0x306e,0x45}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x6bc9954f,0x3d25ca46,0x46ed431b,0x4f58229,0x6eb3e453,0xeb3e4530,0xb3e45306,0x45306e}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3d25ca466bc9954f,0x4f5822946ed431b,0xeb3e45306eb3e453,0x45306eb3e45306}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf2f1,0x3b8a,0xd473,0x1e37,0xc83c,0x4395,0x4df6,0xbca}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3b8af2f1,0x1e37d473,0x4395c83c,0xbca4df6}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1e37d4733b8af2f1,0xbca4df64395c83c}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe7f,0xca3a,0x2454,0xbd31,0xe562,0xcb4c,0x72f0,0x21}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xca3a0e7f,0xbd312454,0xcb4ce562,0x2172f0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xbd312454ca3a0e7f,0x2172f0cb4ce562}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe5e2,0x7715,0xa8e6,0x3c6f,0x9078,0x872b,0x9bec,0x1794}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7715e5e2,0x3c6fa8e6,0x872b9078,0x17949bec}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x3c6fa8e67715e5e2,0x17949bec872b9078}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x307a,0x74c8,0x8082,0xb034,0x4e8a,0xc43a,0x399a,0x9ab}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x74c8307a,0xb0348082,0xc43a4e8a,0x9ab399a}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xb034808274c8307a,0x9ab399ac43a4e8a}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 37}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xafa2,0x6dee,0xc511,0xde33,0xc8ce,0xc89e,0x4f97,0x2df9}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x6deeafa2,0xde33c511,0xc89ec8ce,0x2df94f97}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xde33c5116deeafa2,0x2df94f97c89ec8ce}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xafa2,0x6dee,0xc511,0xde33,0xc8ce,0xc89e,0x4f97,0x2df9}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x6deeafa2,0xde33c511,0xc89ec8ce,0x2df94f97}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xde33c5116deeafa2,0x2df94f97c89ec8ce}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x57d1,0xb6f7,0xe288,0x6f19,0x6467,0xe44f,0xa7cb,0x16fc}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xb6f757d1,0x6f19e288,0xe44f6467,0x16fca7cb}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x6f19e288b6f757d1,0x16fca7cbe44f6467}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xdd36,0xda6b,0xa943,0xd17a,0xe307,0x564c,0x4b0c,0x44d4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xda6bdd36,0xd17aa943,0x564ce307,0x44d44b0c}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd17aa943da6bdd36,0x44d44b0c564ce307}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -16, ._mp_d = (mp_limb_t[]) {0x3a03,0xc406,0x47c,0xa0a2,0x6dbc,0x1df4,0x796,0x6cee,0xce0c,0xe0c7,0xc7c,0xc7ce,0x7ce0,0xce0c,0xe0c7,0x7c}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0xc4063a03,0xa0a2047c,0x1df46dbc,0x6cee0796,0xe0c7ce0c,0xc7ce0c7c,0xce0c7ce0,0x7ce0c7}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0xa0a2047cc4063a03,0x6cee07961df46dbc,0xc7ce0c7ce0c7ce0c,0x7ce0c7ce0c7ce0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x57d1,0xb6f7,0xe288,0x6f19,0x6467,0xe44f,0xa7cb,0x16fc}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xb6f757d1,0x6f19e288,0xe44f6467,0x16fca7cb}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x6f19e288b6f757d1,0x16fca7cbe44f6467}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x188f,0xa1e2,0x2148,0xd9f8,0x2e79,0x1a07,0xe1b2,0xd6}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0xa1e2188f,0xd9f82148,0x1a072e79,0xd6e1b2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xd9f82148a1e2188f,0xd6e1b21a072e79}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xafa2,0x6dee,0xc511,0xde33,0xc8ce,0xc89e,0x4f97,0x2df9}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x6deeafa2,0xde33c511,0xc89ec8ce,0x2df94f97}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xde33c5116deeafa2,0x2df94f97c89ec8ce}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xdd36,0xda6b,0xa943,0xd17a,0xe307,0x564c,0x4b0c,0x44d4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xda6bdd36,0xd17aa943,0x564ce307,0x44d44b0c}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd17aa943da6bdd36,0x44d44b0c564ce307}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x8}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 41}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x96a4,0x25b,0x14f2,0x3800,0x4e7c,0x7958,0xab7f,0x7bbe,0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x25b96a4,0x380014f2,0x79584e7c,0x7bbeab7f,0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x380014f2025b96a4,0x7bbeab7f79584e7c,0x1}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x96a4,0x25b,0x14f2,0x3800,0x4e7c,0x7958,0xab7f,0x7bbe,0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x25b96a4,0x380014f2,0x79584e7c,0x7bbeab7f,0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x380014f2025b96a4,0x7bbeab7f79584e7c,0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xcb52,0x12d,0xa79,0x1c00,0x273e,0xbcac,0x55bf,0xbddf}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x12dcb52,0x1c000a79,0xbcac273e,0xbddf55bf}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1c000a79012dcb52,0xbddf55bfbcac273e}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -9, ._mp_d = (mp_limb_t[]) {0x73e3,0x3339,0x19e7,0x4ba1,0x6ebc,0x2702,0xee62,0xdbd0,0x7}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -5, ._mp_d = (mp_limb_t[]) {0x333973e3,0x4ba119e7,0x27026ebc,0xdbd0ee62,0x7}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -3, ._mp_d = (mp_limb_t[]) {0x4ba119e7333973e3,0xdbd0ee6227026ebc,0x7}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xca33,0x3dd0,0x1d92,0x9f0,0x2f81,0xafe9,0xe395,0x83f7,0xfffc,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0x27f}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x3dd0ca33,0x9f01d92,0xafe92f81,0x83f7e395,0xfffffffc,0xffffffff,0xffffffff,0x27fffff}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x9f01d923dd0ca33,0x83f7e395afe92f81,0xfffffffffffffffc,0x27fffffffffffff}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xcb52,0x12d,0xa79,0x1c00,0x273e,0xbcac,0x55bf,0xbddf}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x12dcb52,0x1c000a79,0xbcac273e,0xbddf55bf}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1c000a79012dcb52,0xbddf55bfbcac273e}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x35}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x35}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x35}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xeb73,0xf93c,0x71c0,0x87f5,0x667a,0xcb3c,0xb9cb,0x12fa}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xf93ceb73,0x87f571c0,0xcb3c667a,0x12fab9cb}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x87f571c0f93ceb73,0x12fab9cbcb3c667a}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x96a4,0x25b,0x14f2,0x3800,0x4e7c,0x7958,0xab7f,0x7bbe,0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x25b96a4,0x380014f2,0x79584e7c,0x7bbeab7f,0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0x380014f2025b96a4,0x7bbeab7f79584e7c,0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -9, ._mp_d = (mp_limb_t[]) {0x73e3,0x3339,0x19e7,0x4ba1,0x6ebc,0x2702,0xee62,0xdbd0,0x7}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -5, ._mp_d = (mp_limb_t[]) {0x333973e3,0x4ba119e7,0x27026ebc,0xdbd0ee62,0x7}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -3, ._mp_d = (mp_limb_t[]) {0x4ba119e7333973e3,0xdbd0ee6227026ebc,0x7}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x35}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x35}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x35}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 53}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x7ffa,0x55af,0x7b9e,0xe2b9,0xa7af,0x578c,0xf76b,0xc227,0xf}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x55af7ffa,0xe2b97b9e,0x578ca7af,0xc227f76b,0xf}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0xe2b97b9e55af7ffa,0xc227f76b578ca7af,0xf}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x7ffa,0x55af,0x7b9e,0xe2b9,0xa7af,0x578c,0xf76b,0xc227,0xf}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x55af7ffa,0xe2b97b9e,0x578ca7af,0xc227f76b,0xf}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0xe2b97b9e55af7ffa,0xc227f76b578ca7af,0xf}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0xbffd,0x2ad7,0xbdcf,0xf15c,0x53d7,0xabc6,0xfbb5,0xe113,0x7}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x2ad7bffd,0xf15cbdcf,0xabc653d7,0xe113fbb5,0x7}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0xf15cbdcf2ad7bffd,0xe113fbb5abc653d7,0x7}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -9, ._mp_d = (mp_limb_t[]) {0xd16,0xf02b,0x1ce7,0xa2ef,0x54b,0x2c56,0x5963,0x667,0x6f}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -5, ._mp_d = (mp_limb_t[]) {0xf02b0d16,0xa2ef1ce7,0x2c56054b,0x6675963,0x6f}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -3, ._mp_d = (mp_limb_t[]) {0xa2ef1ce7f02b0d16,0x66759632c56054b,0x6f}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 16, ._mp_d = (mp_limb_t[]) {0xf0ab,0x9d3b,0x6ea,0x84ac,0x62e5,0xdde9,0x882b,0xd021,0xffe2,0xffff,0xffff,0xffff,0xffff,0xffff,0xffff,0x13ff}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x9d3bf0ab,0x84ac06ea,0xdde962e5,0xd021882b,0xffffffe2,0xffffffff,0xffffffff,0x13ffffff}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x84ac06ea9d3bf0ab,0xd021882bdde962e5,0xffffffffffffffe2,0x13ffffffffffffff}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0xbffd,0x2ad7,0xbdcf,0xf15c,0x53d7,0xabc6,0xfbb5,0xe113,0x7}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x2ad7bffd,0xf15cbdcf,0xabc653d7,0xe113fbb5,0x7}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0xf15cbdcf2ad7bffd,0xe113fbb5abc653d7,0x7}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x308}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x308}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x308}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x1f37,0x5c4a,0x13f1,0x770,0x7183,0x5600,0xda31,0x9281}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x5c4a1f37,0x77013f1,0x56007183,0x9281da31}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x77013f15c4a1f37,0x9281da3156007183}}}
+#endif
+}}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 9, ._mp_d = (mp_limb_t[]) {0x7ffa,0x55af,0x7b9e,0xe2b9,0xa7af,0x578c,0xf76b,0xc227,0xf}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 5, ._mp_d = (mp_limb_t[]) {0x55af7ffa,0xe2b97b9e,0x578ca7af,0xc227f76b,0xf}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 3, ._mp_d = (mp_limb_t[]) {0xe2b97b9e55af7ffa,0xc227f76b578ca7af,0xf}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -9, ._mp_d = (mp_limb_t[]) {0xd16,0xf02b,0x1ce7,0xa2ef,0x54b,0x2c56,0x5963,0x667,0x6f}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -5, ._mp_d = (mp_limb_t[]) {0xf02b0d16,0xa2ef1ce7,0x2c56054b,0x6675963,0x6f}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -3, ._mp_d = (mp_limb_t[]) {0xa2ef1ce7f02b0d16,0x66759632c56054b,0x6f}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x308}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x308}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x308}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, 97}};
+const quat_left_ideal_t CONNECTING_IDEALS[7] = {{{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, &MAXORD_O0}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x6000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2,0x0,0x0,0x60000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x2,0x6000000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x10000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1,0x1000000000000000}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x6000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2,0x0,0x0,0x60000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x2,0x6000000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x5000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x50000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1,0x5000000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x3000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x30000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1,0x3000000000000000}}}
+#endif
+, &MAXORD_O0}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf5fe,0x8673,0x157b,0x7f90,0xd2c5,0xd00b,0xa646,0x78f4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x8673f5fe,0x7f90157b,0xd00bd2c5,0x78f4a646}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x7f90157b8673f5fe,0x78f4a646d00bd2c5}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xfee5,0x2b,0xd6d8,0xe65c,0x68a3,0xe72d,0x373d,0x5b1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x2bfee5,0xe65cd6d8,0xe72d68a3,0x5b1373d}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xe65cd6d8002bfee5,0x5b1373de72d68a3}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf5fe,0x8673,0x157b,0x7f90,0xd2c5,0xd00b,0xa646,0x78f4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x8673f5fe,0x7f90157b,0xd00bd2c5,0x78f4a646}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x7f90157b8673f5fe,0x78f4a646d00bd2c5}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf719,0x8647,0x3ea3,0x9933,0x6a21,0xe8de,0x6f08,0x7343}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x8647f719,0x99333ea3,0xe8de6a21,0x73436f08}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x99333ea38647f719,0x73436f08e8de6a21}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xfaff,0xc339,0xabd,0xbfc8,0xe962,0x6805,0x5323,0x3c7a}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc339faff,0xbfc80abd,0x6805e962,0x3c7a5323}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xbfc80abdc339faff,0x3c7a53236805e962}}}
+#endif
+, &MAXORD_O0}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe5e2,0x7715,0xa8e6,0x3c6f,0x9078,0x872b,0x9bec,0x1794}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7715e5e2,0x3c6fa8e6,0x872b9078,0x17949bec}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x3c6fa8e67715e5e2,0x17949bec872b9078}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x8597,0x3af7,0xa5a,0xbb29,0x77c0,0xd2d9,0xf561,0x84f}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3af78597,0xbb290a5a,0xd2d977c0,0x84ff561}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xbb290a5a3af78597,0x84ff561d2d977c0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xe5e2,0x7715,0xa8e6,0x3c6f,0x9078,0x872b,0x9bec,0x1794}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x7715e5e2,0x3c6fa8e6,0x872b9078,0x17949bec}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x3c6fa8e67715e5e2,0x17949bec872b9078}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x604b,0x3c1e,0x9e8c,0x8146,0x18b7,0xb452,0xa68a,0xf44}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3c1e604b,0x81469e8c,0xb45218b7,0xf44a68a}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x81469e8c3c1e604b,0xf44a68ab45218b7}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf2f1,0x3b8a,0xd473,0x1e37,0xc83c,0x4395,0x4df6,0xbca}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3b8af2f1,0x1e37d473,0x4395c83c,0xbca4df6}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1e37d4733b8af2f1,0xbca4df64395c83c}}}
+#endif
+, &MAXORD_O0}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xafa2,0x6dee,0xc511,0xde33,0xc8ce,0xc89e,0x4f97,0x2df9}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x6deeafa2,0xde33c511,0xc89ec8ce,0x2df94f97}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xde33c5116deeafa2,0x2df94f97c89ec8ce}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x519b,0xa90b,0xcdca,0xd5f5,0x757a,0x83dd,0xb354,0xe59}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xa90b519b,0xd5f5cdca,0x83dd757a,0xe59b354}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd5f5cdcaa90b519b,0xe59b35483dd757a}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xafa2,0x6dee,0xc511,0xde33,0xc8ce,0xc89e,0x4f97,0x2df9}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x6deeafa2,0xde33c511,0xc89ec8ce,0x2df94f97}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xde33c5116deeafa2,0x2df94f97c89ec8ce}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x5e07,0xc4e3,0xf746,0x83d,0x5354,0x44c1,0x9c43,0x1f9f}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xc4e35e07,0x83df746,0x44c15354,0x1f9f9c43}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x83df746c4e35e07,0x1f9f9c4344c15354}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x57d1,0xb6f7,0xe288,0x6f19,0x6467,0xe44f,0xa7cb,0x16fc}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xb6f757d1,0x6f19e288,0xe44f6467,0x16fca7cb}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x6f19e288b6f757d1,0x16fca7cbe44f6467}}}
+#endif
+, &MAXORD_O0}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x19f2,0x5594,0xee77,0x52a2,0xf459,0x45c9,0x2187,0xb348}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x559419f2,0x52a2ee77,0x45c9f459,0xb3482187}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x52a2ee77559419f2,0xb348218745c9f459}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xdbd3,0x967a,0x8a96,0x1df4,0x7845,0xd70,0x419a,0x222}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x967adbd3,0x1df48a96,0xd707845,0x222419a}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1df48a96967adbd3,0x222419a0d707845}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x19f2,0x5594,0xee77,0x52a2,0xf459,0x45c9,0x2187,0xb348}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x559419f2,0x52a2ee77,0x45c9f459,0xb3482187}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x52a2ee77559419f2,0xb348218745c9f459}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x3e1f,0xbf19,0x63e0,0x34ae,0x7c14,0x3859,0xdfed,0xb125}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xbf193e1f,0x34ae63e0,0x38597c14,0xb125dfed}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x34ae63e0bf193e1f,0xb125dfed38597c14}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xcf9,0xaaca,0x773b,0xa951,0xfa2c,0xa2e4,0x10c3,0x59a4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xaaca0cf9,0xa951773b,0xa2e4fa2c,0x59a410c3}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xa951773baaca0cf9,0x59a410c3a2e4fa2c}}}
+#endif
+, &MAXORD_O0}, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xaa3a,0x67cf,0x6ad7,0xd031,0x701,0xebca,0xd852,0x2996}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x67cfaa3a,0xd0316ad7,0xebca0701,0x2996d852}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd0316ad767cfaa3a,0x2996d852ebca0701}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x275,0xd7ab,0xedeb,0xbc67,0xad41,0xaeb5,0xf2e5,0x148e}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xd7ab0275,0xbc67edeb,0xaeb5ad41,0x148ef2e5}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xbc67edebd7ab0275,0x148ef2e5aeb5ad41}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xaa3a,0x67cf,0x6ad7,0xd031,0x701,0xebca,0xd852,0x2996}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x67cfaa3a,0xd0316ad7,0xebca0701,0x2996d852}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xd0316ad767cfaa3a,0x2996d852ebca0701}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xa7c5,0x9024,0x7ceb,0x13c9,0x59c0,0x3d14,0xe56d,0x1507}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x9024a7c5,0x13c97ceb,0x3d1459c0,0x1507e56d}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x13c97ceb9024a7c5,0x1507e56d3d1459c0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}}, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xd51d,0xb3e7,0xb56b,0xe818,0x380,0x75e5,0x6c29,0x14cb}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xb3e7d51d,0xe818b56b,0x75e50380,0x14cb6c29}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xe818b56bb3e7d51d,0x14cb6c2975e50380}}}
+#endif
+, &MAXORD_O0}};
+const quat_alg_elem_t CONJUGATING_ELEMENTS[7] = {{
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x10000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1,0x1000000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1000}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x1,0x0,0x0,0x10000000}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0x1,0x1000000000000000}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf94f,0x85ef,0x90f3,0xcc79,0x98d9,0x1a83,0x8d,0x67e1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x85eff94f,0xcc7990f3,0x1a8398d9,0x67e1008d}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xcc7990f385eff94f,0x67e1008d1a8398d9}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0xf94f,0x85ef,0x90f3,0xcc79,0x98d9,0x1a83,0x8d,0x67e1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x85eff94f,0xcc7990f3,0x1a8398d9,0x67e1008d}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xcc7990f385eff94f,0x67e1008d1a8398d9}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x3}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x3}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x3}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x3}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x3}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x3}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0xf2f1,0x3b8a,0xd473,0x1e37,0xc83c,0x4395,0x4df6,0xbca}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x3b8af2f1,0x1e37d473,0x4395c83c,0xbca4df6}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x1e37d4733b8af2f1,0xbca4df64395c83c}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0xf2f1,0x3b8a,0xd473,0x1e37,0xc83c,0x4395,0x4df6,0xbca}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x3b8af2f1,0x1e37d473,0x4395c83c,0xbca4df6}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0x1e37d4733b8af2f1,0xbca4df64395c83c}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x57d1,0xb6f7,0xe288,0x6f19,0x6467,0xe44f,0xa7cb,0x16fc}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0xb6f757d1,0x6f19e288,0xe44f6467,0x16fca7cb}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x6f19e288b6f757d1,0x16fca7cbe44f6467}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x57d1,0xb6f7,0xe288,0x6f19,0x6467,0xe44f,0xa7cb,0x16fc}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0xb6f757d1,0x6f19e288,0xe44f6467,0x16fca7cb}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0x6f19e288b6f757d1,0x16fca7cbe44f6467}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 0, ._mp_d = (mp_limb_t[]) {0x0}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x2}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x6511,0x45fa,0xa368,0xe869,0x4db2,0x88fc,0x6989,0xbdf3}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x45fa6511,0xe869a368,0x88fc4db2,0xbdf36989}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0xe869a36845fa6511,0xbdf3698988fc4db2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x6511,0x45fa,0xa368,0xe869,0x4db2,0x88fc,0x6989,0xbdf3}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x45fa6511,0xe869a368,0x88fc4db2,0xbdf36989}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0xe869a36845fa6511,0xbdf3698988fc4db2}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x5}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x5}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x5}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x5}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x5}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x5}}}
+#endif
+}}, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x1}}}
+#endif
+, {
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 8, ._mp_d = (mp_limb_t[]) {0x1e6b,0x5c4a,0x13f1,0x770,0x7183,0x5600,0xda31,0x9281}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 4, ._mp_d = (mp_limb_t[]) {0x5c4a1e6b,0x77013f1,0x56007183,0x9281da31}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 2, ._mp_d = (mp_limb_t[]) {0x77013f15c4a1e6b,0x9281da3156007183}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -8, ._mp_d = (mp_limb_t[]) {0x1e6b,0x5c4a,0x13f1,0x770,0x7183,0x5600,0xda31,0x9281}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -4, ._mp_d = (mp_limb_t[]) {0x5c4a1e6b,0x77013f1,0x56007183,0x9281da31}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -2, ._mp_d = (mp_limb_t[]) {0x77013f15c4a1e6b,0x9281da3156007183}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = -1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#endif
+, 
+#if 0
+#elif GMP_LIMB_BITS == 16
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 32
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#elif GMP_LIMB_BITS == 64
+{{._mp_alloc = 0, ._mp_size = 1, ._mp_d = (mp_limb_t[]) {0x4}}}
+#endif
+}}};

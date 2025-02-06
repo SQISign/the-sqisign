@@ -37,17 +37,22 @@ int main(int argc, char *argv[]) {
 
 
 static int test_sig_kat(int cnt) {
+#if defined(ENABLE_SIGN)
     unsigned char       seed[48];
-    unsigned char       *m, *sm, *m1, *sm_rsp;
+    unsigned char       sk[CRYPTO_SECRETKEYBYTES];
+    unsigned char       pk[CRYPTO_PUBLICKEYBYTES];
+    unsigned char       sk_rsp[CRYPTO_SECRETKEYBYTES];
+    unsigned char       *sm;
+#endif
+    unsigned char       pk_rsp[CRYPTO_PUBLICKEYBYTES];
+    unsigned char       *m, *m1, *sm_rsp;
     unsigned long long  mlen, smlen, mlen1;
     int                 count;
     int                 done;
-    unsigned char       pk[CRYPTO_PUBLICKEYBYTES], sk[CRYPTO_SECRETKEYBYTES];
     int                 ret_val;
 
     char                fn_rsp[64];
     FILE                *fp_rsp;
-    unsigned char       pk_rsp[CRYPTO_PUBLICKEYBYTES], sk_rsp[CRYPTO_SECRETKEYBYTES];
 
     sprintf(fn_rsp, "../../KAT/PQCsignKAT_%d_%s.rsp", CRYPTO_SECRETKEYBYTES, CRYPTO_ALGNAME);
     if ( (fp_rsp = fopen(fn_rsp, "r")) == NULL ) {
@@ -57,6 +62,7 @@ static int test_sig_kat(int cnt) {
 
     done = 0;
     do {
+
         if ( FindMarker(fp_rsp, "count = ") ) {
             ret_val = fscanf(fp_rsp, "%d", &count);
         } else {
@@ -67,12 +73,14 @@ static int test_sig_kat(int cnt) {
         if (cnt != -1 && cnt != count)
             continue;
 
+#if defined(ENABLE_SIGN)
         if ( !ReadHex(fp_rsp, seed, 48, "seed = ") ) {
             printf("ERROR: unable to read 'seed' from <%s>\n", fn_rsp);
             return KAT_DATA_ERROR;
         }
 
         randombytes_init(seed, NULL, 256);
+#endif
 
         if ( FindMarker(fp_rsp, "mlen = ") ) {
             ret_val = fscanf(fp_rsp, "%lld", &mlen);
@@ -83,7 +91,9 @@ static int test_sig_kat(int cnt) {
 
         m = (unsigned char *)calloc(mlen, sizeof(unsigned char));
         m1 = (unsigned char *)calloc(mlen, sizeof(unsigned char));
+#if defined(ENABLE_SIGN)
         sm = (unsigned char *)calloc(mlen + CRYPTO_BYTES, sizeof(unsigned char));
+#endif
         sm_rsp = (unsigned char *)calloc(mlen + CRYPTO_BYTES, sizeof(unsigned char));
 
         if ( !ReadHex(fp_rsp, m, (int)mlen, "msg = ") ) {
@@ -91,15 +101,20 @@ static int test_sig_kat(int cnt) {
             return KAT_DATA_ERROR;
         }
 
+#if defined(ENABLE_SIGN)
         // Generate the public/private keypair
         if ( (ret_val = sqisign_keypair(pk, sk)) != 0) {
             printf("crypto_sign_keypair returned <%d>\n", ret_val);
             return KAT_CRYPTO_FAILURE;
         }
+#endif
+
         if ( !ReadHex(fp_rsp, pk_rsp, CRYPTO_PUBLICKEYBYTES, "pk = ") ) {
             printf("ERROR: unable to read 'pk' from <%s>\n", fn_rsp);
             return KAT_DATA_ERROR;
         }
+
+#if defined(ENABLE_SIGN)
         if ( !ReadHex(fp_rsp, sk_rsp, CRYPTO_SECRETKEYBYTES, "sk = ") ) {
             printf("ERROR: unable to read 'sk' from <%s>\n", fn_rsp);
             return KAT_DATA_ERROR;
@@ -109,6 +124,7 @@ static int test_sig_kat(int cnt) {
             printf("ERROR: pk is different from <%s>\n", fn_rsp);
             return KAT_VERIFICATION_ERROR;
         }
+
         if (memcmp(sk, sk_rsp, CRYPTO_SECRETKEYBYTES) != 0) {
             printf("ERROR: sk is different from <%s>\n", fn_rsp);
             return KAT_VERIFICATION_ERROR;
@@ -129,11 +145,28 @@ static int test_sig_kat(int cnt) {
             return KAT_VERIFICATION_ERROR;
         }
 
-
         if ( (ret_val = sqisign_open(m1, &mlen1, sm, smlen, pk)) != 0) {
             printf("crypto_sign_open returned <%d>\n", ret_val);
             return KAT_CRYPTO_FAILURE;
         }
+#else
+        if ( FindMarker(fp_rsp, "smlen = ") ) {
+            ret_val = fscanf(fp_rsp, "%llu", &smlen);
+        } else {
+            printf("ERROR: unable to read 'smlen' from <%s>\n", fn_rsp);
+            return KAT_DATA_ERROR;
+        }
+
+        if ( !ReadHex(fp_rsp, sm_rsp, smlen, "sm = ") ) {
+            printf("ERROR: unable to read 'sm' from <%s>\n", fn_rsp);
+            return KAT_DATA_ERROR;
+        }
+
+        if ( (ret_val = sqisign_open(m1, &mlen1, sm_rsp, smlen, pk_rsp)) != 0 ) {
+            printf("crypto_sign_open returned <%d>\n", ret_val);
+            return KAT_CRYPTO_FAILURE;
+        }
+#endif
 
         if ( mlen != mlen1 ) {
             printf("crypto_sign_open returned bad 'mlen': Got <%lld>, expected <%lld>\n", mlen1, mlen);
@@ -147,7 +180,9 @@ static int test_sig_kat(int cnt) {
 
         free(m);
         free(m1);
+#if defined(ENABLE_SIGN)
         free(sm);
+#endif
         free(sm_rsp);
 
     } while ( !done );
