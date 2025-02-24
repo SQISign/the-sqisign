@@ -93,7 +93,7 @@ jobs:
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest -j16 -C ${{env.BUILD_TYPE}} -E "KAT$"
+        run: ctest -j4 -C ${{env.BUILD_TYPE}} -E "KAT$"
 
       - name: Examples
         working-directory: ${{github.workspace}}/build/apps
@@ -111,7 +111,7 @@ jobs:
               cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
           fi
           cmake --build build
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -V --test-dir build -E "KAT$"
 
       - name: Memcheck
         run: |
@@ -135,7 +135,7 @@ jobs:
           fi
           cmake --build build
           find . -name '*.so' | grep so
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -V --test-dir build -E "KAT$"
 
       - name: Address Sanitizer ASAN
         run: |
@@ -145,7 +145,7 @@ jobs:
               cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
           fi
           cmake --build build
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -V --test-dir build -E "KAT$"
 
       # MSAN needs instrumented gmp
       - name: Memory Sanitizer MSAN
@@ -156,7 +156,7 @@ jobs:
               cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
           fi
           cmake --build build
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -V --test-dir build -E "KAT$"
         if: ${{ matrix.gmp_library == 'MINI' }}
 
       - name: Leak Sanitizer LSAN
@@ -167,7 +167,7 @@ jobs:
               cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
           fi
           cmake --build build
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -V --test-dir build -E "KAT$"
 
       - name: Undefined Behavior Sanitizer UBSAN
         run: |
@@ -177,4 +177,4 @@ jobs:
               cp ~/gmp-6.3.0.tar.xz ${{github.workspace}}/build/libgmp/src
           fi
           cmake --build build
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -j16 -V --test-dir build -E "KAT$"
+          CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -V --test-dir build -E "KAT$"
