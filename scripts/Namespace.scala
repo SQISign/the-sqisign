@@ -2,12 +2,20 @@ import io.StdIn.readLine
 
 // 1. #define DISABLE_NAMESPACING in sqisign_namespace.h
 // 2. build (cmake and make)
-// 3. find . -name '*.a' -exec nm {} \; | grep '.c.o:\|T ' | scala ../scripts/Namespace.scala > sqisign_namespace.h
+// 3. find . -name '*.a' -exec nm {} \; | grep '.c.o:\|T\|D\|R ' | scala ../scripts/Namespace.scala > sqisign_namespace.h
 // 4. cp sqisign_namespace.h $SQISIGN_DIR/include
 
-object Namespace extends App {
+object Namespace {
 
-  val PREAMBLE = """
+  def main(args: Array[String]): Unit = {
+    val nogeneric = args.contains("--no-generic")
+
+    if (!nogeneric && args.length != 0) {
+      println("Usage: scala Namespace.scala < input.txt > sqisign_namespace.h")
+      sys.exit(1)
+    }
+
+    val PREAMBLE = """
 #ifndef SQISIGN_NAMESPACE_H
 #define SQISIGN_NAMESPACE_H
 
@@ -51,98 +59,103 @@ object Namespace extends App {
 #endif
 """
 
-  val EPILOGUE = """
+    val EPILOGUE = """
 #endif
 """
 
-  val x = Iterator
-    .continually(readLine)
-    .takeWhile(_ != null).toList
+    val x = Iterator
+      .continually(readLine)
+      .takeWhile(_ != null).toList
 
-  var scfile = ""
-  val allFuns: List[(String, String)] = x.flatMap {
-    case i if i.contains(".c.o:") =>
-      scfile = i
-      None
-    case i =>
-      i.split(" ").last match {
-        case j if j.startsWith("_") =>
-          Some((j.substring(1), scfile))
-        case j =>
-          Some((j, scfile))
-      }
-    
-  }. // removing duplicates..
-  groupBy(_._1).mapValues(k => k.distinct.toList.sortBy(_._2).reduceLeft((i,j) => ((i._1, s"${i._2}, ${j._2}")))).values.toList
+    var scfile = ""
+    val allFuns: List[(String, String)] = x.flatMap {
+      case i if i.contains(".c.o:") =>
+        scfile = i
+        None
+      case i =>
+        i.split(" ").last match {
+          case j if j.startsWith("_") =>
+            Some((j.substring(1), scfile))
+          case j =>
+            Some((j, scfile))
+        }
 
-  val maxFunLen = allFuns.map(i => i._1.length).max
+    }. // removing duplicates..
+    groupBy(_._1).mapValues(k => k.distinct.toList.sortBy(_._2).reduceLeft((i,j) => ((i._1, s"${i._2}, ${j._2}")))).values.toList
 
-  val filterFiles = List(
-    "fips202.c",
-    "tools.c",
-    "randombytes_system.c",
-    "randombytes_ctrdrbg.c",
-    "randombytes_ctrdrbg_aesni.c",
-    "foo.c",
-    "aes_c.c",
-    "aes_ni.c",
-    "ctr_drbg.c"    
-  )
+    val maxFunLen = allFuns.map(i => i._1.length).max
 
-  val genericFiles = List(
-    // quaternion module
-    "intbig.c",
-    "algebra.c",
-    "ideal.c",
-    "dim4.c",
-    "dim2.c",
-    "integers.c",
-    "lattice.c",
-    "lat_ball.c",
-    "finit.c",
-    "printer.c",
-    "rationals.c",
-    "l2.c",
-    "lll_verification.c",
-    "lll_applications.c",
-    "rationals.c",
-    "normeq.c",
-    "ibz_division.c",
-    "hnf_internal.c",
-    "hnf.c",
-    "random_input_generation.c",
-    "mem.c",
-    // mp module
-    "mp.c"
-  ).map(i => s"$i.o:")
-
-  val groupedByFile = 
-    allFuns.
-    groupBy(_._2).
-    map(i => (i._1, i._2.distinct.sorted)).
-    filter(i => filterFiles.forall(j => !i._1.contains(j))).toList.sortBy(_._1)
-
-  println(PREAMBLE)
-
-
-
-  groupedByFile.foreach(i => {
-    println(s"// Namespacing symbols exported from ${i._1.replaceAll("\\.o:", "")}:")
-    i._2.foreach(j => 
-      println(s"#undef ${j._1}")
+    val filterFiles = List(
+      "fips202.c",
+      "tools.c",
+      "randombytes_system.c",
+      "randombytes_ctrdrbg.c",
+      "randombytes_ctrdrbg_aesni.c",
+      "foo.c",
+      "aes_c.c",
+      "aes_ni.c",
+      "ctr_drbg.c"    
     )
-    println
-    i._2.foreach(j => {
-      val padded = j._1.padTo(maxFunLen, " ").mkString
-      if (genericFiles.contains(j._2)) {
-        println(s"#define $padded SQISIGN_NAMESPACE_GENERIC(${j._1})")
-      } else {
-        println(s"#define $padded SQISIGN_NAMESPACE(${j._1})")
-      }
-    }
-    )
-    println
-  })
 
-  println(EPILOGUE)
+    val genericFiles = List(
+      // quaternion module
+      "intbig.c",
+      "algebra.c",
+      "ideal.c",
+      "dim4.c",
+      "dim2.c",
+      "integers.c",
+      "lattice.c",
+      "lat_ball.c",
+      "finit.c",
+      "printer.c",
+      "rationals.c",
+      "l2.c",
+      "lll_verification.c",
+      "lll_applications.c",
+      "rationals.c",
+      "normeq.c",
+      "ibz_division.c",
+      "hnf_internal.c",
+      "hnf.c",
+      "random_input_generation.c",
+      "mem.c",
+      // mp module
+      "mp.c"
+    ).map(i => s"$i.o:")
+
+    val groupedByFile = 
+      allFuns.
+      groupBy(_._2).
+      map(i => (i._1, i._2.distinct.sorted)).
+      filter(i => filterFiles.forall(j => !i._1.contains(j))).toList.sortBy(_._1)
+
+    println(PREAMBLE)
+
+
+
+    groupedByFile.foreach(i => {
+      println(s"// Namespacing symbols exported from ${i._1.replaceAll("\\.o:", "")}:")
+      i._2.foreach(j => 
+        println(s"#undef ${j._1}")
+      )
+      println
+      i._2.foreach(j => {
+        val padded = j._1.padTo(maxFunLen, " ").mkString
+        if (genericFiles.contains(j._2) && !nogeneric) {
+          println(s"#define $padded SQISIGN_NAMESPACE_GENERIC(${j._1})")
+        } else {
+          println(s"#define $padded SQISIGN_NAMESPACE(${j._1})")
+        }
+      }
+      )
+      println
+    })
+
+    println(EPILOGUE)
+
+    println("// This file is generated by scripts/Namespace.scala, do not edit it manually!")
+  }
+
+
 }

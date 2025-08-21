@@ -109,10 +109,10 @@ quat_test_lll_ibq_vec_4_copy_ibz(void)
     ibz_vec_4_init(&vec_z);
     ibq_vec_4_init(&vec);
     ibz_vec_4_set(&vec_z, 2, 3, 4, 5);
-    ibq_vec_4_copy_ibz(&vec, &(vec_z[0]), &(vec_z[1]), &(vec_z[2]), &(vec_z[3]));
+    ibq_vec_4_copy_ibz(&vec, &(vec_z.v[0]), &(vec_z.v[1]), &(vec_z.v[2]), &(vec_z.v[3]));
     for (int i = 0; i < 4; i++) {
-        ibq_to_ibz(&(vec_z[i]), &(vec[i]));
-        res = res || (ibz_cmp_int32(&(vec_z[i]), i + 2) != 0);
+        ibq_to_ibz(&(vec_z.v[i]), &(vec.v[i]));
+        res = res || (ibz_cmp_int32(&(vec_z.v[i]), i + 2) != 0);
     }
 
     if (res != 0) {
@@ -140,15 +140,15 @@ quat_test_lll_bilinear(void)
     ibq_vec_4_init(&vec0);
     ibq_vec_4_init(&vec1);
     ibz_vec_4_set(&init_helper, 1, 2, 3, 4);
-    ibq_vec_4_copy_ibz(&vec0, &(init_helper[0]), &(init_helper[1]), &(init_helper[2]), &(init_helper[3]));
+    ibq_vec_4_copy_ibz(&vec0, &(init_helper.v[0]), &(init_helper.v[1]), &(init_helper.v[2]), &(init_helper.v[3]));
     ibz_vec_4_set(&init_helper, 9, -8, 7, -6);
-    ibq_vec_4_copy_ibz(&vec1, &(init_helper[0]), &(init_helper[1]), &(init_helper[2]), &(init_helper[3]));
+    ibq_vec_4_copy_ibz(&vec1, &(init_helper.v[0]), &(init_helper.v[1]), &(init_helper.v[2]), &(init_helper.v[3]));
     for (int i = 0; i < 4; i++) {
-        ibq_inv(&(vec0[i]), &(vec0[i]));
+        ibq_inv(&(vec0.v[i]), &(vec0.v[i]));
     }
     ibz_set(&q, 3);
     ibz_vec_4_set(&init_helper, 15, 2, 0, 0);
-    ibq_set(&cmp, &(init_helper[0]), &(init_helper[1]));
+    ibq_set(&cmp, &(init_helper.v[0]), &(init_helper.v[1]));
     quat_lll_bilinear(&b, &vec0, &vec1, &q);
     res = res || (ibq_cmp(&b, &cmp));
 
@@ -186,7 +186,7 @@ quat_test_lll_gram_schmidt_transposed_with_ibq(void)
     ibz_mat_4x4_zero(&mat);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), i * i + (j + 5) * j - 2 + (i == j));
+            ibz_set(&(mat.m[i][j]), i * i + (j + 5) * j - 2 + (i == j));
         }
     }
     ibz_set(&q, 3);
@@ -194,98 +194,98 @@ quat_test_lll_gram_schmidt_transposed_with_ibq(void)
     // test orthogonality
     for (int i = 0; i < 4; i++) {
         for (int j = i + 1; j < 4; j++) {
-            quat_lll_bilinear(&b, &(ot[i]), &(ot[j]), &q);
+            quat_lll_bilinear(&b, &(ot.m[i]), &(ot.m[j]), &q);
             res = res || !ibq_is_zero(&b);
         }
     }
     // test first vector is identical to mat
     for (int i = 0; i < 4; i++) {
-        ibq_to_ibz(&q, &(ot[0][i]));
-        res = res || ibz_cmp(&q, &(mat[i][0]));
+        ibq_to_ibz(&q, &(ot.m[0].v[i]));
+        res = res || ibz_cmp(&q, &(mat.m[i][0]));
     }
     // test no zero vector
     for (int i = 0; i < 4; i++) {
         zero = 1;
         for (int j = 0; j < 4; j++) {
-            zero = zero && ibq_is_zero(&(ot[i][j]));
+            zero = zero && ibq_is_zero(&(ot.m[i].v[j]));
         }
         res = res || zero;
     }
 
-    ibz_set(&(mat[0][0]), 1);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 1);
-    ibz_set(&(mat[0][3]), 0);
-    ibz_set(&(mat[1][0]), 0);
-    ibz_set(&(mat[1][1]), 1);
-    ibz_set(&(mat[1][2]), 0);
-    ibz_set(&(mat[1][3]), 1);
-    ibz_set(&(mat[2][0]), 1);
-    ibz_set(&(mat[2][1]), 0);
-    ibz_set(&(mat[2][2]), 2);
-    ibz_set(&(mat[2][3]), 0);
-    ibz_set(&(mat[3][0]), 0);
-    ibz_set(&(mat[3][1]), 1);
-    ibz_set(&(mat[3][2]), 0);
-    ibz_set(&(mat[3][3]), 2);
+    ibz_set(&(mat.m[0][0]), 1);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 1);
+    ibz_set(&(mat.m[0][3]), 0);
+    ibz_set(&(mat.m[1][0]), 0);
+    ibz_set(&(mat.m[1][1]), 1);
+    ibz_set(&(mat.m[1][2]), 0);
+    ibz_set(&(mat.m[1][3]), 1);
+    ibz_set(&(mat.m[2][0]), 1);
+    ibz_set(&(mat.m[2][1]), 0);
+    ibz_set(&(mat.m[2][2]), 2);
+    ibz_set(&(mat.m[2][3]), 0);
+    ibz_set(&(mat.m[3][0]), 0);
+    ibz_set(&(mat.m[3][1]), 1);
+    ibz_set(&(mat.m[3][2]), 0);
+    ibz_set(&(mat.m[3][3]), 2);
     ibz_set(&denom, 1);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibq_set(&(cmp[i][j]), &(mat[j][i]), &denom);
+            ibq_set(&(cmp.m[i].v[j]), &(mat.m[j][i]), &denom);
         }
     }
     ibz_set(&denom, 3);
     ibz_set(&num, -2);
-    ibq_set(&(cmp[2][0]), &num, &denom);
-    ibq_set(&(cmp[3][1]), &num, &denom);
+    ibq_set(&(cmp.m[2].v[0]), &num, &denom);
+    ibq_set(&(cmp.m[3].v[1]), &num, &denom);
     ibz_set(&num, 1);
-    ibq_set(&(cmp[2][2]), &num, &denom);
-    ibq_set(&(cmp[3][3]), &num, &denom);
+    ibq_set(&(cmp.m[2].v[2]), &num, &denom);
+    ibq_set(&(cmp.m[3].v[3]), &num, &denom);
     ibz_set(&q, 2);
     quat_lll_gram_schmidt_transposed_with_ibq(&ot, &mat, &q);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            res = res || ibq_cmp(&(cmp[i][j]), &(ot[i][j]));
+            res = res || ibq_cmp(&(cmp.m[i].v[j]), &(ot.m[i].v[j]));
         }
     }
 
-    ibz_set(&(mat[0][0]), 1);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 1);
-    ibz_set(&(mat[0][3]), 0);
-    ibz_set(&(mat[1][0]), 0);
-    ibz_set(&(mat[1][1]), 1);
-    ibz_set(&(mat[1][2]), 0);
-    ibz_set(&(mat[1][3]), 1);
-    ibz_set(&(mat[2][0]), 1);
-    ibz_set(&(mat[2][1]), 0);
-    ibz_set(&(mat[2][2]), 2);
-    ibz_set(&(mat[2][3]), 1);
-    ibz_set(&(mat[3][0]), 0);
-    ibz_set(&(mat[3][1]), 1);
-    ibz_set(&(mat[3][2]), 0);
-    ibz_set(&(mat[3][3]), 2);
+    ibz_set(&(mat.m[0][0]), 1);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 1);
+    ibz_set(&(mat.m[0][3]), 0);
+    ibz_set(&(mat.m[1][0]), 0);
+    ibz_set(&(mat.m[1][1]), 1);
+    ibz_set(&(mat.m[1][2]), 0);
+    ibz_set(&(mat.m[1][3]), 1);
+    ibz_set(&(mat.m[2][0]), 1);
+    ibz_set(&(mat.m[2][1]), 0);
+    ibz_set(&(mat.m[2][2]), 2);
+    ibz_set(&(mat.m[2][3]), 1);
+    ibz_set(&(mat.m[3][0]), 0);
+    ibz_set(&(mat.m[3][1]), 1);
+    ibz_set(&(mat.m[3][2]), 0);
+    ibz_set(&(mat.m[3][3]), 2);
     ibz_set(&denom, 1);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibq_set(&(cmp[i][j]), &(mat[j][i]), &denom);
+            ibq_set(&(cmp.m[i].v[j]), &(mat.m[j][i]), &denom);
         }
     }
     ibz_set(&denom, 3);
     ibz_set(&num, -2);
-    ibq_set(&(cmp[2][0]), &num, &denom);
-    ibq_set(&(cmp[3][1]), &num, &denom);
+    ibq_set(&(cmp.m[2].v[0]), &num, &denom);
+    ibq_set(&(cmp.m[3].v[1]), &num, &denom);
     ibz_set(&num, 1);
-    ibq_set(&(cmp[2][2]), &num, &denom);
-    ibq_set(&(cmp[3][3]), &num, &denom);
+    ibq_set(&(cmp.m[2].v[2]), &num, &denom);
+    ibq_set(&(cmp.m[3].v[3]), &num, &denom);
     ibz_set(&num, 0);
-    ibq_set(&(cmp[3][0]), &num, &denom);
-    ibq_set(&(cmp[3][2]), &num, &denom);
+    ibq_set(&(cmp.m[3].v[0]), &num, &denom);
+    ibq_set(&(cmp.m[3].v[2]), &num, &denom);
     ibz_set(&q, 2);
     quat_lll_gram_schmidt_transposed_with_ibq(&ot, &mat, &q);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            res = res || ibq_cmp(&(cmp[i][j]), &(ot[i][j]));
+            res = res || ibq_cmp(&(cmp.m[i].v[j]), &(ot.m[i].v[j]));
         }
     }
 
@@ -325,22 +325,22 @@ quat_test_lll_verify(void)
     ibq_set(&eta, &ibz_const_one, &ibz_const_two);
     ibq_set(&delta, &ibz_const_three, &ibz_const_two);
     ibq_mul(&delta, &delta, &eta);
-    ibz_set(&(mat[0][0]), 0);
-    ibz_set(&(mat[0][1]), 2);
-    ibz_set(&(mat[0][2]), 3);
-    ibz_set(&(mat[0][3]), -14);
-    ibz_set(&(mat[1][0]), 2);
-    ibz_set(&(mat[1][1]), -1);
-    ibz_set(&(mat[1][2]), -4);
-    ibz_set(&(mat[1][3]), -8);
-    ibz_set(&(mat[2][0]), 1);
-    ibz_set(&(mat[2][1]), -2);
-    ibz_set(&(mat[2][2]), 1);
-    ibz_set(&(mat[2][3]), 0);
-    ibz_set(&(mat[3][0]), 1);
-    ibz_set(&(mat[3][1]), 1);
-    ibz_set(&(mat[3][2]), 0);
-    ibz_set(&(mat[3][3]), 7);
+    ibz_set(&(mat.m[0][0]), 0);
+    ibz_set(&(mat.m[0][1]), 2);
+    ibz_set(&(mat.m[0][2]), 3);
+    ibz_set(&(mat.m[0][3]), -14);
+    ibz_set(&(mat.m[1][0]), 2);
+    ibz_set(&(mat.m[1][1]), -1);
+    ibz_set(&(mat.m[1][2]), -4);
+    ibz_set(&(mat.m[1][3]), -8);
+    ibz_set(&(mat.m[2][0]), 1);
+    ibz_set(&(mat.m[2][1]), -2);
+    ibz_set(&(mat.m[2][2]), 1);
+    ibz_set(&(mat.m[2][3]), 0);
+    ibz_set(&(mat.m[3][0]), 1);
+    ibz_set(&(mat.m[3][1]), 1);
+    ibz_set(&(mat.m[3][2]), 0);
+    ibz_set(&(mat.m[3][3]), 7);
     res = res || !quat_lll_verify(&mat, &delta, &eta, &alg);
     quat_alg_finalize(&alg);
 
@@ -350,22 +350,22 @@ quat_test_lll_verify(void)
     ibz_set(&coeff_num, 99);
     ibz_set(&coeff_denom, 100);
     ibq_set(&delta, &coeff_num, &coeff_denom);
-    ibz_set(&(mat[0][0]), 3);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 90);
-    ibz_set(&(mat[0][3]), -86);
-    ibz_set(&(mat[1][0]), 11);
-    ibz_set(&(mat[1][1]), 15);
-    ibz_set(&(mat[1][2]), 12);
-    ibz_set(&(mat[1][3]), 50);
-    ibz_set(&(mat[2][0]), 1);
-    ibz_set(&(mat[2][1]), -2);
-    ibz_set(&(mat[2][2]), 0);
-    ibz_set(&(mat[2][3]), 3);
-    ibz_set(&(mat[3][0]), -1);
-    ibz_set(&(mat[3][1]), 0);
-    ibz_set(&(mat[3][2]), 5);
-    ibz_set(&(mat[3][3]), 5);
+    ibz_set(&(mat.m[0][0]), 3);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 90);
+    ibz_set(&(mat.m[0][3]), -86);
+    ibz_set(&(mat.m[1][0]), 11);
+    ibz_set(&(mat.m[1][1]), 15);
+    ibz_set(&(mat.m[1][2]), 12);
+    ibz_set(&(mat.m[1][3]), 50);
+    ibz_set(&(mat.m[2][0]), 1);
+    ibz_set(&(mat.m[2][1]), -2);
+    ibz_set(&(mat.m[2][2]), 0);
+    ibz_set(&(mat.m[2][3]), 3);
+    ibz_set(&(mat.m[3][0]), -1);
+    ibz_set(&(mat.m[3][1]), 0);
+    ibz_set(&(mat.m[3][2]), 5);
+    ibz_set(&(mat.m[3][3]), 5);
     res = res || !quat_lll_verify(&mat, &delta, &eta, &alg);
     quat_alg_finalize(&alg);
 
@@ -406,14 +406,14 @@ quat_test_lll_lattice_lll(void)
     // set lattice
     ibz_set(&lat.denom, 60);
     ibz_mat_4x4_zero(&(lat.basis));
-    ibz_set(&lat.basis[0][0], 3);
-    ibz_set(&lat.basis[1][0], 7);
-    ibz_set(&lat.basis[0][1], 1);
-    ibz_set(&lat.basis[3][1], -6);
-    ibz_set(&lat.basis[1][2], 12);
-    ibz_set(&lat.basis[2][2], 5);
-    ibz_set(&lat.basis[0][3], -19);
-    ibz_set(&lat.basis[3][3], 3);
+    ibz_set(&lat.basis.m[0][0], 3);
+    ibz_set(&lat.basis.m[1][0], 7);
+    ibz_set(&lat.basis.m[0][1], 1);
+    ibz_set(&lat.basis.m[3][1], -6);
+    ibz_set(&lat.basis.m[1][2], 12);
+    ibz_set(&lat.basis.m[2][2], 5);
+    ibz_set(&lat.basis.m[0][3], -19);
+    ibz_set(&lat.basis.m[3][3], 3);
 
     quat_lattice_hnf(&lat);
 
@@ -482,7 +482,7 @@ quat_test_lll_randomized_lattice_lll(void)
                 return 1;
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    ibz_set(&(lat.basis[i][j]), rand[j][i]);
+                    ibz_set(&(lat.basis.m[i][j]), rand[j][i]);
                 }
             }
             ibz_mat_4x4_inv_with_det_as_denom(NULL, &det, &(lat.basis));
@@ -564,8 +564,8 @@ quat_test_lideal_reduce_basis()
     res = res || !quat_lattice_equal(&(lideal.lattice), &test);
     // test gram matrix is gram matrix
     ibz_mat_4x4_identity(&gram_norm);
-    ibz_copy(&(gram_norm[2][2]), &(alg.p));
-    ibz_copy(&(gram_norm[3][3]), &(alg.p));
+    ibz_copy(&(gram_norm.m[2][2]), &(alg.p));
+    ibz_copy(&(gram_norm.m[3][3]), &(alg.p));
     ibz_mat_4x4_transpose(&prod, &red);
     ibz_mat_4x4_mul(&prod, &prod, &gram_norm);
     ibz_mat_4x4_mul(&prod, &prod, &red);
@@ -650,8 +650,8 @@ quat_test_lll_lideal_lideal_mul_reduced()
     quat_lideal_lideal_mul_reduced(&prod, &gram, &lideal1, &lideal2, &alg);
     res = res || !quat_lll_verify(&(prod.lattice.basis), &delta, &eta, &alg);
     ibz_mat_4x4_identity(&(gram_test));
-    ibz_copy(&(gram_test[2][2]), &(alg.p));
-    ibz_copy(&(gram_test[3][3]), &(alg.p));
+    ibz_copy(&(gram_test.m[2][2]), &(alg.p));
+    ibz_copy(&(gram_test.m[3][3]), &(alg.p));
     ibz_mat_4x4_mul(&(gram_test), &(gram_test), &(prod.lattice.basis));
     ibz_mat_4x4_transpose(&(gram_test), &(gram_test));
     ibz_mat_4x4_mul(&(gram_test), &(gram_test), &(prod.lattice.basis));
@@ -751,7 +751,7 @@ quat_test_lll_lideal_prime_norm_reduced_equivalent()
     quat_lideal_norm(&lideal2);
     // now lideal2 is a connecting idea of ro and ro2
     quat_lideal_reduce_basis(&red, &gram, &lideal2, &alg);
-    quat_alg_elem_copy_ibz(&gen, &(lideal2.lattice.denom), &(red[0][0]), &(red[1][0]), &(red[2][0]), &(red[3][0]));
+    quat_alg_elem_copy_ibz(&gen, &(lideal2.lattice.denom), &(red.m[0][0]), &(red.m[1][0]), &(red.m[2][0]), &(red.m[3][0]));
     quat_alg_norm(&n, &d, &gen, &alg);
     assert(ibz_is_one(&d));
     res = res || (0 != ibz_cmp(&n, &(lideal2.norm)));

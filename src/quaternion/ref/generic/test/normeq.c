@@ -34,11 +34,11 @@ quat_test_special_extremal_setup(quat_represent_integer_params_t *params, const 
     quat_lattice_init(&test);
     quat_alg_coord_mul(&ij, &(params->order->z.coord), &(params->order->t.coord), alg);
     ibz_copy(&(lat.denom), &(params->order->z.denom));
-    ibz_copy(&(lat.basis[0][0]), &(lat.denom));
+    ibz_copy(&(lat.basis.m[0][0]), &(lat.denom));
     for (int i = 0; i < 4; i++) {
-        ibz_copy(&(lat.basis[i][3]), &(ij[i]));
-        ibz_mul(&(lat.basis[i][2]), &(params->order->t.coord[i]), &(lat.denom));
-        ibz_copy(&(lat.basis[i][1]), &(params->order->z.coord[i]));
+        ibz_copy(&(lat.basis.m[i][3]), &(ij.v[i]));
+        ibz_mul(&(lat.basis.m[i][2]), &(params->order->t.coord.v[i]), &(lat.denom));
+        ibz_copy(&(lat.basis.m[i][1]), &(params->order->z.coord.v[i]));
     }
     quat_lattice_hnf(&lat);
     quat_lattice_mul(&test, &lat, &lat, alg);
@@ -70,23 +70,23 @@ quat_test_set_params_non_standard(quat_represent_integer_params_t *params,
                                   quat_p_extremal_maximal_order_t *order,
                                   const quat_alg_t *alg)
 {
-    ibz_set_from_str(&order->z.coord[1], "214764116738303679745780048598183569015", 10);
-    ibz_set(&order->z.coord[2], 0);
-    ibz_set_from_str(&order->z.coord[3], "1", 10);
+    ibz_set_from_str(&order->z.coord.v[1], "214764116738303679745780048598183569015", 10);
+    ibz_set(&order->z.coord.v[2], 0);
+    ibz_set_from_str(&order->z.coord.v[3], "1", 10);
     ibz_set_from_str(&order->z.denom, "73403150722045993989123427738005336972", 10);
-    ibz_set(&order->t.coord[2], 1);
+    ibz_set(&order->t.coord.v[2], 1);
     ibz_set(&order->t.denom, 1);
     order->q = 13;
-    ibz_set_from_str(&(order->order.basis[0][0]), "73403150722045993989123427738005336972", 10);
-    ibz_set_from_str(&(order->order.basis[1][1]),
+    ibz_set_from_str(&(order->order.basis.m[0][0]), "73403150722045993989123427738005336972", 10);
+    ibz_set_from_str(&(order->order.basis.m[1][1]),
                      "2694011267961700664357934052637599020390646823337886018360381743577635064392",
                      10);
-    ibz_set_from_str(&(order->order.basis[2][2]), "36701575361022996994561713869002668486", 10);
-    ibz_set(&(order->order.basis[3][3]), 1);
-    ibz_set_from_str(&(order->order.basis[0][2]), "36701575361022996994561713869002668486", 10);
-    ibz_set_from_str(&(order->order.basis[0][3]), "0", 10);
-    ibz_set_from_str(&(order->order.basis[1][2]), "0", 10);
-    ibz_set_from_str(&(order->order.basis[1][3]), "214764116738303679745780048598183569015", 10);
+    ibz_set_from_str(&(order->order.basis.m[2][2]), "36701575361022996994561713869002668486", 10);
+    ibz_set(&(order->order.basis.m[3][3]), 1);
+    ibz_set_from_str(&(order->order.basis.m[0][2]), "36701575361022996994561713869002668486", 10);
+    ibz_set_from_str(&(order->order.basis.m[0][3]), "0", 10);
+    ibz_set_from_str(&(order->order.basis.m[1][2]), "0", 10);
+    ibz_set_from_str(&(order->order.basis.m[1][3]), "214764116738303679745780048598183569015", 10);
     ibz_set_from_str(&(order->order.denom), "73403150722045993989123427738005336972", 10);
 
     params->algebra = alg;
@@ -116,11 +116,11 @@ quat_test_order_elem_create()
     quat_lattice_O0_set_extremal(&O0);
     ibz_vec_4_set(&vec, 1, 7, 2, -2);
     ibz_vec_4_copy(&cmp, &vec);
-    ibz_neg(&(cmp[3]), &(cmp[3]));
+    ibz_neg(&(cmp.v[3]), &(cmp.v[3]));
     quat_order_elem_create(&elem, &O0, &vec, &alg);
     res = res | ibz_cmp(&(elem.denom), &ibz_const_one);
     for (int i = 0; i < 4; i++)
-        res = res | ibz_cmp(&(elem.coord[i]), &cmp[i]);
+        res = res | ibz_cmp(&(elem.coord.v[i]), &cmp.v[i]);
 
     if (res) {
         printf("Quaternion unit test order_elem_create failed\n");
@@ -311,16 +311,16 @@ quat_test_represent_integer_internal(int gamma_iter,
                 if (standard) {
                     ibz_mul(&norm_n, &ibz_const_two, &ibz_const_two);
                     // add not sub since basis in quat_order_elem_create is 1,i,j,-ij for O0
-                    ibz_add(&norm_d, &(gamma.coord[0]), &(gamma.coord[3]));
+                    ibz_add(&norm_d, &(gamma.coord.v[0]), &(gamma.coord.v[3]));
                     ibz_mod(&norm_d, &norm_d, &norm_n);
                     res = res || (0 != ibz_cmp(&ibz_const_two, &norm_d));
-                    ibz_sub(&norm_d, &(gamma.coord[1]), &(gamma.coord[2]));
+                    ibz_sub(&norm_d, &(gamma.coord.v[1]), &(gamma.coord.v[2]));
                     ibz_mod(&norm_d, &norm_d, &norm_n);
                     res = res || (0 != ibz_cmp(&ibz_const_two, &norm_d));
                 } else {
                     quat_lattice_contains(&coord, &(params.order->order), &gamma);
-                    ibz_gcd(&norm_d, &(coord[1]), &(coord[2]));
-                    ibz_gcd(&norm_d, &norm_d, &(coord[3]));
+                    ibz_gcd(&norm_d, &(coord.v[1]), &(coord.v[2]));
+                    ibz_gcd(&norm_d, &norm_d, &(coord.v[3]));
                     res = res || ibz_is_even(&norm_d);
                 }
             }

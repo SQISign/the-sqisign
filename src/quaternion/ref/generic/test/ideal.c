@@ -55,7 +55,7 @@ quat_test_lideal_copy()
     quat_lideal_create_principal(&copied, &elem, &order, &alg);
     quat_lideal_copy(&copy, &copied);
     res = res | !(quat_lideal_equals(&copy, &copied, &alg));
-    ibz_set(&(elem.coord[0]), 23);
+    ibz_set(&(elem.coord.v[0]), 23);
     quat_lideal_create_principal(&copied, &elem, &order, &alg);
     res = res | (quat_lideal_equals(&copy, &copied, &alg));
     quat_lideal_copy(&copy, &copied);
@@ -87,10 +87,10 @@ quat_test_lideal_create_principal(void)
     quat_alg_elem_init(&gamma);
     quat_left_ideal_init(&I);
     quat_lattice_O0_set(&lat);
-    ibz_set(&gamma.coord[0], 219);
-    ibz_set(&gamma.coord[1], 200);
-    ibz_set(&gamma.coord[2], 78);
-    ibz_set(&gamma.coord[3], -1);
+    ibz_set(&gamma.coord.v[0], 219);
+    ibz_set(&gamma.coord.v[1], 200);
+    ibz_set(&gamma.coord.v[2], 78);
+    ibz_set(&gamma.coord.v[3], -1);
 
     quat_lideal_create_principal(&I, &gamma, &lat, &alg);
 
@@ -98,31 +98,31 @@ quat_test_lideal_create_principal(void)
     res |= ibz_cmp_int32(&I.norm, 2321156);
     res |= ibz_cmp(&I.lattice.denom, &ibz_const_one);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][0], 1160578);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][0], 1160578);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][0], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][1], 1160578);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][1], 1160578);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][1], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][2], 310126);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][2], 182529);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][2], 1);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][2], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][2], 310126);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][2], 182529);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][2], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][2], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][3], 978049);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][3], 310126);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][3], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][3], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][3], 978049);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][3], 310126);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][3], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][3], 1);
 
     // same test, just with gamma not reduced
-    ibz_set(&gamma.coord[0], 438);
-    ibz_set(&gamma.coord[1], 400);
-    ibz_set(&gamma.coord[2], 156);
-    ibz_set(&gamma.coord[3], -2);
+    ibz_set(&gamma.coord.v[0], 438);
+    ibz_set(&gamma.coord.v[1], 400);
+    ibz_set(&gamma.coord.v[2], 156);
+    ibz_set(&gamma.coord.v[3], -2);
     ibz_set(&gamma.denom, 2);
 
     quat_lideal_create_principal(&I, &gamma, &lat, &alg);
@@ -131,38 +131,38 @@ quat_test_lideal_create_principal(void)
     res |= ibz_cmp_int32(&I.norm, 2321156);
     res |= ibz_cmp(&I.lattice.denom, &ibz_const_one);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][0], 1160578);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][0], 1160578);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][0], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][1], 1160578);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][1], 1160578);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][1], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][2], 310126);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][2], 182529);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][2], 1);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][2], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][2], 310126);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][2], 182529);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][2], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][2], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][3], 978049);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][3], 310126);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][3], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][3], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][3], 978049);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][3], 310126);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][3], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][3], 1);
 
     // same test, just with gamma and basis not reduced
     ibz_set(&lat.denom, 6);
-    ibz_set(&lat.basis[0][0], 6);
-    ibz_set(&lat.basis[1][1], 6);
-    ibz_set(&lat.basis[1][2], 3);
-    ibz_set(&lat.basis[2][2], 3);
-    ibz_set(&lat.basis[3][3], 3);
-    ibz_set(&lat.basis[0][3], 3);
-    ibz_set(&gamma.coord[0], 438);
-    ibz_set(&gamma.coord[1], 400);
-    ibz_set(&gamma.coord[2], 156);
-    ibz_set(&gamma.coord[3], -2);
+    ibz_set(&lat.basis.m[0][0], 6);
+    ibz_set(&lat.basis.m[1][1], 6);
+    ibz_set(&lat.basis.m[1][2], 3);
+    ibz_set(&lat.basis.m[2][2], 3);
+    ibz_set(&lat.basis.m[3][3], 3);
+    ibz_set(&lat.basis.m[0][3], 3);
+    ibz_set(&gamma.coord.v[0], 438);
+    ibz_set(&gamma.coord.v[1], 400);
+    ibz_set(&gamma.coord.v[2], 156);
+    ibz_set(&gamma.coord.v[3], -2);
     ibz_set(&gamma.denom, 2);
 
     quat_lideal_create_principal(&I, &gamma, &lat, &alg);
@@ -171,25 +171,25 @@ quat_test_lideal_create_principal(void)
     res |= ibz_cmp_int32(&I.norm, 2321156);
     res |= ibz_cmp(&I.lattice.denom, &ibz_const_one);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][0], 1160578);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][0], 1160578);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][0], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][1], 1160578);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][1], 1160578);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][1], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][2], 310126);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][2], 182529);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][2], 1);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][2], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][2], 310126);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][2], 182529);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][2], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][2], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][3], 978049);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][3], 310126);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][3], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][3], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][3], 978049);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][3], 310126);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][3], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][3], 1);
 
     quat_alg_finalize(&alg);
     quat_lattice_finalize(&lat);
@@ -220,10 +220,10 @@ quat_test_lideal_create_from_primitive(void)
     ibz_init(&N);
     quat_left_ideal_init(&I);
     quat_lattice_O0_set(&lat);
-    ibz_set(&gamma.coord[0], 219);
-    ibz_set(&gamma.coord[1], 200);
-    ibz_set(&gamma.coord[2], 78);
-    ibz_set(&gamma.coord[3], -1);
+    ibz_set(&gamma.coord.v[0], 219);
+    ibz_set(&gamma.coord.v[1], 200);
+    ibz_set(&gamma.coord.v[2], 78);
+    ibz_set(&gamma.coord.v[3], -1);
     ibz_set(&N, 31);
 
     quat_lideal_create(&I, &gamma, &N, &lat, &alg);
@@ -232,25 +232,25 @@ quat_test_lideal_create_from_primitive(void)
     res |= ibz_cmp(&I.norm, &N);
     res |= ibz_cmp(&I.lattice.denom, &ibz_const_two);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][0], 62);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][0], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][0], 62);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][0], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][0], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][1], 62);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][1], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][1], 62);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][1], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][1], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][2], 2);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][2], 1);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][2], 1);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][2], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][2], 2);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][2], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][2], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][2], 0);
 
-    res |= ibz_cmp_int32(&I.lattice.basis[0][3], 61);
-    res |= ibz_cmp_int32(&I.lattice.basis[1][3], 2);
-    res |= ibz_cmp_int32(&I.lattice.basis[2][3], 0);
-    res |= ibz_cmp_int32(&I.lattice.basis[3][3], 1);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[0][3], 61);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[1][3], 2);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[2][3], 0);
+    res |= ibz_cmp_int32(&I.lattice.basis.m[3][3], 1);
 
     quat_alg_finalize(&alg);
     quat_lattice_finalize(&lat);
@@ -284,10 +284,10 @@ quat_test_lideal_generator(void)
     quat_left_ideal_init(&lideal2);
     quat_lattice_O0_set(&order);
 
-    ibz_set(&gen.coord[0], 3);
-    ibz_set(&gen.coord[1], 5);
-    ibz_set(&gen.coord[2], 7);
-    ibz_set(&gen.coord[3], 11);
+    ibz_set(&gen.coord.v[0], 3);
+    ibz_set(&gen.coord.v[1], 5);
+    ibz_set(&gen.coord.v[2], 7);
+    ibz_set(&gen.coord.v[3], 11);
     ibz_set(&N, 17);
 
     quat_lideal_create(&lideal, &gen, &N, &order, &alg);
@@ -332,14 +332,14 @@ quat_test_lideal_mul(void)
     quat_left_ideal_init(&lideal2);
     quat_lattice_O0_set(&order);
 
-    ibz_set(&gen1.coord[0], 3);
-    ibz_set(&gen1.coord[1], 5);
-    ibz_set(&gen1.coord[2], 7);
-    ibz_set(&gen1.coord[3], 11);
-    ibz_set(&gen2.coord[0], -2);
-    ibz_set(&gen2.coord[1], 13);
-    ibz_set(&gen2.coord[2], -17);
-    ibz_set(&gen2.coord[3], 19);
+    ibz_set(&gen1.coord.v[0], 3);
+    ibz_set(&gen1.coord.v[1], 5);
+    ibz_set(&gen1.coord.v[2], 7);
+    ibz_set(&gen1.coord.v[3], 11);
+    ibz_set(&gen2.coord.v[0], -2);
+    ibz_set(&gen2.coord.v[1], 13);
+    ibz_set(&gen2.coord.v[2], -17);
+    ibz_set(&gen2.coord.v[3], 19);
 
     // Check that (O·gen1)·gen2 == O·(gen1·gen2)
     quat_lideal_create_principal(&lideal, &gen1, &order, &alg);
@@ -459,17 +459,17 @@ quat_test_lideal_add_intersect_equals(void)
 
     quat_lattice_O0_set(&order);
 
-    ibz_set(&gen1.coord[0], 3);
-    ibz_set(&gen1.coord[1], 5);
-    ibz_set(&gen1.coord[2], 7);
-    ibz_set(&gen1.coord[3], 11);
+    ibz_set(&gen1.coord.v[0], 3);
+    ibz_set(&gen1.coord.v[1], 5);
+    ibz_set(&gen1.coord.v[2], 7);
+    ibz_set(&gen1.coord.v[3], 11);
     ibz_set(&N1, 17);
     quat_lideal_create(&lideal1, &gen1, &N1, &order, &alg);
 
-    ibz_set(&gen2.coord[0], -2);
-    ibz_set(&gen2.coord[1], 13);
-    ibz_set(&gen2.coord[2], -17);
-    ibz_set(&gen2.coord[3], 19);
+    ibz_set(&gen2.coord.v[0], -2);
+    ibz_set(&gen2.coord.v[1], 13);
+    ibz_set(&gen2.coord.v[2], -17);
+    ibz_set(&gen2.coord.v[3], 19);
     ibz_set(&N2, 43);
     quat_lideal_create(&lideal2, &gen2, &N2, &order, &alg);
 
@@ -549,22 +549,22 @@ quat_test_lideal_inverse_lattice_without_hnf(void)
     quat_lattice_init(&order);
     quat_alg_elem_init(&init_helper);
 
-    ibz_set(&(order.basis[0][0]), 4);
-    ibz_set(&(order.basis[0][1]), 0);
-    ibz_set(&(order.basis[0][2]), 2);
-    ibz_set(&(order.basis[0][3]), 2);
-    ibz_set(&(order.basis[1][0]), 0);
-    ibz_set(&(order.basis[1][1]), 8);
-    ibz_set(&(order.basis[1][2]), 4);
-    ibz_set(&(order.basis[1][3]), 3);
-    ibz_set(&(order.basis[2][0]), 0);
-    ibz_set(&(order.basis[2][1]), 0);
-    ibz_set(&(order.basis[2][2]), 2);
-    ibz_set(&(order.basis[2][3]), 0);
-    ibz_set(&(order.basis[3][0]), 0);
-    ibz_set(&(order.basis[3][1]), 0);
-    ibz_set(&(order.basis[3][2]), 0);
-    ibz_set(&(order.basis[3][3]), 1);
+    ibz_set(&(order.basis.m[0][0]), 4);
+    ibz_set(&(order.basis.m[0][1]), 0);
+    ibz_set(&(order.basis.m[0][2]), 2);
+    ibz_set(&(order.basis.m[0][3]), 2);
+    ibz_set(&(order.basis.m[1][0]), 0);
+    ibz_set(&(order.basis.m[1][1]), 8);
+    ibz_set(&(order.basis.m[1][2]), 4);
+    ibz_set(&(order.basis.m[1][3]), 3);
+    ibz_set(&(order.basis.m[2][0]), 0);
+    ibz_set(&(order.basis.m[2][1]), 0);
+    ibz_set(&(order.basis.m[2][2]), 2);
+    ibz_set(&(order.basis.m[2][3]), 0);
+    ibz_set(&(order.basis.m[3][0]), 0);
+    ibz_set(&(order.basis.m[3][1]), 0);
+    ibz_set(&(order.basis.m[3][2]), 0);
+    ibz_set(&(order.basis.m[3][3]), 1);
     ibz_set(&(order.denom), 4);
     quat_alg_elem_set(&init_helper, 1, 2, 3, 0, 1);
     ibz_set(&norm, 15);
@@ -607,22 +607,22 @@ quat_test_lideal_right_transporter(void)
     quat_lattice_init(&order);
     quat_alg_elem_init(&init_helper);
 
-    ibz_set(&(order.basis[0][0]), 4);
-    ibz_set(&(order.basis[0][1]), 0);
-    ibz_set(&(order.basis[0][2]), 2);
-    ibz_set(&(order.basis[0][3]), 2);
-    ibz_set(&(order.basis[1][0]), 0);
-    ibz_set(&(order.basis[1][1]), 8);
-    ibz_set(&(order.basis[1][2]), 4);
-    ibz_set(&(order.basis[1][3]), 3);
-    ibz_set(&(order.basis[2][0]), 0);
-    ibz_set(&(order.basis[2][1]), 0);
-    ibz_set(&(order.basis[2][2]), 2);
-    ibz_set(&(order.basis[2][3]), 0);
-    ibz_set(&(order.basis[3][0]), 0);
-    ibz_set(&(order.basis[3][1]), 0);
-    ibz_set(&(order.basis[3][2]), 0);
-    ibz_set(&(order.basis[3][3]), 1);
+    ibz_set(&(order.basis.m[0][0]), 4);
+    ibz_set(&(order.basis.m[0][1]), 0);
+    ibz_set(&(order.basis.m[0][2]), 2);
+    ibz_set(&(order.basis.m[0][3]), 2);
+    ibz_set(&(order.basis.m[1][0]), 0);
+    ibz_set(&(order.basis.m[1][1]), 8);
+    ibz_set(&(order.basis.m[1][2]), 4);
+    ibz_set(&(order.basis.m[1][3]), 3);
+    ibz_set(&(order.basis.m[2][0]), 0);
+    ibz_set(&(order.basis.m[2][1]), 0);
+    ibz_set(&(order.basis.m[2][2]), 2);
+    ibz_set(&(order.basis.m[2][3]), 0);
+    ibz_set(&(order.basis.m[3][0]), 0);
+    ibz_set(&(order.basis.m[3][1]), 0);
+    ibz_set(&(order.basis.m[3][2]), 0);
+    ibz_set(&(order.basis.m[3][3]), 1);
     ibz_set(&(order.denom), 4);
     quat_alg_elem_set(&init_helper, 1, 2, 3, 0, 1);
     ibz_set(&norm, 15);
@@ -679,22 +679,22 @@ quat_test_lideal_right_order(void)
     quat_alg_elem_init(&gen);
     ibz_init(&norm);
 
-    ibz_set(&(order.basis[0][0]), 4);
-    ibz_set(&(order.basis[0][1]), 0);
-    ibz_set(&(order.basis[0][2]), 2);
-    ibz_set(&(order.basis[0][3]), 2);
-    ibz_set(&(order.basis[1][0]), 0);
-    ibz_set(&(order.basis[1][1]), 8);
-    ibz_set(&(order.basis[1][2]), 4);
-    ibz_set(&(order.basis[1][3]), 3);
-    ibz_set(&(order.basis[2][0]), 0);
-    ibz_set(&(order.basis[2][1]), 0);
-    ibz_set(&(order.basis[2][2]), 2);
-    ibz_set(&(order.basis[2][3]), 0);
-    ibz_set(&(order.basis[3][0]), 0);
-    ibz_set(&(order.basis[3][1]), 0);
-    ibz_set(&(order.basis[3][2]), 0);
-    ibz_set(&(order.basis[3][3]), 1);
+    ibz_set(&(order.basis.m[0][0]), 4);
+    ibz_set(&(order.basis.m[0][1]), 0);
+    ibz_set(&(order.basis.m[0][2]), 2);
+    ibz_set(&(order.basis.m[0][3]), 2);
+    ibz_set(&(order.basis.m[1][0]), 0);
+    ibz_set(&(order.basis.m[1][1]), 8);
+    ibz_set(&(order.basis.m[1][2]), 4);
+    ibz_set(&(order.basis.m[1][3]), 3);
+    ibz_set(&(order.basis.m[2][0]), 0);
+    ibz_set(&(order.basis.m[2][1]), 0);
+    ibz_set(&(order.basis.m[2][2]), 2);
+    ibz_set(&(order.basis.m[2][3]), 0);
+    ibz_set(&(order.basis.m[3][0]), 0);
+    ibz_set(&(order.basis.m[3][1]), 0);
+    ibz_set(&(order.basis.m[3][2]), 0);
+    ibz_set(&(order.basis.m[3][3]), 1);
     ibz_set(&(order.denom), 4);
     quat_alg_elem_set(&gen, 1, 3, 3, 0, 1);
     ibz_set(&norm, 15);
@@ -705,7 +705,7 @@ quat_test_lideal_right_order(void)
     res = res || !ibz_mat_4x4_is_hnf(&(rorder.basis));
     // test order is of dimension 4 (assuming HNF)
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_is_zero(&(rorder.basis[i][i]));
+        res = res || ibz_is_zero(&(rorder.basis.m[i][i]));
     }
     // test order contains 1
     quat_alg_elem_set(&test, 1, 1, 0, 0, 0);
@@ -729,7 +729,7 @@ quat_test_lideal_right_order(void)
     res = res || !ibz_mat_4x4_is_hnf(&(rorder.basis));
     // test order is of dimension 4 (assuming HNF)
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_is_zero(&(rorder.basis[i][i]));
+        res = res || ibz_is_zero(&(rorder.basis.m[i][i]));
     }
     // test order contains 1
     quat_alg_elem_set(&test, 1, 1, 0, 0, 0);
@@ -853,13 +853,13 @@ quat_test_lideal_class_gram()
     assert(ok);
     quat_alg_conj(&elem2, &elem2);
     quat_alg_mul(&elem1, &elem1, &elem2, &alg);
-    ibz_mul(&norm1, &(elem1.coord[0]), &ibz_const_two);
+    ibz_mul(&norm1, &(elem1.coord.v[0]), &ibz_const_two);
     ibz_div(&norm1, &cmp, &norm1, &(elem1.denom));
 
     ibz_mat_4x4_eval(&vec1, &gram, &vec1);
     ibz_set(&norm2, 0);
     for (int i = 0; i < 4; i++) {
-        ibz_mul(&cmp, &(vec1[i]), &(vec2[i]));
+        ibz_mul(&cmp, &(vec1.v[i]), &(vec2.v[i]));
         ibz_add(&norm2, &norm2, &cmp);
     }
     ibz_div(&norm2, &cmp, &norm2, &(lideal.lattice.denom));

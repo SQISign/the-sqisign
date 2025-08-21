@@ -84,7 +84,7 @@ quat_test_input_random_lattice_generation(quat_lattice_t *lattices, int bitsize,
         while (ibz_is_zero(&det)) {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    randret = !ibz_rand_interval_bits(&((lattices[iter]).basis[i][j]), bitsize);
+                    randret = !ibz_rand_interval_bits(&((lattices[iter]).basis.m[i][j]), bitsize);
                     if (randret != 0) {
                         printf("Random generation failed in "
                                "quat_test_input_random_lattice_generation\n");

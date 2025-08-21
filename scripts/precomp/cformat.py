@@ -16,7 +16,7 @@ class Ibz:
                 '._mp_size': (-1)**sgn * num_limbs,
                 '._mp_d': '(mp_limb_t[]) {' + ','.join(map(hex,limbs)) + '}',
             }
-        return '{{' + ', '.join(f'{k} = {v}' for k,v in data.items()) + '}}'
+        return '{{{' + ', '.join(f'{k} = {v}' for k,v in data.items()) + '}}}'
 
 class FpEl:
     ref_p5248_radix_map  = { 16: 13, 32: 29, 64: 51 }
@@ -52,7 +52,7 @@ class FpEl:
             R = 1
         el = (self.n * R) % self.p
         vs = [(int(el) >> radix*i) % 2**radix for i in range(l)]
-        return '{' + ', '.join(map(hex, vs)) + '}'
+        return '{{' + ', '.join(map(hex, vs)) + '}}'
 
 class Object:
     def __init__(self, ty, name, obj):

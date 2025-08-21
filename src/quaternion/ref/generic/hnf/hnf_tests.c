@@ -56,33 +56,33 @@ ibz_mat_4xn_hnf_core(ibz_mat_4x4_t *hnf, int generator_number, const ibz_vec_4_t
     ibz_vec_4_init(&c);
     for (int h = 0; h < n; h++) {
         ibz_vec_4_init(&(a[h]));
-        ibz_copy(&(a[h][0]), &(generators[h][0]));
-        ibz_copy(&(a[h][1]), &(generators[h][1]));
-        ibz_copy(&(a[h][2]), &(generators[h][2]));
-        ibz_copy(&(a[h][3]), &(generators[h][3]));
+        ibz_copy(&(a[h].v[0]), &(generators[h].v[0]));
+        ibz_copy(&(a[h].v[1]), &(generators[h].v[1]));
+        ibz_copy(&(a[h].v[2]), &(generators[h].v[2]));
+        ibz_copy(&(a[h].v[3]), &(generators[h].v[3]));
     }
     while (i != -1) {
         while (j != 0) {
             j = j - 1;
-            if (!ibz_is_zero(&(a[j][i]))) {
+            if (!ibz_is_zero(&(a[j].v[i]))) {
                 // assumtion that ibz_xgcd outputs u,v which are small in absolute
                 // value is needed here
-                ibz_xgcd(&d, &u, &v, &(a[k][i]), &(a[j][i]));
+                ibz_xgcd(&d, &u, &v, &(a[k].v[i]), &(a[j].v[i]));
                 // also, needs u non 0, but v can be 0 if needed
                 if (ibz_is_zero(&u)) {
-                    ibz_div(&v, &r, &(a[k][i]), &(a[j][i]));
+                    ibz_div(&v, &r, &(a[k].v[i]), &(a[j].v[i]));
                     ibz_set(&u, 1);
                     ibz_sub(&v, &u, &v);
                 }
                 ibz_vec_4_linear_combination(&c, &u, &(a[k]), &v, &(a[j]));
-                ibz_div(&coeff_1, &r, &(a[k][i]), &d);
-                ibz_div(&coeff_2, &r, &(a[j][i]), &d);
+                ibz_div(&coeff_1, &r, &(a[k].v[i]), &d);
+                ibz_div(&coeff_2, &r, &(a[j].v[i]), &d);
                 ibz_neg(&coeff_2, &coeff_2);
                 ibz_vec_4_linear_combination(&(a[j]), &coeff_1, &(a[j]), &coeff_2, &(a[k]));
                 ibz_vec_4_copy(&(a[k]), &c);
             }
         }
-        ibz_copy(&b, &(a[k][i]));
+        ibz_copy(&b, &(a[k].v[i]));
         if (ibz_cmp(&b, &zero) < 0) {
             ibz_vec_4_negate(&(a[k]), &(a[k]));
             ibz_neg(&b, &b);
@@ -91,7 +91,7 @@ ibz_mat_4xn_hnf_core(ibz_mat_4x4_t *hnf, int generator_number, const ibz_vec_4_t
             k = k + 1;
         } else {
             for (j = k + 1; j < n; j++) {
-                ibz_div(&d, &r, &(a[j][i]), &b);
+                ibz_div(&d, &r, &(a[j].v[i]), &b);
                 if (ibz_cmp(&r, &zero) < 0) {
                     ibz_set(&r, 1);
                     ibz_sub(&d, &d, &r);
@@ -109,7 +109,7 @@ ibz_mat_4xn_hnf_core(ibz_mat_4x4_t *hnf, int generator_number, const ibz_vec_4_t
     }
     for (j = 0; j < 4; j++) {
         for (i = 0; i < 4; i++) {
-            ibz_copy(&((*hnf)[i][j]), &(a[n - 4 + j][i]));
+            ibz_copy(&(hnf->m[i][j]), &(a[n - 4 + j].v[i]));
         }
     }
 
@@ -527,83 +527,83 @@ quat_test_ibz_mat_4x4_is_hnf(void)
     ibz_mat_4x4_init(&mat);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), 0);
+            ibz_set(&(mat.m[i][j]), 0);
         }
     }
     res = res || (!ibz_mat_4x4_is_hnf(&mat));
-    ibz_set(&(mat[0][0]), 7);
-    ibz_set(&(mat[0][1]), 6);
-    ibz_set(&(mat[0][2]), 5);
-    ibz_set(&(mat[0][3]), 4);
-    ibz_set(&(mat[1][1]), 6);
-    ibz_set(&(mat[1][2]), 5);
-    ibz_set(&(mat[1][3]), 4);
-    ibz_set(&(mat[2][2]), 5);
-    ibz_set(&(mat[2][3]), 4);
-    ibz_set(&(mat[3][3]), 4);
+    ibz_set(&(mat.m[0][0]), 7);
+    ibz_set(&(mat.m[0][1]), 6);
+    ibz_set(&(mat.m[0][2]), 5);
+    ibz_set(&(mat.m[0][3]), 4);
+    ibz_set(&(mat.m[1][1]), 6);
+    ibz_set(&(mat.m[1][2]), 5);
+    ibz_set(&(mat.m[1][3]), 4);
+    ibz_set(&(mat.m[2][2]), 5);
+    ibz_set(&(mat.m[2][3]), 4);
+    ibz_set(&(mat.m[3][3]), 4);
     res = res || (!ibz_mat_4x4_is_hnf(&mat));
 
-    ibz_set(&(mat[0][0]), 7);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 5);
-    ibz_set(&(mat[0][3]), 4);
-    ibz_set(&(mat[1][1]), 0);
-    ibz_set(&(mat[1][2]), 0);
-    ibz_set(&(mat[1][3]), 0);
-    ibz_set(&(mat[2][2]), 5);
-    ibz_set(&(mat[2][3]), 4);
-    ibz_set(&(mat[3][3]), 4);
+    ibz_set(&(mat.m[0][0]), 7);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 5);
+    ibz_set(&(mat.m[0][3]), 4);
+    ibz_set(&(mat.m[1][1]), 0);
+    ibz_set(&(mat.m[1][2]), 0);
+    ibz_set(&(mat.m[1][3]), 0);
+    ibz_set(&(mat.m[2][2]), 5);
+    ibz_set(&(mat.m[2][3]), 4);
+    ibz_set(&(mat.m[3][3]), 4);
     res = res || (!ibz_mat_4x4_is_hnf(&mat));
 
     // negative tests
-    ibz_set(&(mat[0][0]), 7);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 5);
-    ibz_set(&(mat[0][3]), 4);
-    ibz_set(&(mat[1][1]), 1);
-    ibz_set(&(mat[1][2]), 5);
-    ibz_set(&(mat[1][3]), 9);
-    ibz_set(&(mat[2][2]), 5);
-    ibz_set(&(mat[2][3]), 4);
-    ibz_set(&(mat[3][3]), 4);
+    ibz_set(&(mat.m[0][0]), 7);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 5);
+    ibz_set(&(mat.m[0][3]), 4);
+    ibz_set(&(mat.m[1][1]), 1);
+    ibz_set(&(mat.m[1][2]), 5);
+    ibz_set(&(mat.m[1][3]), 9);
+    ibz_set(&(mat.m[2][2]), 5);
+    ibz_set(&(mat.m[2][3]), 4);
+    ibz_set(&(mat.m[3][3]), 4);
     res = res || (ibz_mat_4x4_is_hnf(&mat));
 
-    ibz_set(&(mat[0][0]), 7);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 5);
-    ibz_set(&(mat[0][3]), 4);
-    ibz_set(&(mat[1][1]), 1);
-    ibz_set(&(mat[1][2]), -5);
-    ibz_set(&(mat[1][3]), 1);
-    ibz_set(&(mat[2][2]), 5);
-    ibz_set(&(mat[2][3]), 4);
-    ibz_set(&(mat[3][3]), 4);
+    ibz_set(&(mat.m[0][0]), 7);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 5);
+    ibz_set(&(mat.m[0][3]), 4);
+    ibz_set(&(mat.m[1][1]), 1);
+    ibz_set(&(mat.m[1][2]), -5);
+    ibz_set(&(mat.m[1][3]), 1);
+    ibz_set(&(mat.m[2][2]), 5);
+    ibz_set(&(mat.m[2][3]), 4);
+    ibz_set(&(mat.m[3][3]), 4);
     res = res || (ibz_mat_4x4_is_hnf(&mat));
 
-    ibz_set(&(mat[0][0]), 7);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 5);
-    ibz_set(&(mat[0][3]), 4);
-    ibz_set(&(mat[1][0]), 2);
-    ibz_set(&(mat[1][1]), 3);
-    ibz_set(&(mat[1][2]), 1);
-    ibz_set(&(mat[1][3]), 1);
-    ibz_set(&(mat[2][2]), 5);
-    ibz_set(&(mat[2][3]), 4);
-    ibz_set(&(mat[3][3]), 4);
+    ibz_set(&(mat.m[0][0]), 7);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 5);
+    ibz_set(&(mat.m[0][3]), 4);
+    ibz_set(&(mat.m[1][0]), 2);
+    ibz_set(&(mat.m[1][1]), 3);
+    ibz_set(&(mat.m[1][2]), 1);
+    ibz_set(&(mat.m[1][3]), 1);
+    ibz_set(&(mat.m[2][2]), 5);
+    ibz_set(&(mat.m[2][3]), 4);
+    ibz_set(&(mat.m[3][3]), 4);
     res = res || (ibz_mat_4x4_is_hnf(&mat));
 
-    ibz_set(&(mat[0][0]), 7);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[0][2]), 5);
-    ibz_set(&(mat[0][3]), 4);
-    ibz_set(&(mat[1][0]), 2);
-    ibz_set(&(mat[1][1]), 3);
-    ibz_set(&(mat[1][2]), -1);
-    ibz_set(&(mat[1][3]), 7);
-    ibz_set(&(mat[2][2]), 0);
-    ibz_set(&(mat[2][3]), 0);
-    ibz_set(&(mat[3][3]), 4);
+    ibz_set(&(mat.m[0][0]), 7);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[0][2]), 5);
+    ibz_set(&(mat.m[0][3]), 4);
+    ibz_set(&(mat.m[1][0]), 2);
+    ibz_set(&(mat.m[1][1]), 3);
+    ibz_set(&(mat.m[1][2]), -1);
+    ibz_set(&(mat.m[1][3]), 7);
+    ibz_set(&(mat.m[2][2]), 0);
+    ibz_set(&(mat.m[2][3]), 0);
+    ibz_set(&(mat.m[3][3]), 4);
     res = res || (ibz_mat_4x4_is_hnf(&mat));
 
     if (res != 0) {
@@ -628,7 +628,7 @@ quat_test_ibz_mat_4xn_hnf_core(void)
     ibz_mat_4x4_init(&cmp);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 8; j++) {
-            ibz_set(&(generators[j][i]), 0);
+            ibz_set(&(generators[j].v[i]), 0);
         }
     }
     ibz_mat_4xn_hnf_core(&hnf, 8, generators);
@@ -636,47 +636,47 @@ quat_test_ibz_mat_4xn_hnf_core(void)
     // also should test that they generate the same lattice. Since HNF is unique, copute the HNF for
     // test vectors might be ok
 
-    ibz_set(&(generators[2][0]), 2);
-    ibz_set(&(generators[3][1]), 3);
-    ibz_set(&(generators[4][0]), 4);
-    ibz_set(&(generators[2][3]), 5);
-    ibz_set(&(generators[7][3]), 6);
-    ibz_set(&(generators[7][1]), 7);
-    ibz_set(&(generators[3][1]), 8);
-    ibz_set(&(generators[1][1]), 9);
-    ibz_set(&(generators[6][0]), 10);
-    ibz_set(&(generators[5][0]), 11);
-    ibz_set(&(generators[0][0]), 12);
+    ibz_set(&(generators[2].v[0]), 2);
+    ibz_set(&(generators[3].v[1]), 3);
+    ibz_set(&(generators[4].v[0]), 4);
+    ibz_set(&(generators[2].v[3]), 5);
+    ibz_set(&(generators[7].v[3]), 6);
+    ibz_set(&(generators[7].v[1]), 7);
+    ibz_set(&(generators[3].v[1]), 8);
+    ibz_set(&(generators[1].v[1]), 9);
+    ibz_set(&(generators[6].v[0]), 10);
+    ibz_set(&(generators[5].v[0]), 11);
+    ibz_set(&(generators[0].v[0]), 12);
     ibz_mat_4xn_hnf_core(&hnf, 8, generators);
     res = res || (!ibz_mat_4x4_is_hnf(&hnf));
 
-    ibz_set(&(generators[5][2]), 1);
-    ibz_set(&(generators[0][2]), 2);
+    ibz_set(&(generators[5].v[2]), 1);
+    ibz_set(&(generators[0].v[2]), 2);
     ibz_mat_4xn_hnf_core(&hnf, 8, generators);
     res = res || (!ibz_mat_4x4_is_hnf(&hnf));
 
     // test equality of result to a known hnf
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 8; j++) {
-            ibz_set(&(generators[j][i]), 0);
+            ibz_set(&(generators[j].v[i]), 0);
         }
     }
-    ibz_set(&(generators[0][0]), 4);
-    ibz_set(&(generators[2][0]), 3);
-    ibz_set(&(generators[4][0]), 1);
-    ibz_set(&(generators[7][0]), -1);
-    ibz_set(&(generators[1][1]), 5);
-    ibz_set(&(generators[5][1]), -2);
-    ibz_set(&(generators[2][2]), 3);
-    ibz_set(&(generators[6][2]), 1);
-    ibz_set(&(generators[5][2]), 1);
-    ibz_set(&(generators[3][3]), 7);
-    ibz_set(&(generators[7][3]), -3);
+    ibz_set(&(generators[0].v[0]), 4);
+    ibz_set(&(generators[2].v[0]), 3);
+    ibz_set(&(generators[4].v[0]), 1);
+    ibz_set(&(generators[7].v[0]), -1);
+    ibz_set(&(generators[1].v[1]), 5);
+    ibz_set(&(generators[5].v[1]), -2);
+    ibz_set(&(generators[2].v[2]), 3);
+    ibz_set(&(generators[6].v[2]), 1);
+    ibz_set(&(generators[5].v[2]), 1);
+    ibz_set(&(generators[3].v[3]), 7);
+    ibz_set(&(generators[7].v[3]), -3);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
-        ibz_set(&(cmp[i][i]), 1);
+        ibz_set(&(cmp.m[i][i]), 1);
     }
     ibz_mat_4xn_hnf_core(&hnf, 8, generators);
     res = res || (!ibz_mat_4x4_equal(&cmp, &hnf));
@@ -685,38 +685,38 @@ quat_test_ibz_mat_4xn_hnf_core(void)
     // https://github.com/SQISign/sqisign-nist/issues/38#issuecomment-1554585079
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 8; j++) {
-            ibz_set(&(generators[j][i]), 0);
+            ibz_set(&(generators[j].v[i]), 0);
         }
     }
-    ibz_set(&(generators[4][0]), 438);
-    ibz_set(&(generators[4][1]), 400);
-    ibz_set(&(generators[4][2]), 156);
-    ibz_set(&(generators[4][3]), -2);
-    ibz_set(&(generators[5][0]), -400);
-    ibz_set(&(generators[5][1]), 438);
-    ibz_set(&(generators[5][2]), 2);
-    ibz_set(&(generators[5][3]), 156);
-    ibz_set(&(generators[6][0]), -28826);
-    ibz_set(&(generators[6][1]), -148);
-    ibz_set(&(generators[6][2]), 220);
-    ibz_set(&(generators[6][3]), -122);
-    ibz_set(&(generators[7][0]), 586);
-    ibz_set(&(generators[7][1]), -28426);
-    ibz_set(&(generators[7][2]), 278);
-    ibz_set(&(generators[7][3]), 218);
+    ibz_set(&(generators[4].v[0]), 438);
+    ibz_set(&(generators[4].v[1]), 400);
+    ibz_set(&(generators[4].v[2]), 156);
+    ibz_set(&(generators[4].v[3]), -2);
+    ibz_set(&(generators[5].v[0]), -400);
+    ibz_set(&(generators[5].v[1]), 438);
+    ibz_set(&(generators[5].v[2]), 2);
+    ibz_set(&(generators[5].v[3]), 156);
+    ibz_set(&(generators[6].v[0]), -28826);
+    ibz_set(&(generators[6].v[1]), -148);
+    ibz_set(&(generators[6].v[2]), 220);
+    ibz_set(&(generators[6].v[3]), -122);
+    ibz_set(&(generators[7].v[0]), 586);
+    ibz_set(&(generators[7].v[1]), -28426);
+    ibz_set(&(generators[7].v[2]), 278);
+    ibz_set(&(generators[7].v[3]), 218);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
     }
-    ibz_set(&(cmp[0][0]), 2321156);
-    ibz_set(&(cmp[1][1]), 2321156);
-    ibz_set(&(cmp[0][2]), 620252);
-    ibz_set(&(cmp[1][2]), 365058);
-    ibz_set(&(cmp[2][2]), 2);
-    ibz_set(&(cmp[0][3]), 1956098);
-    ibz_set(&(cmp[1][3]), 620252);
-    ibz_set(&(cmp[3][3]), 2);
+    ibz_set(&(cmp.m[0][0]), 2321156);
+    ibz_set(&(cmp.m[1][1]), 2321156);
+    ibz_set(&(cmp.m[0][2]), 620252);
+    ibz_set(&(cmp.m[1][2]), 365058);
+    ibz_set(&(cmp.m[2][2]), 2);
+    ibz_set(&(cmp.m[0][3]), 1956098);
+    ibz_set(&(cmp.m[1][3]), 620252);
+    ibz_set(&(cmp.m[3][3]), 2);
     ibz_mat_4xn_hnf_core(&hnf, 8, generators);
     res = res || (!ibz_mat_4x4_equal(&cmp, &hnf));
 
@@ -745,19 +745,19 @@ quat_test_ibz_mat_4xn_hnf_mod_core(void)
     for (int i = 0; i < 8; i++)
         ibz_vec_4_init(&(generators[i]));
 
-    ibz_set(&(generators[2][0]), 2);
-    ibz_set(&(generators[3][1]), 3);
-    ibz_set(&(generators[4][0]), 4);
-    ibz_set(&(generators[2][3]), 5);
-    ibz_set(&(generators[7][3]), 6);
-    ibz_set(&(generators[7][1]), 7);
-    ibz_set(&(generators[3][1]), 8);
-    ibz_set(&(generators[1][1]), 9);
-    ibz_set(&(generators[6][0]), 10);
-    ibz_set(&(generators[5][0]), 11);
-    ibz_set(&(generators[0][0]), 12);
-    ibz_set(&(generators[5][2]), 1);
-    ibz_set(&(generators[0][2]), 2);
+    ibz_set(&(generators[2].v[0]), 2);
+    ibz_set(&(generators[3].v[1]), 3);
+    ibz_set(&(generators[4].v[0]), 4);
+    ibz_set(&(generators[2].v[3]), 5);
+    ibz_set(&(generators[7].v[3]), 6);
+    ibz_set(&(generators[7].v[1]), 7);
+    ibz_set(&(generators[3].v[1]), 8);
+    ibz_set(&(generators[1].v[1]), 9);
+    ibz_set(&(generators[6].v[0]), 10);
+    ibz_set(&(generators[5].v[0]), 11);
+    ibz_set(&(generators[0].v[0]), 12);
+    ibz_set(&(generators[5].v[2]), 1);
+    ibz_set(&(generators[0].v[2]), 2);
     ibz_set(&det, 4);
     ibz_mat_4xn_hnf_mod_core(&hnf, 8, generators, &det);
     res = res || (!ibz_mat_4x4_is_hnf(&hnf));
@@ -765,25 +765,25 @@ quat_test_ibz_mat_4xn_hnf_mod_core(void)
     // test equality of result to a known hnf
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 8; j++) {
-            ibz_set(&(generators[j][i]), 0);
+            ibz_set(&(generators[j].v[i]), 0);
         }
     }
-    ibz_set(&(generators[0][0]), 4);
-    ibz_set(&(generators[2][0]), 3);
-    ibz_set(&(generators[4][0]), 1);
-    ibz_set(&(generators[7][0]), -1);
-    ibz_set(&(generators[1][1]), 5);
-    ibz_set(&(generators[5][1]), -2);
-    ibz_set(&(generators[2][2]), 3);
-    ibz_set(&(generators[6][2]), 1);
-    ibz_set(&(generators[5][2]), 1);
-    ibz_set(&(generators[3][3]), 7);
-    ibz_set(&(generators[7][3]), -3);
+    ibz_set(&(generators[0].v[0]), 4);
+    ibz_set(&(generators[2].v[0]), 3);
+    ibz_set(&(generators[4].v[0]), 1);
+    ibz_set(&(generators[7].v[0]), -1);
+    ibz_set(&(generators[1].v[1]), 5);
+    ibz_set(&(generators[5].v[1]), -2);
+    ibz_set(&(generators[2].v[2]), 3);
+    ibz_set(&(generators[6].v[2]), 1);
+    ibz_set(&(generators[5].v[2]), 1);
+    ibz_set(&(generators[3].v[3]), 7);
+    ibz_set(&(generators[7].v[3]), -3);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
-        ibz_set(&(cmp[i][i]), 1);
+        ibz_set(&(cmp.m[i][i]), 1);
     }
     ibz_set(&det, 1);
     ibz_mat_4xn_hnf_mod_core(&hnf, 8, generators, &det);
@@ -793,60 +793,60 @@ quat_test_ibz_mat_4xn_hnf_mod_core(void)
     // https://github.com/SQISign/sqisign-nist/issues/38#issuecomment-1554585079
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 8; j++) {
-            ibz_set(&(generators[j][i]), 0);
+            ibz_set(&(generators[j].v[i]), 0);
         }
     }
-    ibz_set(&(generators[4][0]), 438);
-    ibz_set(&(generators[4][1]), 400);
-    ibz_set(&(generators[4][2]), 156);
-    ibz_set(&(generators[4][3]), -2);
-    ibz_set(&(generators[5][0]), -400);
-    ibz_set(&(generators[5][1]), 438);
-    ibz_set(&(generators[5][2]), 2);
-    ibz_set(&(generators[5][3]), 156);
-    ibz_set(&(generators[6][0]), -28826);
-    ibz_set(&(generators[6][1]), -148);
-    ibz_set(&(generators[6][2]), 220);
-    ibz_set(&(generators[6][3]), -122);
-    ibz_set(&(generators[7][0]), 586);
-    ibz_set(&(generators[7][1]), -28426);
-    ibz_set(&(generators[7][2]), 278);
-    ibz_set(&(generators[7][3]), 218);
+    ibz_set(&(generators[4].v[0]), 438);
+    ibz_set(&(generators[4].v[1]), 400);
+    ibz_set(&(generators[4].v[2]), 156);
+    ibz_set(&(generators[4].v[3]), -2);
+    ibz_set(&(generators[5].v[0]), -400);
+    ibz_set(&(generators[5].v[1]), 438);
+    ibz_set(&(generators[5].v[2]), 2);
+    ibz_set(&(generators[5].v[3]), 156);
+    ibz_set(&(generators[6].v[0]), -28826);
+    ibz_set(&(generators[6].v[1]), -148);
+    ibz_set(&(generators[6].v[2]), 220);
+    ibz_set(&(generators[6].v[3]), -122);
+    ibz_set(&(generators[7].v[0]), 586);
+    ibz_set(&(generators[7].v[1]), -28426);
+    ibz_set(&(generators[7].v[2]), 278);
+    ibz_set(&(generators[7].v[3]), 218);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
     }
-    ibz_set(&(cmp[0][0]), 2321156);
-    ibz_set(&(cmp[1][1]), 2321156);
-    ibz_set(&(cmp[0][2]), 620252);
-    ibz_set(&(cmp[1][2]), 365058);
-    ibz_set(&(cmp[2][2]), 2);
-    ibz_set(&(cmp[0][3]), 1956098);
-    ibz_set(&(cmp[1][3]), 620252);
-    ibz_set(&(cmp[3][3]), 2);
+    ibz_set(&(cmp.m[0][0]), 2321156);
+    ibz_set(&(cmp.m[1][1]), 2321156);
+    ibz_set(&(cmp.m[0][2]), 620252);
+    ibz_set(&(cmp.m[1][2]), 365058);
+    ibz_set(&(cmp.m[2][2]), 2);
+    ibz_set(&(cmp.m[0][3]), 1956098);
+    ibz_set(&(cmp.m[1][3]), 620252);
+    ibz_set(&(cmp.m[3][3]), 2);
     ibz_set_from_str(&det, "21551060705344", 10);
     ibz_mat_4xn_hnf_mod_core(&hnf, 8, generators, &det);
     res = res || (!ibz_mat_4x4_equal(&cmp, &hnf));
 
     // use non-modular hnf version to test
-    ibz_set(&(generators[4][0]), 438);
-    ibz_set(&(generators[4][0]), 438);
-    ibz_set(&(generators[4][1]), 400);
-    ibz_set(&(generators[4][2]), 156);
-    ibz_set(&(generators[5][3]), -2);
-    ibz_set(&(generators[5][0]), -40);
-    ibz_set(&(generators[5][1]), 438);
-    ibz_set(&(generators[5][2]), 20);
-    ibz_set(&(generators[5][3]), 156);
-    ibz_set(&(generators[6][0]), -28826);
-    ibz_set(&(generators[6][1]), -148);
-    ibz_set(&(generators[6][2]), 220);
-    ibz_set(&(generators[6][3]), -122);
-    ibz_set(&(generators[7][0]), 586);
-    ibz_set(&(generators[7][1]), -28426);
-    ibz_set(&(generators[7][2]), 278);
-    ibz_set(&(generators[7][3]), 218);
+    ibz_set(&(generators[4].v[0]), 438);
+    ibz_set(&(generators[4].v[0]), 438);
+    ibz_set(&(generators[4].v[1]), 400);
+    ibz_set(&(generators[4].v[2]), 156);
+    ibz_set(&(generators[5].v[3]), -2);
+    ibz_set(&(generators[5].v[0]), -40);
+    ibz_set(&(generators[5].v[1]), 438);
+    ibz_set(&(generators[5].v[2]), 20);
+    ibz_set(&(generators[5].v[3]), 156);
+    ibz_set(&(generators[6].v[0]), -28826);
+    ibz_set(&(generators[6].v[1]), -148);
+    ibz_set(&(generators[6].v[2]), 220);
+    ibz_set(&(generators[6].v[3]), -122);
+    ibz_set(&(generators[7].v[0]), 586);
+    ibz_set(&(generators[7].v[1]), -28426);
+    ibz_set(&(generators[7].v[2]), 278);
+    ibz_set(&(generators[7].v[3]), 218);
     ibz_mat_4xn_hnf_core(&cmp, 8, generators);
     ibz_mat_4x4_inv_with_det_as_denom(NULL, &det, &cmp);
     ibz_abs(&det, &det);
@@ -893,7 +893,7 @@ quat_test_ibz_mat_4xn_hnf_core_randomized(void)
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
-                ibz_set(&(generators[j][i]), rand[j][i]);
+                ibz_set(&(generators[j].v[i]), rand[j][i]);
             }
         }
         ibz_mat_4xn_hnf_core(&hnf, 8, generators);
@@ -902,7 +902,7 @@ quat_test_ibz_mat_4xn_hnf_core_randomized(void)
         // inclusion efficiently (and this only if full rank), so do so
         det_non_0 = 1;
         for (int i = 0; i < 4; i++) {
-            det_non_0 = det_non_0 && ibz_is_zero(&(hnf[i][i]));
+            det_non_0 = det_non_0 && ibz_is_zero(&(hnf.m[i][i]));
         }
         if (det_non_0) {
             ibz_mat_4x4_copy(&(lat.basis), &hnf);
@@ -961,7 +961,7 @@ quat_test_ibz_mat_4xn_hnf_mod_core_randomized(void)
         }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
-                ibz_set(&(generators[j][i]), rand[j][i]);
+                ibz_set(&(generators[j].v[i]), rand[j][i]);
             }
         }
         rand_m = 0;

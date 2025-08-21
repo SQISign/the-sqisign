@@ -19,9 +19,9 @@ _id2iso_test_ker2id(void)
         ibz_t gcd;
         ibz_init(&gcd);
         do {
-            random_scalar(&vec2[0]);
-            random_scalar(&vec2[1]);
-            ibz_gcd(&gcd, &vec2[0], &vec2[1]);
+            random_scalar(&vec2.v[0]);
+            random_scalar(&vec2.v[1]);
+            ibz_gcd(&gcd, &vec2.v[0], &vec2.v[1]);
         } while (ibz_divides(&gcd, &ibz_const_two));
         ibz_finalize(&gcd);
     }

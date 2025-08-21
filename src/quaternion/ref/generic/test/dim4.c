@@ -13,58 +13,58 @@ quat_test_dim4_ibz_mat_4x4_mul(void)
     ibz_mat_4x4_init(&cmp);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(a[i][j]), 0);
-            ibz_set(&(b[i][j]), 0);
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(a.m[i][j]), 0);
+            ibz_set(&(b.m[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
     }
 
-    ibz_set(&(a[0][0]), 1);
-    ibz_set(&(a[0][1]), 2);
-    ibz_set(&(a[0][2]), 1);
-    ibz_set(&(a[1][1]), 1);
-    ibz_set(&(a[1][2]), 3);
-    ibz_set(&(a[2][2]), 1);
-    ibz_set(&(a[2][3]), 4);
-    ibz_set(&(a[3][3]), 1);
-    ibz_set(&(b[0][0]), -1);
-    ibz_set(&(b[1][0]), 1);
-    ibz_set(&(b[1][1]), -2);
-    ibz_set(&(b[2][0]), 1);
-    ibz_set(&(b[2][2]), 3);
-    ibz_set(&(b[3][0]), 1);
-    ibz_set(&(b[3][1]), 5);
-    ibz_set(&(b[3][2]), -1);
-    ibz_set(&(b[3][3]), 2);
-    ibz_set(&(cmp[0][0]), 4);
-    ibz_set(&(cmp[0][1]), -4);
-    ibz_set(&(cmp[0][2]), 1);
-    ibz_set(&(cmp[1][0]), 10);
-    ibz_set(&(cmp[1][1]), -2);
-    ibz_set(&(cmp[1][2]), 3);
-    ibz_set(&(cmp[2][0]), 7);
-    ibz_set(&(cmp[2][1]), 20);
-    ibz_set(&(cmp[2][2]), -3);
-    ibz_set(&(cmp[2][3]), 8);
-    ibz_set(&(cmp[3][0]), 1);
-    ibz_set(&(cmp[3][1]), 5);
-    ibz_set(&(cmp[3][2]), -1);
-    ibz_set(&(cmp[3][3]), 2);
+    ibz_set(&(a.m[0][0]), 1);
+    ibz_set(&(a.m[0][1]), 2);
+    ibz_set(&(a.m[0][2]), 1);
+    ibz_set(&(a.m[1][1]), 1);
+    ibz_set(&(a.m[1][2]), 3);
+    ibz_set(&(a.m[2][2]), 1);
+    ibz_set(&(a.m[2][3]), 4);
+    ibz_set(&(a.m[3][3]), 1);
+    ibz_set(&(b.m[0][0]), -1);
+    ibz_set(&(b.m[1][0]), 1);
+    ibz_set(&(b.m[1][1]), -2);
+    ibz_set(&(b.m[2][0]), 1);
+    ibz_set(&(b.m[2][2]), 3);
+    ibz_set(&(b.m[3][0]), 1);
+    ibz_set(&(b.m[3][1]), 5);
+    ibz_set(&(b.m[3][2]), -1);
+    ibz_set(&(b.m[3][3]), 2);
+    ibz_set(&(cmp.m[0][0]), 4);
+    ibz_set(&(cmp.m[0][1]), -4);
+    ibz_set(&(cmp.m[0][2]), 1);
+    ibz_set(&(cmp.m[1][0]), 10);
+    ibz_set(&(cmp.m[1][1]), -2);
+    ibz_set(&(cmp.m[1][2]), 3);
+    ibz_set(&(cmp.m[2][0]), 7);
+    ibz_set(&(cmp.m[2][1]), 20);
+    ibz_set(&(cmp.m[2][2]), -3);
+    ibz_set(&(cmp.m[2][3]), 8);
+    ibz_set(&(cmp.m[3][0]), 1);
+    ibz_set(&(cmp.m[3][1]), 5);
+    ibz_set(&(cmp.m[3][2]), -1);
+    ibz_set(&(cmp.m[3][3]), 2);
     ibz_mat_4x4_mul(&prod, &a, &b);
     res = res || ibz_mat_4x4_equal(&cmp, &prod);
 
     ibz_mat_4x4_mul(&b, &a, &b);
     res = res || ibz_mat_4x4_equal(&b, &cmp);
 
-    ibz_set(&(b[0][0]), -1);
-    ibz_set(&(b[1][0]), 1);
-    ibz_set(&(b[1][1]), -2);
-    ibz_set(&(b[2][0]), 1);
-    ibz_set(&(b[2][2]), 3);
-    ibz_set(&(b[3][0]), 1);
-    ibz_set(&(b[3][1]), 5);
-    ibz_set(&(b[3][2]), -1);
-    ibz_set(&(b[3][3]), 2);
+    ibz_set(&(b.m[0][0]), -1);
+    ibz_set(&(b.m[1][0]), 1);
+    ibz_set(&(b.m[1][1]), -2);
+    ibz_set(&(b.m[2][0]), 1);
+    ibz_set(&(b.m[2][2]), 3);
+    ibz_set(&(b.m[3][0]), 1);
+    ibz_set(&(b.m[3][1]), 5);
+    ibz_set(&(b.m[3][2]), -1);
+    ibz_set(&(b.m[3][3]), 2);
     ibz_mat_4x4_mul(&a, &a, &b);
     res = res || ibz_mat_4x4_equal(&a, &cmp);
 
@@ -88,10 +88,10 @@ quat_test_dim4_ibz_vec_4_set(void)
     ibz_vec_4_t a;
     ibz_vec_4_init(&a);
     ibz_vec_4_set(&a, 1, 2, 3, 4);
-    res = res || !(ibz_cmp_int32(&(a[0]), 1) == 0);
-    res = res || !(ibz_cmp_int32(&(a[1]), 2) == 0);
-    res = res || !(ibz_cmp_int32(&(a[2]), 3) == 0);
-    res = res || !(ibz_cmp_int32(&(a[3]), 4) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[0]), 1) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[1]), 2) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[2]), 3) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[3]), 4) == 0);
     if (res != 0) {
         printf("Quaternion unit test dim4_ibz_vec_4_set failed\n");
     }
@@ -109,15 +109,15 @@ quat_test_dim4_ibz_vec_4_copy(void)
     ibz_vec_4_init(&b);
     ibz_vec_4_set(&a, 1, 2, 3, 4);
     ibz_vec_4_copy(&b, &a);
-    res = res || !(ibz_cmp_int32(&(b[0]), 1) == 0);
-    res = res || !(ibz_cmp_int32(&(b[1]), 2) == 0);
-    res = res || !(ibz_cmp_int32(&(b[2]), 3) == 0);
-    res = res || !(ibz_cmp_int32(&(b[3]), 4) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[0]), 1) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[1]), 2) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[2]), 3) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[3]), 4) == 0);
     ibz_vec_4_copy(&a, &a);
-    res = res || !(ibz_cmp_int32(&(a[0]), 1) == 0);
-    res = res || !(ibz_cmp_int32(&(a[1]), 2) == 0);
-    res = res || !(ibz_cmp_int32(&(a[2]), 3) == 0);
-    res = res || !(ibz_cmp_int32(&(a[3]), 4) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[0]), 1) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[1]), 2) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[2]), 3) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[3]), 4) == 0);
 
     if (res != 0) {
         printf("Quaternion unit test dim4_ibz_vec_4_copy failed\n");
@@ -137,15 +137,15 @@ quat_test_dim4_ibz_vec_4_negate(void)
     ibz_vec_4_init(&b);
     ibz_vec_4_set(&a, 1, 2, 3, 4);
     ibz_vec_4_negate(&b, &a);
-    res = res || !(ibz_cmp_int32(&(b[0]), -1) == 0);
-    res = res || !(ibz_cmp_int32(&(b[1]), -2) == 0);
-    res = res || !(ibz_cmp_int32(&(b[2]), -3) == 0);
-    res = res || !(ibz_cmp_int32(&(b[3]), -4) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[0]), -1) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[1]), -2) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[2]), -3) == 0);
+    res = res || !(ibz_cmp_int32(&(b.v[3]), -4) == 0);
     ibz_vec_4_negate(&a, &a);
-    res = res || !(ibz_cmp_int32(&(a[0]), -1) == 0);
-    res = res || !(ibz_cmp_int32(&(a[1]), -2) == 0);
-    res = res || !(ibz_cmp_int32(&(a[2]), -3) == 0);
-    res = res || !(ibz_cmp_int32(&(a[3]), -4) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[0]), -1) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[1]), -2) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[2]), -3) == 0);
+    res = res || !(ibz_cmp_int32(&(a.v[3]), -4) == 0);
     if (res != 0) {
         printf("Quaternion unit test dim4_ibz_vec_4_negate failed\n");
     }
@@ -172,10 +172,10 @@ quat_test_dim4_vec_4_copy_ibz(void)
     ibz_set(&c, 3);
     ibz_set(&d, 4);
     ibz_vec_4_copy_ibz(&coord, &a, &b, &c, &d);
-    res = res || ibz_cmp(&(coord[0]), &a);
-    res = res || ibz_cmp(&(coord[1]), &b);
-    res = res || ibz_cmp(&(coord[2]), &c);
-    res = res || ibz_cmp(&(coord[3]), &d);
+    res = res || ibz_cmp(&(coord.v[0]), &a);
+    res = res || ibz_cmp(&(coord.v[1]), &b);
+    res = res || ibz_cmp(&(coord.v[2]), &c);
+    res = res || ibz_cmp(&(coord.v[3]), &d);
 
     if (res != 0) {
         printf("Quaternion unit test dim4_vec_4_copy_ibz failed\n");
@@ -199,52 +199,52 @@ quat_test_dim4_ibz_vec_4_add(void)
     ibz_vec_4_init(&c);
     ibz_vec_4_init(&cmp);
 
-    ibz_set(&(a[0]), 1);
-    ibz_set(&(a[1]), -2);
-    ibz_set(&(a[2]), 7);
-    ibz_set(&(a[3]), 199);
-    ibz_set(&(b[0]), -6);
-    ibz_set(&(b[1]), 2);
-    ibz_set(&(b[2]), 67);
-    ibz_set(&(b[3]), -22);
-    ibz_set(&(cmp[0]), -5);
-    ibz_set(&(cmp[1]), 0);
-    ibz_set(&(cmp[2]), 74);
-    ibz_set(&(cmp[3]), 177);
+    ibz_set(&(a.v[0]), 1);
+    ibz_set(&(a.v[1]), -2);
+    ibz_set(&(a.v[2]), 7);
+    ibz_set(&(a.v[3]), 199);
+    ibz_set(&(b.v[0]), -6);
+    ibz_set(&(b.v[1]), 2);
+    ibz_set(&(b.v[2]), 67);
+    ibz_set(&(b.v[3]), -22);
+    ibz_set(&(cmp.v[0]), -5);
+    ibz_set(&(cmp.v[1]), 0);
+    ibz_set(&(cmp.v[2]), 74);
+    ibz_set(&(cmp.v[3]), 177);
     ibz_vec_4_add(&c, &a, &b);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(c.v[i]), &(cmp.v[i]));
     }
 
-    ibz_set(&(a[0]), -122);
-    ibz_set(&(a[1]), 0);
-    ibz_set(&(a[2]), -7);
-    ibz_set(&(a[3]), 1889);
-    ibz_set(&(b[0]), -6);
-    ibz_set(&(b[1]), 2);
-    ibz_set(&(b[2]), 67);
-    ibz_set(&(b[3]), -1889);
-    ibz_set(&(cmp[0]), -128);
-    ibz_set(&(cmp[1]), 2);
-    ibz_set(&(cmp[2]), 60);
-    ibz_set(&(cmp[3]), 0);
+    ibz_set(&(a.v[0]), -122);
+    ibz_set(&(a.v[1]), 0);
+    ibz_set(&(a.v[2]), -7);
+    ibz_set(&(a.v[3]), 1889);
+    ibz_set(&(b.v[0]), -6);
+    ibz_set(&(b.v[1]), 2);
+    ibz_set(&(b.v[2]), 67);
+    ibz_set(&(b.v[3]), -1889);
+    ibz_set(&(cmp.v[0]), -128);
+    ibz_set(&(cmp.v[1]), 2);
+    ibz_set(&(cmp.v[2]), 60);
+    ibz_set(&(cmp.v[3]), 0);
     ibz_vec_4_add(&c, &a, &b);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(c.v[i]), &(cmp.v[i]));
     }
 
-    ibz_set(&(a[0]), -1);
-    ibz_set(&(a[1]), 2);
-    ibz_set(&(a[2]), -7);
-    ibz_set(&(a[3]), 19);
+    ibz_set(&(a.v[0]), -1);
+    ibz_set(&(a.v[1]), 2);
+    ibz_set(&(a.v[2]), -7);
+    ibz_set(&(a.v[3]), 19);
     ;
-    ibz_set(&(cmp[0]), -2);
-    ibz_set(&(cmp[1]), 4);
-    ibz_set(&(cmp[2]), -14);
-    ibz_set(&(cmp[3]), 38);
+    ibz_set(&(cmp.v[0]), -2);
+    ibz_set(&(cmp.v[1]), 4);
+    ibz_set(&(cmp.v[2]), -14);
+    ibz_set(&(cmp.v[3]), 38);
     ibz_vec_4_add(&a, &a, &a);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(a[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(a.v[i]), &(cmp.v[i]));
     }
 
     if (res != 0) {
@@ -268,52 +268,52 @@ quat_test_dim4_ibz_vec_4_sub(void)
     ibz_vec_4_init(&c);
     ibz_vec_4_init(&cmp);
 
-    ibz_set(&(a[0]), 1);
-    ibz_set(&(a[1]), -2);
-    ibz_set(&(a[2]), 7);
-    ibz_set(&(a[3]), 199);
-    ibz_set(&(b[0]), -6);
-    ibz_set(&(b[1]), 2);
-    ibz_set(&(b[2]), 67);
-    ibz_set(&(b[3]), -22);
-    ibz_set(&(cmp[0]), 7);
-    ibz_set(&(cmp[1]), -4);
-    ibz_set(&(cmp[2]), -60);
-    ibz_set(&(cmp[3]), 221);
+    ibz_set(&(a.v[0]), 1);
+    ibz_set(&(a.v[1]), -2);
+    ibz_set(&(a.v[2]), 7);
+    ibz_set(&(a.v[3]), 199);
+    ibz_set(&(b.v[0]), -6);
+    ibz_set(&(b.v[1]), 2);
+    ibz_set(&(b.v[2]), 67);
+    ibz_set(&(b.v[3]), -22);
+    ibz_set(&(cmp.v[0]), 7);
+    ibz_set(&(cmp.v[1]), -4);
+    ibz_set(&(cmp.v[2]), -60);
+    ibz_set(&(cmp.v[3]), 221);
     ibz_vec_4_sub(&c, &a, &b);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(c.v[i]), &(cmp.v[i]));
     }
 
-    ibz_set(&(a[0]), -122);
-    ibz_set(&(a[1]), 0);
-    ibz_set(&(a[2]), -7);
-    ibz_set(&(a[3]), 1889);
-    ibz_set(&(b[0]), -6);
-    ibz_set(&(b[1]), 2);
-    ibz_set(&(b[2]), 67);
-    ibz_set(&(b[3]), -1889);
-    ibz_set(&(cmp[0]), -116);
-    ibz_set(&(cmp[1]), -2);
-    ibz_set(&(cmp[2]), -74);
-    ibz_set(&(cmp[3]), 3778);
+    ibz_set(&(a.v[0]), -122);
+    ibz_set(&(a.v[1]), 0);
+    ibz_set(&(a.v[2]), -7);
+    ibz_set(&(a.v[3]), 1889);
+    ibz_set(&(b.v[0]), -6);
+    ibz_set(&(b.v[1]), 2);
+    ibz_set(&(b.v[2]), 67);
+    ibz_set(&(b.v[3]), -1889);
+    ibz_set(&(cmp.v[0]), -116);
+    ibz_set(&(cmp.v[1]), -2);
+    ibz_set(&(cmp.v[2]), -74);
+    ibz_set(&(cmp.v[3]), 3778);
     ibz_vec_4_sub(&c, &a, &b);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(c.v[i]), &(cmp.v[i]));
     }
 
-    ibz_set(&(a[0]), -1);
-    ibz_set(&(a[1]), 2);
-    ibz_set(&(a[2]), -7);
-    ibz_set(&(a[3]), 19);
+    ibz_set(&(a.v[0]), -1);
+    ibz_set(&(a.v[1]), 2);
+    ibz_set(&(a.v[2]), -7);
+    ibz_set(&(a.v[3]), 19);
     ;
-    ibz_set(&(cmp[0]), 0);
-    ibz_set(&(cmp[1]), 0);
-    ibz_set(&(cmp[2]), 0);
-    ibz_set(&(cmp[3]), 0);
+    ibz_set(&(cmp.v[0]), 0);
+    ibz_set(&(cmp.v[1]), 0);
+    ibz_set(&(cmp.v[2]), 0);
+    ibz_set(&(cmp.v[3]), 0);
     ibz_vec_4_sub(&a, &a, &a);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(a[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(a.v[i]), &(cmp.v[i]));
     }
 
     if (res != 0) {
@@ -348,39 +348,39 @@ quat_test_dim4_ibz_vec_4_is_zero(void)
     ibz_vec_4_set(&x, -1, 1, 1, -1);
     res = res || ibz_vec_4_is_zero(&x);
     ibz_vec_4_set(&x, 0, 0, 0, 0);
-    ibz_set(&(x[0]), 0);
-    ibz_set(&(x[1]), 0);
-    ibz_set(&(x[2]), 0);
-    ibz_set(&(x[3]), 0);
+    ibz_set(&(x.v[0]), 0);
+    ibz_set(&(x.v[1]), 0);
+    ibz_set(&(x.v[2]), 0);
+    ibz_set(&(x.v[3]), 0);
     res = res | (1 - ibz_vec_4_is_zero(&x));
-    ibz_set(&(x[3]), 1);
+    ibz_set(&(x.v[3]), 1);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[3]), -1);
+    ibz_set(&(x.v[3]), -1);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[2]), 1);
-    ibz_set(&(x[3]), 0);
+    ibz_set(&(x.v[2]), 1);
+    ibz_set(&(x.v[3]), 0);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[2]), -20);
+    ibz_set(&(x.v[2]), -20);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[1]), 1);
-    ibz_set(&(x[2]), 0);
+    ibz_set(&(x.v[1]), 1);
+    ibz_set(&(x.v[2]), 0);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[1]), -50000);
+    ibz_set(&(x.v[1]), -50000);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[0]), 1);
-    ibz_set(&(x[1]), 0);
+    ibz_set(&(x.v[0]), 1);
+    ibz_set(&(x.v[1]), 0);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[0]), -90000);
+    ibz_set(&(x.v[0]), -90000);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[0]), 0);
-    ibz_set(&(x[1]), -500);
-    ibz_set(&(x[2]), 20);
-    ibz_set(&(x[3]), 0);
+    ibz_set(&(x.v[0]), 0);
+    ibz_set(&(x.v[1]), -500);
+    ibz_set(&(x.v[2]), 20);
+    ibz_set(&(x.v[3]), 0);
     res = res | ibz_vec_4_is_zero(&x);
-    ibz_set(&(x[0]), 19);
-    ibz_set(&(x[1]), -500);
-    ibz_set(&(x[2]), 20);
-    ibz_set(&(x[3]), -2);
+    ibz_set(&(x.v[0]), 19);
+    ibz_set(&(x.v[1]), -500);
+    ibz_set(&(x.v[2]), 20);
+    ibz_set(&(x.v[3]), -2);
     res = res | ibz_vec_4_is_zero(&x);
 
     if (res != 0) {
@@ -411,12 +411,12 @@ quat_test_dim4_ibz_vec_4_linear_combination(void)
     ibz_vec_4_set(&cmp, 4, 3, 3, 11);
     ibz_vec_4_linear_combination(&lc, &ca, &a, &cb, &b);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(lc[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(lc.v[i]), &(cmp.v[i]));
     }
     ibz_vec_4_set(&cmp, 1, 2, 3, 4);
     ibz_vec_4_linear_combination(&a, &ca, &a, &cb, &a);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(a[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(a.v[i]), &(cmp.v[i]));
     }
     if (res != 0) {
         printf("Quaternion unit test dim4_ibz_vec_4_linear_combination failed\n");
@@ -445,16 +445,16 @@ quat_test_dim4_ibz_vec_4_scalar_mul(void)
     s = 5;
     ibz_set(&scalar, s);
     for (int i = 0; i < 4; i++) {
-        ibz_set(&(vec[i]), (i));
+        ibz_set(&(vec.v[i]), (i));
     }
     ibz_vec_4_scalar_mul(&prod, &scalar, &vec);
     for (int i = 0; i < 4; i++) {
-        res = res || (ibz_cmp_int32(&(prod[i]), i * s) != 0);
+        res = res || (ibz_cmp_int32(&(prod.v[i]), i * s) != 0);
     }
 
     ibz_vec_4_scalar_mul(&vec, &scalar, &vec);
     for (int i = 0; i < 4; i++) {
-        res = res || (ibz_cmp_int32(&(vec[i]), i * s) != 0);
+        res = res || (ibz_cmp_int32(&(vec.v[i]), i * s) != 0);
     }
 
     if (res != 0) {
@@ -481,16 +481,16 @@ quat_test_dim4_ibz_vec_4_scalar_div(void)
     s = 5;
     ibz_set(&scalar, s);
     for (int i = 0; i < 4; i++) {
-        ibz_set(&(vec[i]), (i)*s);
+        ibz_set(&(vec.v[i]), (i)*s);
     }
     res = res || !ibz_vec_4_scalar_div(&quot, &scalar, &vec);
     for (int i = 0; i < 4; i++) {
-        res = res || (ibz_cmp_int32(&(quot[i]), i) != 0);
+        res = res || (ibz_cmp_int32(&(quot.v[i]), i) != 0);
     }
 
     res = res || ibz_vec_4_scalar_div(&vec, &scalar, &vec);
     for (int i = 0; i < 4; i++) {
-        res = res || (ibz_cmp_int32(&(vec[i]), i) != 0);
+        res = res || (ibz_cmp_int32(&(vec.v[i]), i) != 0);
     }
 
     if (res != 0) {
@@ -511,14 +511,14 @@ quat_test_dim4_ibz_mat_4x4_copy(void)
     ibz_mat_4x4_init(&new);
     ibz_mat_4x4_init(&mat);
     ibz_mat_4x4_zero(&mat);
-    ibz_set(&(mat[0][0]), 1);
-    ibz_set(&(mat[0][1]), 2);
-    ibz_set(&(mat[0][2]), -7);
-    ibz_set(&(mat[0][3]), 77);
-    ibz_set(&(mat[2][0]), 13);
-    ibz_set(&(mat[1][1]), 20);
-    ibz_set(&(mat[3][2]), -77);
-    ibz_set(&(mat[3][3]), 7);
+    ibz_set(&(mat.m[0][0]), 1);
+    ibz_set(&(mat.m[0][1]), 2);
+    ibz_set(&(mat.m[0][2]), -7);
+    ibz_set(&(mat.m[0][3]), 77);
+    ibz_set(&(mat.m[2][0]), 13);
+    ibz_set(&(mat.m[1][1]), 20);
+    ibz_set(&(mat.m[3][2]), -77);
+    ibz_set(&(mat.m[3][3]), 7);
     ibz_mat_4x4_copy(&new, &mat);
     res = res || !ibz_mat_4x4_equal(&new, &mat);
     if (res != 0) {
@@ -540,22 +540,22 @@ quat_test_dim4_ibz_mat_4x4_negate(void)
     ibz_mat_4x4_init(&cmp);
     ibz_mat_4x4_zero(&cmp);
     ibz_mat_4x4_zero(&mat);
-    ibz_set(&(mat[0][0]), 1);
-    ibz_set(&(cmp[0][0]), -1);
-    ibz_set(&(mat[0][1]), 2);
-    ibz_set(&(cmp[0][1]), -2);
-    ibz_set(&(mat[0][2]), -7);
-    ibz_set(&(cmp[0][2]), 7);
-    ibz_set(&(mat[0][3]), 77);
-    ibz_set(&(cmp[0][3]), -77);
-    ibz_set(&(mat[2][0]), 13);
-    ibz_set(&(cmp[2][0]), -13);
-    ibz_set(&(mat[1][1]), 20);
-    ibz_set(&(cmp[1][1]), -20);
-    ibz_set(&(mat[3][2]), -77);
-    ibz_set(&(cmp[3][2]), 77);
-    ibz_set(&(mat[3][3]), 7);
-    ibz_set(&(cmp[3][3]), -7);
+    ibz_set(&(mat.m[0][0]), 1);
+    ibz_set(&(cmp.m[0][0]), -1);
+    ibz_set(&(mat.m[0][1]), 2);
+    ibz_set(&(cmp.m[0][1]), -2);
+    ibz_set(&(mat.m[0][2]), -7);
+    ibz_set(&(cmp.m[0][2]), 7);
+    ibz_set(&(mat.m[0][3]), 77);
+    ibz_set(&(cmp.m[0][3]), -77);
+    ibz_set(&(mat.m[2][0]), 13);
+    ibz_set(&(cmp.m[2][0]), -13);
+    ibz_set(&(mat.m[1][1]), 20);
+    ibz_set(&(cmp.m[1][1]), -20);
+    ibz_set(&(mat.m[3][2]), -77);
+    ibz_set(&(cmp.m[3][2]), 77);
+    ibz_set(&(mat.m[3][3]), 7);
+    ibz_set(&(cmp.m[3][3]), -7);
     ibz_mat_4x4_negate(&neg, &mat);
     res = res || !ibz_mat_4x4_equal(&neg, &cmp);
     if (res != 0) {
@@ -578,22 +578,22 @@ quat_test_dim4_ibz_mat_4x4_transpose(void)
     ibz_mat_4x4_init(&cmp);
     ibz_mat_4x4_zero(&mat);
     ibz_mat_4x4_zero(&cmp);
-    ibz_set(&(mat[0][0]), 1);
-    ibz_set(&(cmp[0][0]), 1);
-    ibz_set(&(mat[0][1]), 2);
-    ibz_set(&(cmp[1][0]), 2);
-    ibz_set(&(mat[0][2]), -7);
-    ibz_set(&(cmp[2][0]), -7);
-    ibz_set(&(mat[0][3]), 77);
-    ibz_set(&(cmp[3][0]), 77);
-    ibz_set(&(mat[2][0]), 13);
-    ibz_set(&(cmp[0][2]), 13);
-    ibz_set(&(mat[1][1]), 20);
-    ibz_set(&(cmp[1][1]), 20);
-    ibz_set(&(mat[3][2]), -77);
-    ibz_set(&(cmp[2][3]), -77);
-    ibz_set(&(mat[3][3]), 7);
-    ibz_set(&(cmp[3][3]), 7);
+    ibz_set(&(mat.m[0][0]), 1);
+    ibz_set(&(cmp.m[0][0]), 1);
+    ibz_set(&(mat.m[0][1]), 2);
+    ibz_set(&(cmp.m[1][0]), 2);
+    ibz_set(&(mat.m[0][2]), -7);
+    ibz_set(&(cmp.m[2][0]), -7);
+    ibz_set(&(mat.m[0][3]), 77);
+    ibz_set(&(cmp.m[3][0]), 77);
+    ibz_set(&(mat.m[2][0]), 13);
+    ibz_set(&(cmp.m[0][2]), 13);
+    ibz_set(&(mat.m[1][1]), 20);
+    ibz_set(&(cmp.m[1][1]), 20);
+    ibz_set(&(mat.m[3][2]), -77);
+    ibz_set(&(cmp.m[2][3]), -77);
+    ibz_set(&(mat.m[3][3]), 7);
+    ibz_set(&(cmp.m[3][3]), 7);
     ibz_mat_4x4_transpose(&transposed, &mat);
     res = res || !ibz_mat_4x4_equal(&transposed, &cmp);
     if (res != 0) {
@@ -615,7 +615,7 @@ quat_test_dim4_ibz_mat_4x4_zero(void)
     ibz_mat_4x4_init(&mat);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
     }
     ibz_mat_4x4_zero(&mat);
@@ -638,9 +638,9 @@ quat_test_dim4_ibz_mat_4x4_identity(void)
     ibz_mat_4x4_init(&mat);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp[i][j]), 0);
+            ibz_set(&(cmp.m[i][j]), 0);
         }
-        ibz_set(&(cmp[i][i]), 1);
+        ibz_set(&(cmp.m[i][i]), 1);
     }
     ibz_mat_4x4_identity(&mat);
     res = res || !ibz_mat_4x4_equal(&cmp, &mat);
@@ -661,10 +661,10 @@ quat_test_dim4_ibz_mat_4x4_is_identity(void)
     ibz_mat_4x4_init(&mat);
     ibz_mat_4x4_identity(&mat);
     res = res || !ibz_mat_4x4_is_identity(&mat);
-    ibz_set(&(mat[0][1]), 1);
+    ibz_set(&(mat.m[0][1]), 1);
     res = res || ibz_mat_4x4_is_identity(&mat);
-    ibz_set(&(mat[0][1]), 0);
-    ibz_set(&(mat[3][3]), 0);
+    ibz_set(&(mat.m[0][1]), 0);
+    ibz_set(&(mat.m[3][3]), 0);
     res = res || ibz_mat_4x4_is_identity(&mat);
     if (res != 0) {
         printf("Quaternion unit test dim4_ibz_mat_4x4_is_identity failed\n");
@@ -684,13 +684,13 @@ quat_test_dim4_ibz_mat_4x4_equal(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(a[i][j]), i + j);
-            ibz_set(&(b[i][j]), i + j);
+            ibz_set(&(a.m[i][j]), i + j);
+            ibz_set(&(b.m[i][j]), i + j);
         }
     }
     res = res || (!ibz_mat_4x4_equal(&a, &b));
 
-    ibz_set(&(b[2][2]), 2);
+    ibz_set(&(b.m[2][2]), 2);
     res = res || ibz_mat_4x4_equal(&a, &b);
 
     if (res != 0) {
@@ -718,8 +718,8 @@ quat_test_dim4_ibz_mat_4x4_scalar_mul(void)
     ibz_set(&scalar, s);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), i + j);
-            ibz_set(&(cmp[i][j]), (i + j) * s);
+            ibz_set(&(mat.m[i][j]), i + j);
+            ibz_set(&(cmp.m[i][j]), (i + j) * s);
         }
     }
     ibz_mat_4x4_scalar_mul(&prod, &scalar, &mat);
@@ -754,7 +754,7 @@ quat_test_dim4_ibz_mat_4x4_gcd(void)
     ibz_set(&cmp, d);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), d * i * j);
+            ibz_set(&(mat.m[i][j]), d * i * j);
         }
     }
     ibz_mat_4x4_gcd(&gcd, &mat);
@@ -764,7 +764,7 @@ quat_test_dim4_ibz_mat_4x4_gcd(void)
     ibz_set(&cmp, d);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), d * i * j);
+            ibz_set(&(mat.m[i][j]), d * i * j);
         }
     }
     ibz_mat_4x4_gcd(&gcd, &mat);
@@ -796,8 +796,8 @@ quat_test_dim4_ibz_mat_4x4_scalar_div(void)
     ibz_set(&scalar, s);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), (i + j) * s);
-            ibz_set(&(cmp[i][j]), (i + j));
+            ibz_set(&(mat.m[i][j]), (i + j) * s);
+            ibz_set(&(cmp.m[i][j]), (i + j));
         }
     }
     ibz_mat_4x4_scalar_div(&quot, &scalar, &mat);
@@ -968,28 +968,28 @@ quat_test_dim4_ibz_mat_4x4_inv_with_det_as_denom(void)
     } else {
         res = 1;
     }
-    ibz_set(&(mat[0][0]), 2);
-    ibz_set(&(mat[0][1]), -17);
-    ibz_set(&(mat[0][2]), 3);
-    ibz_set(&(mat[0][3]), 5);
-    ibz_set(&(mat[1][1]), -2);
-    ibz_set(&(mat[1][2]), 3);
-    ibz_set(&(mat[1][3]), 2);
-    ibz_set(&(mat[2][2]), -3);
-    ibz_set(&(mat[2][3]), 0);
-    ibz_set(&(mat[3][3]), 1);
+    ibz_set(&(mat.m[0][0]), 2);
+    ibz_set(&(mat.m[0][1]), -17);
+    ibz_set(&(mat.m[0][2]), 3);
+    ibz_set(&(mat.m[0][3]), 5);
+    ibz_set(&(mat.m[1][1]), -2);
+    ibz_set(&(mat.m[1][2]), 3);
+    ibz_set(&(mat.m[1][3]), 2);
+    ibz_set(&(mat.m[2][2]), -3);
+    ibz_set(&(mat.m[2][3]), 0);
+    ibz_set(&(mat.m[3][3]), 1);
     if (ibz_mat_4x4_inv_with_det_as_denom(&inv, &det, &mat)) {
         res = res || (ibz_cmp_int32(&det, 12) != 0);
         res = res || !quat_test_dim4_validate_mat_4x4_rational_inv_if_exists(&inv, &det, &mat);
     } else {
         res = 1;
     }
-    ibz_set(&(mat[3][0]), 1);
-    ibz_set(&(mat[3][1]), 8);
-    ibz_set(&(mat[3][2]), -9);
-    ibz_set(&(mat[2][0]), 3);
-    ibz_set(&(mat[2][1]), 0);
-    ibz_set(&(mat[1][0]), 4);
+    ibz_set(&(mat.m[3][0]), 1);
+    ibz_set(&(mat.m[3][1]), 8);
+    ibz_set(&(mat.m[3][2]), -9);
+    ibz_set(&(mat.m[2][0]), 3);
+    ibz_set(&(mat.m[2][1]), 0);
+    ibz_set(&(mat.m[1][0]), 4);
     if (ibz_mat_4x4_inv_with_det_as_denom(&inv, &det, &mat)) {
         res = res || (ibz_cmp_int32(&det, -1503) != 0);
         res = res || !quat_test_dim4_validate_mat_4x4_rational_inv_if_exists(&inv, &det, &mat);
@@ -1021,45 +1021,45 @@ quat_test_dim4_ibz_mat_4x4_eval(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), i * j);
+            ibz_set(&(mat.m[i][j]), i * j);
         }
-        ibz_set(&(vec[i]), i);
+        ibz_set(&(vec.v[i]), i);
     }
-    ibz_set(&(cmp[0]), 0);
-    ibz_set(&(cmp[1]), 14);
-    ibz_set(&(cmp[2]), 28);
-    ibz_set(&(cmp[3]), 42);
+    ibz_set(&(cmp.v[0]), 0);
+    ibz_set(&(cmp.v[1]), 14);
+    ibz_set(&(cmp.v[2]), 28);
+    ibz_set(&(cmp.v[3]), 42);
     ibz_mat_4x4_eval(&vres, &mat, &vec);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(vres[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(vres.v[i]), &(cmp.v[i]));
     }
     ibz_vec_4_set(&vres, 0, 0, 0, 0);
     ibz_mat_4x4_transpose(&mat, &mat);
     ibz_mat_4x4_eval_t(&vres, &vec, &mat);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(vres[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(vres.v[i]), &(cmp.v[i]));
     }
     ibz_mat_4x4_transpose(&mat, &mat);
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), i * (j - 1) + 1);
+            ibz_set(&(mat.m[i][j]), i * (j - 1) + 1);
         }
-        ibz_set(&(vec[i]), i * i - 2);
+        ibz_set(&(vec.v[i]), i * i - 2);
     }
-    ibz_set(&(cmp[0]), 6);
-    ibz_set(&(cmp[1]), 24);
-    ibz_set(&(cmp[2]), 42);
-    ibz_set(&(cmp[3]), 60);
+    ibz_set(&(cmp.v[0]), 6);
+    ibz_set(&(cmp.v[1]), 24);
+    ibz_set(&(cmp.v[2]), 42);
+    ibz_set(&(cmp.v[3]), 60);
     ibz_mat_4x4_eval(&vres, &mat, &vec);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(vres[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(vres.v[i]), &(cmp.v[i]));
     }
     ibz_vec_4_set(&vres, 0, 0, 0, 0);
     ibz_mat_4x4_transpose(&mat, &mat);
     ibz_mat_4x4_eval_t(&vres, &vec, &mat);
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(vres[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(vres.v[i]), &(cmp.v[i]));
     }
     ibz_mat_4x4_transpose(&mat, &mat);
 
@@ -1088,9 +1088,9 @@ quat_test_dim4_qf_eval(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(qf[i][j]), i * j);
+            ibz_set(&(qf.m[i][j]), i * j);
         }
-        ibz_set(&(vec[i]), i);
+        ibz_set(&(vec.v[i]), i);
     }
     ibz_set(&(cmp), 196);
     quat_qf_eval(&ires, &qf, &vec);
@@ -1098,9 +1098,9 @@ quat_test_dim4_qf_eval(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(qf[i][j]), (i + 1) * (j + 1) - 4);
+            ibz_set(&(qf.m[i][j]), (i + 1) * (j + 1) - 4);
         }
-        ibz_set(&(vec[i]), (i - 1) * 2 - 2);
+        ibz_set(&(vec.v[i]), (i - 1) * 2 - 2);
     }
     ibz_set(&(cmp), -4 * 16);
     quat_qf_eval(&ires, &qf, &vec);
@@ -1127,42 +1127,42 @@ quat_test_dim4_ibz_vec_4_content(void)
     ibz_init(&cmp);
     ibz_vec_4_init(&x);
 
-    ibz_set(&(x[0]), 0);
-    ibz_set(&(x[1]), 0);
-    ibz_set(&(x[2]), 0);
-    ibz_set(&(x[3]), 0);
+    ibz_set(&(x.v[0]), 0);
+    ibz_set(&(x.v[1]), 0);
+    ibz_set(&(x.v[2]), 0);
+    ibz_set(&(x.v[3]), 0);
     ibz_set(&cmp, 0);
     ibz_vec_4_content(&c, &x);
     res = res || ibz_cmp(&c, &cmp);
 
-    ibz_set(&(x[0]), 5);
-    ibz_set(&(x[1]), 25);
-    ibz_set(&(x[2]), 125);
-    ibz_set(&(x[3]), 30);
+    ibz_set(&(x.v[0]), 5);
+    ibz_set(&(x.v[1]), 25);
+    ibz_set(&(x.v[2]), 125);
+    ibz_set(&(x.v[3]), 30);
     ibz_set(&cmp, 5);
     ibz_vec_4_content(&c, &x);
     res = res || ibz_cmp(&c, &cmp);
 
-    ibz_set(&(x[0]), 5);
-    ibz_set(&(x[1]), 2);
-    ibz_set(&(x[2]), 125);
-    ibz_set(&(x[3]), 30);
+    ibz_set(&(x.v[0]), 5);
+    ibz_set(&(x.v[1]), 2);
+    ibz_set(&(x.v[2]), 125);
+    ibz_set(&(x.v[3]), 30);
     ibz_set(&cmp, 1);
     ibz_vec_4_content(&c, &x);
     res = res || ibz_cmp(&c, &cmp);
 
-    ibz_set(&(x[0]), 5);
-    ibz_set(&(x[1]), -2);
-    ibz_set(&(x[2]), 125);
-    ibz_set(&(x[3]), 0);
+    ibz_set(&(x.v[0]), 5);
+    ibz_set(&(x.v[1]), -2);
+    ibz_set(&(x.v[2]), 125);
+    ibz_set(&(x.v[3]), 0);
     ibz_set(&cmp, 1);
     ibz_vec_4_content(&c, &x);
     res = res || ibz_cmp(&c, &cmp);
 
-    ibz_set(&(x[0]), 0);
-    ibz_set(&(x[1]), -2);
-    ibz_set(&(x[2]), 0);
-    ibz_set(&(x[3]), 0);
+    ibz_set(&(x.v[0]), 0);
+    ibz_set(&(x.v[1]), -2);
+    ibz_set(&(x.v[2]), 0);
+    ibz_set(&(x.v[3]), 0);
     ibz_set(&cmp, 2);
     ibz_vec_4_content(&c, &x);
     res = res || ibz_cmp(&c, &cmp);

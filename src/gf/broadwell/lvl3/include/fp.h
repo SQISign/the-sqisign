@@ -16,10 +16,6 @@
 // Type for elements of GF(p)
 #define fp_t gf65376
 
-// Constants (Assumed to be in Montgomery form)
-#define ZERO gf65376_ZERO
-#define ONE gf65376_ONE
-
 // Operations in fp
 static inline void
 fp_neg(fp_t *d, const fp_t *a)
@@ -115,7 +111,7 @@ fp_decode_reduce(fp_t *d, const void *src, size_t len)
 static inline void
 fp_copy(fp_t *out, const fp_t *a)
 {
-    memcpy(out, a, sizeof(fp_t));
+    memmove(out, a, sizeof(fp_t));
 }
 
 static inline void

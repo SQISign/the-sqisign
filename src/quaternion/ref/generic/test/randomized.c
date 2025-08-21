@@ -22,7 +22,7 @@ quat_test_randomized_ibz_mat_2x2_inv_mod(int bitsize_matrix, int bitsize_modulus
         // generate random matrix and modulo, with modulo larger than 2
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                randret = randret | !ibz_rand_interval_bits(&(a[i][j]), bitsize_matrix);
+                randret = randret | !ibz_rand_interval_bits(&(a.m[i][j]), bitsize_matrix);
             }
         }
         randret = randret | !ibz_rand_interval_bits(&m, bitsize_modulus);
@@ -32,7 +32,7 @@ quat_test_randomized_ibz_mat_2x2_inv_mod(int bitsize_matrix, int bitsize_modulus
             goto fin;
 
         // compute det
-        ibz_mat_2x2_det_from_ibz(&det, &(a[0][0]), &(a[0][1]), &(a[1][0]), &(a[1][1]));
+        ibz_mat_2x2_det_from_ibz(&det, &(a.m[0][0]), &(a.m[0][1]), &(a.m[1][0]), &(a.m[1][1]));
         // is it prime to mod
         ibz_gcd(&gcd, &det, &m);
         if (ibz_is_one(&gcd)) {
@@ -40,10 +40,10 @@ quat_test_randomized_ibz_mat_2x2_inv_mod(int bitsize_matrix, int bitsize_modulus
             if (ibz_mat_2x2_inv_mod(&inv, &a, &m)) {
                 // ibz_2x2_mul_mod(&prod,&a,&inv, &m);
                 ibz_2x2_mul_mod(&prod, &inv, &a, &m);
-                res = res || ibz_cmp(&(prod[0][0]), &(id[0][0]));
-                res = res || ibz_cmp(&(prod[0][1]), &(id[0][1]));
-                res = res || ibz_cmp(&(prod[1][0]), &(id[1][0]));
-                res = res || ibz_cmp(&(prod[1][1]), &(id[1][1]));
+                res = res || ibz_cmp(&(prod.m[0][0]), &(id.m[0][0]));
+                res = res || ibz_cmp(&(prod.m[0][1]), &(id.m[0][1]));
+                res = res || ibz_cmp(&(prod.m[1][0]), &(id.m[1][0]));
+                res = res || ibz_cmp(&(prod.m[1][1]), &(id.m[1][1]));
             } else {
                 res = 1;
             }
@@ -89,7 +89,7 @@ quat_test_randomized_ibz_mat_4x4_inv_with_det_as_denom(int matrix_bitsize, int i
         do {
             for (int i = 0; i < 4; i++)
                 for (int j = 0; j < 4; j++) {
-                    randret = randret | !ibz_rand_interval_bits(&mat[i][j], matrix_bitsize);
+                    randret = randret | !ibz_rand_interval_bits(&mat.m[i][j], matrix_bitsize);
                     if (randret != 0)
                         goto fin;
                 }
@@ -141,7 +141,7 @@ quat_test_randomized_lattice_contains(int lattice_bitsize, int coord_bitsize, in
     for (int iter = 0; iter < iterations; iter++) {
         randret = quat_test_input_random_lattice_generation(&lat, lattice_bitsize, 1, 1);
         for (int i = 0; i < 4; i++) {
-            randret = randret | !ibz_rand_interval_bits(&(set_coord[i]), coord_bitsize);
+            randret = randret | !ibz_rand_interval_bits(&(set_coord.v[i]), coord_bitsize);
         }
         if (randret != 0)
             goto fin;

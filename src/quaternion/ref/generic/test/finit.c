@@ -30,14 +30,14 @@ quat_test_finit_alg_elem(void)
     quat_alg_elem_t elem;
     int res;
     quat_alg_elem_init(&elem);
-    ibz_set(&(elem.coord[0]), 0);
-    ibz_set(&(elem.coord[1]), 1);
-    ibz_set(&(elem.coord[2]), 2);
-    ibz_set(&(elem.coord[3]), 3);
+    ibz_set(&(elem.coord.v[0]), 0);
+    ibz_set(&(elem.coord.v[1]), 1);
+    ibz_set(&(elem.coord.v[2]), 2);
+    ibz_set(&(elem.coord.v[3]), 3);
     ibz_set(&(elem.denom), 1);
     res = 1 - (1 == ibz_is_one(&(elem.denom)));
     for (int i = 0; i < 4; i++) {
-        res = res || (ibz_cmp_int32(&(elem.coord[i]), i) != 0);
+        res = res || (ibz_cmp_int32(&(elem.coord.v[i]), i) != 0);
     }
     if (res != 0) {
         printf("Quaternion unit test finit_alg_elem failed\n");
@@ -55,10 +55,10 @@ quat_test_finit_ibz_vec_2(void)
     int res = 0;
     ibz_vec_2_init(&vec);
     for (int i = 0; i < 2; i++) {
-        ibz_set(&(vec[i]), i);
+        ibz_set(&(vec.v[i]), i);
     }
     for (int i = 0; i < 2; i++) {
-        res = res || (ibz_cmp_int32(&(vec[i]), i) != 0);
+        res = res || (ibz_cmp_int32(&(vec.v[i]), i) != 0);
     }
     if (res != 0) {
         printf("Quaternion unit test finit_ibz_vec_2 failed\n");
@@ -76,10 +76,10 @@ quat_test_finit_ibz_vec_4(void)
     int res = 0;
     ibz_vec_4_init(&vec);
     for (int i = 0; i < 4; i++) {
-        ibz_set(&(vec[i]), i);
+        ibz_set(&(vec.v[i]), i);
     }
     for (int i = 0; i < 4; i++) {
-        res = res || (ibz_cmp_int32(&(vec[i]), i) != 0);
+        res = res || (ibz_cmp_int32(&(vec.v[i]), i) != 0);
     }
     if (res != 0) {
         printf("Quaternion unit test finit_ibz_vec_4 failed\n");
@@ -98,12 +98,12 @@ quat_test_finit_ibz_mat_2x2(void)
     ibz_mat_2x2_init(&mat);
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-            ibz_set(&(mat[i][j]), i + j);
+            ibz_set(&(mat.m[i][j]), i + j);
         }
     }
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-            res = res || (ibz_cmp_int32(&(mat[i][j]), i + j) != 0);
+            res = res || (ibz_cmp_int32(&(mat.m[i][j]), i + j) != 0);
         }
     }
     if (res != 0) {
@@ -123,12 +123,12 @@ quat_test_finit_ibz_mat_4x4(void)
     ibz_mat_4x4_init(&mat);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(mat[i][j]), i + j);
+            ibz_set(&(mat.m[i][j]), i + j);
         }
     }
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            res = res || (ibz_cmp_int32(&(mat[i][j]), i + j) != 0);
+            res = res || (ibz_cmp_int32(&(mat.m[i][j]), i + j) != 0);
         }
     }
     if (res != 0) {
@@ -148,14 +148,14 @@ quat_test_finit_lattice(void)
     quat_lattice_init(&lat);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat.basis[i][j]), i + j);
+            ibz_set(&(lat.basis.m[i][j]), i + j);
         }
     }
     ibz_set(&(lat.denom), 1);
     res = 1 - (1 == ibz_is_one(&(lat.denom)));
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            res = res || (ibz_cmp_int32(&(lat.basis[i][j]), i + j) != 0);
+            res = res || (ibz_cmp_int32(&(lat.basis.m[i][j]), i + j) != 0);
         }
     }
     if (res != 0) {
@@ -175,7 +175,7 @@ quat_test_finit_lideal(void)
     quat_left_ideal_init(&lideal);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lideal.lattice.basis[i][j]), i + j);
+            ibz_set(&(lideal.lattice.basis.m[i][j]), i + j);
         }
     }
     ibz_set(&(lideal.lattice.denom), 1);
@@ -184,7 +184,7 @@ quat_test_finit_lideal(void)
     res = 1 - (1 == ibz_is_one(&(lideal.lattice.denom)));
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            res = res || (ibz_cmp_int32(&(lideal.lattice.basis[i][j]), i + j) != 0);
+            res = res || (ibz_cmp_int32(&(lideal.lattice.basis.m[i][j]), i + j) != 0);
         }
     }
     res = res || (ibz_cmp_int32(&(lideal.norm), 5) != 0);

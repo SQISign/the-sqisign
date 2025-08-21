@@ -15,7 +15,8 @@ fi
 
 mkdir -p build_broadwell && cd build_broadwell && cmake -DSQISIGN_BUILD_TYPE=broadwell .. && make -j8 && cd ..
 mkdir -p build && cd build && cmake .. && make -j8
-find . ../build_broadwell -name '*.a' -exec nm {} \; | grep '.c.o:\|T ' | scala -nc ../scripts/Namespace.scala > sqisign_namespace.h
+find . ../build_broadwell -name '*.a' -exec nm {} \; | grep '.c.o:\|T\|D\|R ' | scala -nc ../scripts/Namespace.scala > sqisign_namespace.h
+find . ../build_broadwell -name '*.a' -exec nm {} \; | grep '.c.o:\|T\|D\|R ' | scala -nc ../scripts/Namespace.scala --no-generic > sqisign_namespace_nogeneric.h
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' 's|#define DISABLE_NAMESPACING|//#define DISABLE_NAMESPACING|' ../include/sqisign_namespace.h
@@ -25,6 +26,15 @@ fi
 
 diff sqisign_namespace.h ../include/sqisign_namespace.h
 
+# Check the exit code of diff
+if [ $? -eq 0 ]; then
+  echo "No change in namespace."
+else
+  echo "Namespace changed, please update."
+  exit 1
+fi
+
+diff sqisign_namespace_nogeneric.h ../integration/liboqs/sqisign_namespace.h
 
 # Check the exit code of diff
 if [ $? -eq 0 ]; then

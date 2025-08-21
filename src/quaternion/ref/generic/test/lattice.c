@@ -23,12 +23,12 @@ quat_test_lattice_equal(void)
     ibz_set(&(lat.denom), 3);
     ibz_set(&(cmp.denom), 3);
     res = res || !quat_lattice_equal(&lat, &cmp);
-    ibz_set(&(lat.basis[0][0]), 1);
-    ibz_set(&(lat.basis[0][3]), -1);
-    ibz_set(&(lat.basis[1][1]), -2);
-    ibz_set(&(lat.basis[2][2]), 1);
-    ibz_set(&(lat.basis[2][1]), 1);
-    ibz_set(&(lat.basis[3][3]), -3);
+    ibz_set(&(lat.basis.m[0][0]), 1);
+    ibz_set(&(lat.basis.m[0][3]), -1);
+    ibz_set(&(lat.basis.m[1][1]), -2);
+    ibz_set(&(lat.basis.m[2][2]), 1);
+    ibz_set(&(lat.basis.m[2][1]), 1);
+    ibz_set(&(lat.basis.m[3][3]), -3);
     ibz_set(&(lat.denom), 6);
     quat_lattice_hnf(&lat);
     ibz_mat_4x4_copy(&(cmp.basis), &(lat.basis));
@@ -37,7 +37,7 @@ quat_test_lattice_equal(void)
     ibz_set(&(cmp.denom), -7);
     res = res || quat_lattice_equal(&lat, &cmp);
     ibz_set(&(cmp.denom), 6);
-    ibz_set(&(cmp.basis[3][3]), 165);
+    ibz_set(&(cmp.basis.m[3][3]), 165);
     res = res || quat_lattice_equal(&lat, &cmp);
 
     if (res != 0) {
@@ -69,12 +69,12 @@ quat_test_lattice_inclusion(void)
     ibz_set(&(lat.denom), 3);
     ibz_set(&(cmp.denom), 3);
     res = res || !quat_lattice_inclusion(&lat, &cmp);
-    ibz_set(&(lat.basis[0][0]), 1);
-    ibz_set(&(lat.basis[0][3]), -1);
-    ibz_set(&(lat.basis[1][1]), -2);
-    ibz_set(&(lat.basis[2][2]), 1);
-    ibz_set(&(lat.basis[2][1]), 1);
-    ibz_set(&(lat.basis[3][3]), -3);
+    ibz_set(&(lat.basis.m[0][0]), 1);
+    ibz_set(&(lat.basis.m[0][3]), -1);
+    ibz_set(&(lat.basis.m[1][1]), -2);
+    ibz_set(&(lat.basis.m[2][2]), 1);
+    ibz_set(&(lat.basis.m[2][1]), 1);
+    ibz_set(&(lat.basis.m[3][3]), -3);
     ibz_set(&(lat.denom), 6);
     quat_lattice_hnf(&lat);
     ibz_mat_4x4_copy(&(cmp.basis), &(lat.basis));
@@ -83,7 +83,7 @@ quat_test_lattice_inclusion(void)
     ibz_set(&(cmp.denom), 12);
     res = res || !quat_lattice_inclusion(&lat, &cmp);
     ibz_set(&(cmp.denom), 6);
-    ibz_set(&(cmp.basis[3][3]), 165);
+    ibz_set(&(cmp.basis.m[3][3]), 165);
     res = res || quat_lattice_inclusion(&lat, &cmp);
 
     if (res != 0) {
@@ -108,8 +108,8 @@ quat_test_lattice_reduce_denom(void)
     s = 15;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat.basis[i][j]), (i + j) * s);
-            ibz_set(&(cmp.basis[i][j]), (i + j));
+            ibz_set(&(lat.basis.m[i][j]), (i + j) * s);
+            ibz_set(&(cmp.basis.m[i][j]), (i + j));
         }
     }
     ibz_set(&(lat.denom), 4 * s);
@@ -143,20 +143,20 @@ quat_test_lattice_conjugate_without_hnf(void)
     quat_lattice_init(&cmp);
     // set lattice
     ibz_mat_4x4_zero(&(lat.basis));
-    ibz_set(&(lat.basis[0][0]), 4);
-    ibz_set(&(lat.basis[0][3]), 1);
-    ibz_set(&(lat.basis[1][1]), -2);
-    ibz_set(&(lat.basis[2][2]), -1);
-    ibz_set(&(lat.basis[2][1]), -1);
-    ibz_set(&(lat.basis[3][3]), -3);
+    ibz_set(&(lat.basis.m[0][0]), 4);
+    ibz_set(&(lat.basis.m[0][3]), 1);
+    ibz_set(&(lat.basis.m[1][1]), -2);
+    ibz_set(&(lat.basis.m[2][2]), -1);
+    ibz_set(&(lat.basis.m[2][1]), -1);
+    ibz_set(&(lat.basis.m[3][3]), -3);
     ibz_set(&(lat.denom), 6);
     ibz_mat_4x4_zero(&(cmp.basis));
-    ibz_set(&(cmp.basis[0][0]), 4);
-    ibz_set(&(cmp.basis[0][3]), 1);
-    ibz_set(&(cmp.basis[1][1]), 2);
-    ibz_set(&(cmp.basis[2][2]), 1);
-    ibz_set(&(cmp.basis[2][1]), 1);
-    ibz_set(&(cmp.basis[3][3]), 3);
+    ibz_set(&(cmp.basis.m[0][0]), 4);
+    ibz_set(&(cmp.basis.m[0][3]), 1);
+    ibz_set(&(cmp.basis.m[1][1]), 2);
+    ibz_set(&(cmp.basis.m[2][2]), 1);
+    ibz_set(&(cmp.basis.m[2][1]), 1);
+    ibz_set(&(cmp.basis.m[3][3]), 3);
     ibz_set(&(cmp.denom), 6);
     quat_lattice_hnf(&lat);
     quat_lattice_conjugate_without_hnf(&conj, &lat);
@@ -188,18 +188,18 @@ quat_test_lattice_dual_without_hnf(void)
     quat_lattice_init(&cmp);
     // set lattice
     ibz_mat_4x4_zero(&(lat.basis));
-    ibz_set(&(lat.basis[0][0]), 1);
-    ibz_set(&(lat.basis[0][3]), -1);
-    ibz_set(&(lat.basis[1][1]), -2);
-    ibz_set(&(lat.basis[2][2]), 1);
-    ibz_set(&(lat.basis[2][1]), 1);
-    ibz_set(&(lat.basis[3][3]), -3);
+    ibz_set(&(lat.basis.m[0][0]), 1);
+    ibz_set(&(lat.basis.m[0][3]), -1);
+    ibz_set(&(lat.basis.m[1][1]), -2);
+    ibz_set(&(lat.basis.m[2][2]), 1);
+    ibz_set(&(lat.basis.m[2][1]), 1);
+    ibz_set(&(lat.basis.m[3][3]), -3);
     ibz_set(&(lat.denom), 6);
     ibz_mat_4x4_zero(&(cmp.basis));
-    ibz_set(&(cmp.basis[0][0]), 6);
-    ibz_set(&(cmp.basis[1][1]), 3);
-    ibz_set(&(cmp.basis[2][2]), 6);
-    ibz_set(&(cmp.basis[3][3]), 2);
+    ibz_set(&(cmp.basis.m[0][0]), 6);
+    ibz_set(&(cmp.basis.m[1][1]), 3);
+    ibz_set(&(cmp.basis.m[2][2]), 6);
+    ibz_set(&(cmp.basis.m[3][3]), 2);
     ibz_set(&(cmp.denom), 1);
     quat_lattice_hnf(&lat);
     // test whether dual of dual is original lattice, but dual is not.
@@ -235,21 +235,21 @@ quat_test_lattice_add(void)
     ibz_mat_4x4_zero(&(lat1.basis));
     ibz_mat_4x4_zero(&(lat2.basis));
     ibz_mat_4x4_zero(&(cmp.basis));
-    ibz_set(&(lat1.basis[0][0]), 44);
-    ibz_set(&(lat1.basis[0][2]), 3);
-    ibz_set(&(lat1.basis[0][3]), 32);
-    ibz_set(&(lat2.basis[0][0]), 1);
-    ibz_set(&(cmp.basis[0][0]), 2);
-    ibz_set(&(cmp.basis[0][2]), 1);
-    ibz_set(&(lat1.basis[1][1]), 5);
-    ibz_set(&(lat2.basis[1][1]), 2);
-    ibz_set(&(cmp.basis[1][1]), 1);
-    ibz_set(&(lat1.basis[2][2]), 3);
-    ibz_set(&(lat2.basis[2][2]), 1);
-    ibz_set(&(cmp.basis[2][2]), 1);
-    ibz_set(&(lat1.basis[3][3]), 1);
-    ibz_set(&(lat2.basis[3][3]), 3);
-    ibz_set(&(cmp.basis[3][3]), 3);
+    ibz_set(&(lat1.basis.m[0][0]), 44);
+    ibz_set(&(lat1.basis.m[0][2]), 3);
+    ibz_set(&(lat1.basis.m[0][3]), 32);
+    ibz_set(&(lat2.basis.m[0][0]), 1);
+    ibz_set(&(cmp.basis.m[0][0]), 2);
+    ibz_set(&(cmp.basis.m[0][2]), 1);
+    ibz_set(&(lat1.basis.m[1][1]), 5);
+    ibz_set(&(lat2.basis.m[1][1]), 2);
+    ibz_set(&(cmp.basis.m[1][1]), 1);
+    ibz_set(&(lat1.basis.m[2][2]), 3);
+    ibz_set(&(lat2.basis.m[2][2]), 1);
+    ibz_set(&(cmp.basis.m[2][2]), 1);
+    ibz_set(&(lat1.basis.m[3][3]), 1);
+    ibz_set(&(lat2.basis.m[3][3]), 3);
+    ibz_set(&(cmp.basis.m[3][3]), 3);
     ibz_set(&(lat1.denom), 4);
     ibz_set(&(lat2.denom), 6);
     ibz_set(&(cmp.denom), 12);
@@ -261,17 +261,17 @@ quat_test_lattice_add(void)
     // same lattices but not under hnf
     ibz_mat_4x4_zero(&(lat1.basis));
     ibz_mat_4x4_zero(&(lat2.basis));
-    ibz_set(&(lat1.basis[0][0]), 4);
-    ibz_set(&(lat1.basis[0][2]), 3);
-    ibz_set(&(lat2.basis[0][0]), 1);
-    ibz_set(&(lat2.basis[0][3]), -1);
-    ibz_set(&(lat1.basis[1][1]), 5);
-    ibz_set(&(lat2.basis[1][1]), -2);
-    ibz_set(&(lat1.basis[2][2]), 3);
-    ibz_set(&(lat2.basis[2][2]), 1);
-    ibz_set(&(lat2.basis[2][1]), 1);
-    ibz_set(&(lat1.basis[3][3]), 7);
-    ibz_set(&(lat2.basis[3][3]), -3);
+    ibz_set(&(lat1.basis.m[0][0]), 4);
+    ibz_set(&(lat1.basis.m[0][2]), 3);
+    ibz_set(&(lat2.basis.m[0][0]), 1);
+    ibz_set(&(lat2.basis.m[0][3]), -1);
+    ibz_set(&(lat1.basis.m[1][1]), 5);
+    ibz_set(&(lat2.basis.m[1][1]), -2);
+    ibz_set(&(lat1.basis.m[2][2]), 3);
+    ibz_set(&(lat2.basis.m[2][2]), 1);
+    ibz_set(&(lat2.basis.m[2][1]), 1);
+    ibz_set(&(lat1.basis.m[3][3]), 7);
+    ibz_set(&(lat2.basis.m[3][3]), -3);
     ibz_set(&(lat1.denom), 4);
     ibz_set(&(lat2.denom), 6);
 
@@ -311,27 +311,27 @@ quat_test_lattice_intersect(void)
     ibz_mat_4x4_zero(&(cmp.basis));
     ibz_mat_4x4_zero(&(lat1.basis));
     ibz_mat_4x4_zero(&(lat2.basis));
-    ibz_set(&(lat1.basis[0][0]), 4);
-    ibz_set(&(lat1.basis[0][2]), 3);
-    ibz_set(&(lat2.basis[0][0]), 1);
-    ibz_set(&(lat2.basis[0][3]), -1);
-    ibz_set(&(lat1.basis[1][1]), 5);
-    ibz_set(&(lat2.basis[1][1]), -2);
-    ibz_set(&(lat1.basis[2][2]), 3);
-    ibz_set(&(lat2.basis[2][2]), 1);
-    ibz_set(&(lat2.basis[2][1]), 1);
-    ibz_set(&(lat1.basis[3][3]), 7);
-    ibz_set(&(lat2.basis[3][3]), -3);
+    ibz_set(&(lat1.basis.m[0][0]), 4);
+    ibz_set(&(lat1.basis.m[0][2]), 3);
+    ibz_set(&(lat2.basis.m[0][0]), 1);
+    ibz_set(&(lat2.basis.m[0][3]), -1);
+    ibz_set(&(lat1.basis.m[1][1]), 5);
+    ibz_set(&(lat2.basis.m[1][1]), -2);
+    ibz_set(&(lat1.basis.m[2][2]), 3);
+    ibz_set(&(lat2.basis.m[2][2]), 1);
+    ibz_set(&(lat2.basis.m[2][1]), 1);
+    ibz_set(&(lat1.basis.m[3][3]), 7);
+    ibz_set(&(lat2.basis.m[3][3]), -3);
     ibz_set(&(lat1.denom), 4);
     ibz_set(&(lat2.denom), 6);
     quat_lattice_hnf(&lat1);
     quat_lattice_hnf(&lat2);
 
-    ibz_set(&(cmp.basis[0][0]), 2);
-    ibz_set(&(cmp.basis[0][2]), 1);
-    ibz_set(&(cmp.basis[1][1]), 10);
-    ibz_set(&(cmp.basis[2][2]), 3);
-    ibz_set(&(cmp.basis[3][3]), 7);
+    ibz_set(&(cmp.basis.m[0][0]), 2);
+    ibz_set(&(cmp.basis.m[0][2]), 1);
+    ibz_set(&(cmp.basis.m[1][1]), 10);
+    ibz_set(&(cmp.basis.m[2][2]), 3);
+    ibz_set(&(cmp.basis.m[3][3]), 7);
     ibz_set(&(cmp.denom), 2);
     quat_lattice_intersect(&inter, &lat1, &lat2);
 
@@ -368,29 +368,29 @@ quat_test_lattice_mat_alg_coord_mul_without_hnf(void)
     ibz_vec_4_init(&elem);
     quat_alg_init_set_ui(&alg, 23);
     ibz_vec_4_set(&elem, 3, 4, -1, 0);
-    ibz_set(&(lat[0][0]), 11);
-    ibz_set(&(lat[1][1]), 13);
-    ibz_set(&(lat[2][2]), 15);
-    ibz_set(&(lat[3][3]), 4);
-    ibz_set(&(lat[0][1]), 9);
-    ibz_set(&(lat[1][3]), 1);
+    ibz_set(&(lat.m[0][0]), 11);
+    ibz_set(&(lat.m[1][1]), 13);
+    ibz_set(&(lat.m[2][2]), 15);
+    ibz_set(&(lat.m[3][3]), 4);
+    ibz_set(&(lat.m[0][1]), 9);
+    ibz_set(&(lat.m[1][3]), 1);
     quat_lattice_mat_alg_coord_mul_without_hnf(&prod, &lat, &elem, &alg);
-    ibz_set(&(cmp[0][0]), 33);
-    ibz_set(&(cmp[1][0]), 44);
-    ibz_set(&(cmp[2][0]), -11);
-    ibz_set(&(cmp[3][0]), 0);
-    ibz_set(&(cmp[0][1]), 27 - 4 * 13);
-    ibz_set(&(cmp[1][1]), 36 + 3 * 13);
-    ibz_set(&(cmp[2][1]), -9 + 0);
-    ibz_set(&(cmp[3][1]), 0 - 13);
-    ibz_set(&(cmp[0][2]), 15 * 23);
-    ibz_set(&(cmp[1][2]), 0);
-    ibz_set(&(cmp[2][2]), 45);
-    ibz_set(&(cmp[3][2]), -60);
-    ibz_set(&(cmp[0][3]), -4);
-    ibz_set(&(cmp[1][3]), 3 + 23 * 4);
-    ibz_set(&(cmp[2][3]), 0 + 4 * 4);
-    ibz_set(&(cmp[3][3]), -1 + 4 * 3);
+    ibz_set(&(cmp.m[0][0]), 33);
+    ibz_set(&(cmp.m[1][0]), 44);
+    ibz_set(&(cmp.m[2][0]), -11);
+    ibz_set(&(cmp.m[3][0]), 0);
+    ibz_set(&(cmp.m[0][1]), 27 - 4 * 13);
+    ibz_set(&(cmp.m[1][1]), 36 + 3 * 13);
+    ibz_set(&(cmp.m[2][1]), -9 + 0);
+    ibz_set(&(cmp.m[3][1]), 0 - 13);
+    ibz_set(&(cmp.m[0][2]), 15 * 23);
+    ibz_set(&(cmp.m[1][2]), 0);
+    ibz_set(&(cmp.m[2][2]), 45);
+    ibz_set(&(cmp.m[3][2]), -60);
+    ibz_set(&(cmp.m[0][3]), -4);
+    ibz_set(&(cmp.m[1][3]), 3 + 23 * 4);
+    ibz_set(&(cmp.m[2][3]), 0 + 4 * 4);
+    ibz_set(&(cmp.m[3][3]), -1 + 4 * 3);
     res = res || !ibz_mat_4x4_equal(&cmp, &prod);
     quat_lattice_mat_alg_coord_mul_without_hnf(&lat, &lat, &elem, &alg);
     res = res || !ibz_mat_4x4_equal(&cmp, &lat);
@@ -421,31 +421,31 @@ quat_test_lattice_alg_elem_mul(void)
     quat_alg_elem_init(&elem);
     quat_alg_init_set_ui(&alg, 23);
     quat_alg_elem_set(&elem, 2, 3, 4, -1, 0);
-    ibz_set(&(lat.basis[0][0]), 11);
-    ibz_set(&(lat.basis[1][1]), -13);
-    ibz_set(&(lat.basis[2][2]), 15);
-    ibz_set(&(lat.basis[3][3]), -4);
-    ibz_set(&(lat.basis[0][1]), 2);
-    ibz_set(&(lat.basis[1][3]), -1);
+    ibz_set(&(lat.basis.m[0][0]), 11);
+    ibz_set(&(lat.basis.m[1][1]), -13);
+    ibz_set(&(lat.basis.m[2][2]), 15);
+    ibz_set(&(lat.basis.m[3][3]), -4);
+    ibz_set(&(lat.basis.m[0][1]), 2);
+    ibz_set(&(lat.basis.m[1][3]), -1);
     ibz_set(&(lat.denom), 5);
     quat_lattice_hnf(&lat);
     quat_lattice_alg_elem_mul(&prod, &lat, &elem, &alg);
-    ibz_set(&(cmp.basis[0][0]), 33);
-    ibz_set(&(cmp.basis[1][0]), 44);
-    ibz_set(&(cmp.basis[2][0]), -11);
-    ibz_set(&(cmp.basis[3][0]), 0);
-    ibz_set(&(cmp.basis[0][1]), 27 - 4 * 13);
-    ibz_set(&(cmp.basis[1][1]), 36 + 3 * 13);
-    ibz_set(&(cmp.basis[2][1]), -9 + 0);
-    ibz_set(&(cmp.basis[3][1]), 0 - 13);
-    ibz_set(&(cmp.basis[0][2]), 15 * 23);
-    ibz_set(&(cmp.basis[1][2]), 0);
-    ibz_set(&(cmp.basis[2][2]), 45);
-    ibz_set(&(cmp.basis[3][2]), -60);
-    ibz_set(&(cmp.basis[0][3]), -4);
-    ibz_set(&(cmp.basis[1][3]), 3 + 23 * 4);
-    ibz_set(&(cmp.basis[2][3]), 0 + 4 * 4);
-    ibz_set(&(cmp.basis[3][3]), -1 + 4 * 3);
+    ibz_set(&(cmp.basis.m[0][0]), 33);
+    ibz_set(&(cmp.basis.m[1][0]), 44);
+    ibz_set(&(cmp.basis.m[2][0]), -11);
+    ibz_set(&(cmp.basis.m[3][0]), 0);
+    ibz_set(&(cmp.basis.m[0][1]), 27 - 4 * 13);
+    ibz_set(&(cmp.basis.m[1][1]), 36 + 3 * 13);
+    ibz_set(&(cmp.basis.m[2][1]), -9 + 0);
+    ibz_set(&(cmp.basis.m[3][1]), 0 - 13);
+    ibz_set(&(cmp.basis.m[0][2]), 15 * 23);
+    ibz_set(&(cmp.basis.m[1][2]), 0);
+    ibz_set(&(cmp.basis.m[2][2]), 45);
+    ibz_set(&(cmp.basis.m[3][2]), -60);
+    ibz_set(&(cmp.basis.m[0][3]), -4);
+    ibz_set(&(cmp.basis.m[1][3]), 3 + 23 * 4);
+    ibz_set(&(cmp.basis.m[2][3]), 0 + 4 * 4);
+    ibz_set(&(cmp.basis.m[3][3]), -1 + 4 * 3);
     ibz_set(&(cmp.denom), 10);
     quat_lattice_hnf(&cmp);
     res = res || !quat_lattice_equal(&cmp, &prod);
@@ -479,26 +479,26 @@ quat_test_lattice_mul(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat1.basis[i][j]), 0);
-            ibz_set(&(lat2.basis[i][j]), 0);
-            ibz_set(&(cmp.basis[i][j]), 0);
+            ibz_set(&(lat1.basis.m[i][j]), 0);
+            ibz_set(&(lat2.basis.m[i][j]), 0);
+            ibz_set(&(cmp.basis.m[i][j]), 0);
         }
     }
 
-    ibz_set(&(lat1.basis[0][0]), 44);
-    ibz_set(&(lat1.basis[0][2]), 3);
-    ibz_set(&(lat1.basis[0][3]), 32);
-    ibz_set(&(lat2.basis[0][0]), 1);
-    ibz_set(&(cmp.basis[0][0]), 1);
-    ibz_set(&(lat1.basis[1][1]), 5);
-    ibz_set(&(lat2.basis[1][1]), 2);
-    ibz_set(&(cmp.basis[1][1]), 1);
-    ibz_set(&(lat1.basis[2][2]), 3);
-    ibz_set(&(lat2.basis[2][2]), 1);
-    ibz_set(&(cmp.basis[2][2]), 1);
-    ibz_set(&(lat1.basis[3][3]), 1);
-    ibz_set(&(lat2.basis[3][3]), 3);
-    ibz_set(&(cmp.basis[3][3]), 1);
+    ibz_set(&(lat1.basis.m[0][0]), 44);
+    ibz_set(&(lat1.basis.m[0][2]), 3);
+    ibz_set(&(lat1.basis.m[0][3]), 32);
+    ibz_set(&(lat2.basis.m[0][0]), 1);
+    ibz_set(&(cmp.basis.m[0][0]), 1);
+    ibz_set(&(lat1.basis.m[1][1]), 5);
+    ibz_set(&(lat2.basis.m[1][1]), 2);
+    ibz_set(&(cmp.basis.m[1][1]), 1);
+    ibz_set(&(lat1.basis.m[2][2]), 3);
+    ibz_set(&(lat2.basis.m[2][2]), 1);
+    ibz_set(&(cmp.basis.m[2][2]), 1);
+    ibz_set(&(lat1.basis.m[3][3]), 1);
+    ibz_set(&(lat2.basis.m[3][3]), 3);
+    ibz_set(&(cmp.basis.m[3][3]), 1);
     ibz_set(&(lat1.denom), 4);
     ibz_set(&(lat2.denom), 6);
     ibz_set(&(cmp.denom), 24);
@@ -510,21 +510,21 @@ quat_test_lattice_mul(void)
     // same lattices but not under hnf
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat1.basis[i][j]), 0);
-            ibz_set(&(lat2.basis[i][j]), 0);
+            ibz_set(&(lat1.basis.m[i][j]), 0);
+            ibz_set(&(lat2.basis.m[i][j]), 0);
         }
     }
-    ibz_set(&(lat1.basis[0][0]), 4);
-    ibz_set(&(lat1.basis[0][2]), 3);
-    ibz_set(&(lat2.basis[0][0]), 1);
-    ibz_set(&(lat2.basis[0][3]), -1);
-    ibz_set(&(lat1.basis[1][1]), 5);
-    ibz_set(&(lat2.basis[1][1]), -2);
-    ibz_set(&(lat1.basis[2][2]), 3);
-    ibz_set(&(lat2.basis[2][2]), 1);
-    ibz_set(&(lat2.basis[2][1]), 1);
-    ibz_set(&(lat1.basis[3][3]), 7);
-    ibz_set(&(lat2.basis[3][3]), -3);
+    ibz_set(&(lat1.basis.m[0][0]), 4);
+    ibz_set(&(lat1.basis.m[0][2]), 3);
+    ibz_set(&(lat2.basis.m[0][0]), 1);
+    ibz_set(&(lat2.basis.m[0][3]), -1);
+    ibz_set(&(lat1.basis.m[1][1]), 5);
+    ibz_set(&(lat2.basis.m[1][1]), -2);
+    ibz_set(&(lat1.basis.m[2][2]), 3);
+    ibz_set(&(lat2.basis.m[2][2]), 1);
+    ibz_set(&(lat2.basis.m[2][1]), 1);
+    ibz_set(&(lat1.basis.m[3][3]), 7);
+    ibz_set(&(lat2.basis.m[3][3]), -3);
     ibz_set(&(lat1.denom), 4);
     ibz_set(&(lat2.denom), 6);
 
@@ -535,13 +535,13 @@ quat_test_lattice_mul(void)
     // double in place gives hnf
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(cmp.basis[i][j]), 0);
+            ibz_set(&(cmp.basis.m[i][j]), 0);
         }
     }
-    ibz_set(&(cmp.basis[0][0]), 1);
-    ibz_set(&(cmp.basis[1][1]), 1);
-    ibz_set(&(cmp.basis[2][2]), 1);
-    ibz_set(&(cmp.basis[3][3]), 1);
+    ibz_set(&(cmp.basis.m[0][0]), 1);
+    ibz_set(&(cmp.basis.m[1][1]), 1);
+    ibz_set(&(cmp.basis.m[2][2]), 1);
+    ibz_set(&(cmp.basis.m[3][3]), 1);
     ibz_set(&(cmp.denom), 36);
     quat_lattice_mul(&lat2, &lat2, &lat2, &alg);
     res = res || (!ibz_mat_4x4_equal(&(lat2.basis), &(cmp.basis)));
@@ -577,22 +577,22 @@ quat_test_lattice_contains(void)
     // lattice 1
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat.basis[i][j]), 0);
+            ibz_set(&(lat.basis.m[i][j]), 0);
         }
     }
-    ibz_set(&(lat.basis[0][0]), 4);
-    ibz_set(&(lat.basis[0][2]), 3);
-    ibz_set(&(lat.basis[1][1]), 5);
-    ibz_set(&(lat.basis[2][2]), 3);
-    ibz_set(&(lat.basis[3][3]), 7);
+    ibz_set(&(lat.basis.m[0][0]), 4);
+    ibz_set(&(lat.basis.m[0][2]), 3);
+    ibz_set(&(lat.basis.m[1][1]), 5);
+    ibz_set(&(lat.basis.m[2][2]), 3);
+    ibz_set(&(lat.basis.m[3][3]), 7);
     ibz_set(&(lat.denom), 4);
 
     // x 1, should fail
     ibz_set(&(x.denom), 3);
-    ibz_set(&(x.coord[0]), 1);
-    ibz_set(&(x.coord[1]), -2);
-    ibz_set(&(x.coord[2]), 26);
-    ibz_set(&(x.coord[3]), 9);
+    ibz_set(&(x.coord.v[0]), 1);
+    ibz_set(&(x.coord.v[1]), -2);
+    ibz_set(&(x.coord.v[2]), 26);
+    ibz_set(&(x.coord.v[3]), 9);
 
     res = res || quat_lattice_contains(&coord, &lat, &x);
     // again, but with NULL
@@ -601,34 +601,34 @@ quat_test_lattice_contains(void)
     // lattice 2
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat.basis[i][j]), 0);
+            ibz_set(&(lat.basis.m[i][j]), 0);
         }
     }
-    ibz_set(&(lat.basis[0][0]), 1);
-    ibz_set(&(lat.basis[0][3]), -1);
-    ibz_set(&(lat.basis[1][1]), -2);
-    ibz_set(&(lat.basis[2][2]), 1);
-    ibz_set(&(lat.basis[2][1]), 1);
-    ibz_set(&(lat.basis[3][3]), -3);
+    ibz_set(&(lat.basis.m[0][0]), 1);
+    ibz_set(&(lat.basis.m[0][3]), -1);
+    ibz_set(&(lat.basis.m[1][1]), -2);
+    ibz_set(&(lat.basis.m[2][2]), 1);
+    ibz_set(&(lat.basis.m[2][1]), 1);
+    ibz_set(&(lat.basis.m[3][3]), -3);
     ibz_set(&(lat.denom), 6);
     quat_lattice_hnf(&lat);
     // x 1, should succeed
     ibz_set(&(x.denom), 3);
-    ibz_set(&(x.coord[0]), 1);
-    ibz_set(&(x.coord[1]), -2);
-    ibz_set(&(x.coord[2]), 26);
-    ibz_set(&(x.coord[3]), 9);
-    ibz_set(&(cmp[0]), 2);
-    ibz_set(&(cmp[1]), -2);
-    ibz_set(&(cmp[2]), 52);
-    ibz_set(&(cmp[3]), 6);
+    ibz_set(&(x.coord.v[0]), 1);
+    ibz_set(&(x.coord.v[1]), -2);
+    ibz_set(&(x.coord.v[2]), 26);
+    ibz_set(&(x.coord.v[3]), 9);
+    ibz_set(&(cmp.v[0]), 2);
+    ibz_set(&(cmp.v[1]), -2);
+    ibz_set(&(cmp.v[2]), 52);
+    ibz_set(&(cmp.v[3]), 6);
 
     res = res || (0 == quat_lattice_contains(&coord, &lat, &x));
 
-    res = res || ibz_cmp(&(coord[0]), &(cmp[0]));
-    res = res || ibz_cmp(&(coord[1]), &(cmp[1]));
-    res = res || ibz_cmp(&(coord[2]), &(cmp[2]));
-    res = res || ibz_cmp(&(coord[3]), &(cmp[3]));
+    res = res || ibz_cmp(&(coord.v[0]), &(cmp.v[0]));
+    res = res || ibz_cmp(&(coord.v[1]), &(cmp.v[1]));
+    res = res || ibz_cmp(&(coord.v[2]), &(cmp.v[2]));
+    res = res || ibz_cmp(&(coord.v[3]), &(cmp.v[3]));
     // again, but with NULL
     res = res || (0 == quat_lattice_contains(NULL, &lat, &x));
 
@@ -658,22 +658,22 @@ quat_test_lattice_index(void)
     ibz_mat_4x4_zero(&(sublat.basis));
     ibz_mat_4x4_identity(&(overlat.basis));
     ibz_set(&(overlat.denom), 2);
-    ibz_set(&(sublat.basis[0][0]), 2);
-    ibz_set(&(sublat.basis[0][1]), 0);
-    ibz_set(&(sublat.basis[0][2]), 1);
-    ibz_set(&(sublat.basis[0][3]), 0);
-    ibz_set(&(sublat.basis[1][0]), 0);
-    ibz_set(&(sublat.basis[1][1]), 4);
-    ibz_set(&(sublat.basis[1][2]), 2);
-    ibz_set(&(sublat.basis[1][3]), 3);
-    ibz_set(&(sublat.basis[2][0]), 0);
-    ibz_set(&(sublat.basis[2][1]), 0);
-    ibz_set(&(sublat.basis[2][2]), 1);
-    ibz_set(&(sublat.basis[2][3]), 0);
-    ibz_set(&(sublat.basis[3][0]), 0);
-    ibz_set(&(sublat.basis[3][1]), 0);
-    ibz_set(&(sublat.basis[3][2]), 0);
-    ibz_set(&(sublat.basis[3][3]), 1);
+    ibz_set(&(sublat.basis.m[0][0]), 2);
+    ibz_set(&(sublat.basis.m[0][1]), 0);
+    ibz_set(&(sublat.basis.m[0][2]), 1);
+    ibz_set(&(sublat.basis.m[0][3]), 0);
+    ibz_set(&(sublat.basis.m[1][0]), 0);
+    ibz_set(&(sublat.basis.m[1][1]), 4);
+    ibz_set(&(sublat.basis.m[1][2]), 2);
+    ibz_set(&(sublat.basis.m[1][3]), 3);
+    ibz_set(&(sublat.basis.m[2][0]), 0);
+    ibz_set(&(sublat.basis.m[2][1]), 0);
+    ibz_set(&(sublat.basis.m[2][2]), 1);
+    ibz_set(&(sublat.basis.m[2][3]), 0);
+    ibz_set(&(sublat.basis.m[3][0]), 0);
+    ibz_set(&(sublat.basis.m[3][1]), 0);
+    ibz_set(&(sublat.basis.m[3][2]), 0);
+    ibz_set(&(sublat.basis.m[3][3]), 1);
     ibz_set(&(sublat.denom), 2);
     quat_lattice_index(&index, &sublat, &overlat);
 
@@ -699,20 +699,20 @@ quat_test_lattice_hnf(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(lat.basis[i][j]), 0);
-            ibz_set(&(cmp.basis[i][j]), 0);
+            ibz_set(&(lat.basis.m[i][j]), 0);
+            ibz_set(&(cmp.basis.m[i][j]), 0);
         }
     }
-    ibz_set(&(lat.basis[0][0]), 1);
-    ibz_set(&(lat.basis[0][3]), -1);
-    ibz_set(&(lat.basis[1][1]), -2);
-    ibz_set(&(lat.basis[2][2]), 1);
-    ibz_set(&(lat.basis[2][1]), 1);
-    ibz_set(&(lat.basis[3][3]), -3);
-    ibz_set(&(cmp.basis[0][0]), 1);
-    ibz_set(&(cmp.basis[1][1]), 2);
-    ibz_set(&(cmp.basis[2][2]), 1);
-    ibz_set(&(cmp.basis[3][3]), 3);
+    ibz_set(&(lat.basis.m[0][0]), 1);
+    ibz_set(&(lat.basis.m[0][3]), -1);
+    ibz_set(&(lat.basis.m[1][1]), -2);
+    ibz_set(&(lat.basis.m[2][2]), 1);
+    ibz_set(&(lat.basis.m[2][1]), 1);
+    ibz_set(&(lat.basis.m[3][3]), -3);
+    ibz_set(&(cmp.basis.m[0][0]), 1);
+    ibz_set(&(cmp.basis.m[1][1]), 2);
+    ibz_set(&(cmp.basis.m[2][2]), 1);
+    ibz_set(&(cmp.basis.m[3][3]), 3);
     ibz_set(&(cmp.denom), 6);
     ibz_set(&(lat.denom), 6);
 
@@ -758,13 +758,13 @@ quat_test_lattice_gram()
     quat_lattice_contains(&vec2, &lattice, &elem2);
     quat_alg_conj(&elem2, &elem2);
     quat_alg_mul(&elem1, &elem1, &elem2, &alg);
-    ibz_mul(&norm1, &(elem1.coord[0]), &ibz_const_two);
+    ibz_mul(&norm1, &(elem1.coord.v[0]), &ibz_const_two);
     ibz_div(&norm1, &test, &norm1, &(elem1.denom));
 
     ibz_mat_4x4_eval(&vec1, &gram, &vec1);
     ibz_set(&norm2, 0);
     for (int i = 0; i < 4; i++) {
-        ibz_mul(&test, &(vec1[i]), &(vec2[i]));
+        ibz_mul(&test, &(vec1.v[i]), &(vec2.v[i]));
         ibz_add(&norm2, &norm2, &test);
     }
     ibz_div(&norm2, &test, &norm2, &(lattice.denom));
@@ -772,14 +772,14 @@ quat_test_lattice_gram()
     res = res | !(ibz_cmp(&norm1, &norm2) == 0);
 
     ibz_mat_4x4_zero(&(lattice.basis));
-    ibz_set(&(lattice.basis[0][0]), 202);
-    ibz_set(&(lattice.basis[1][1]), 202);
-    ibz_set(&(lattice.basis[2][2]), 1);
-    ibz_set(&(lattice.basis[3][3]), 1);
-    ibz_set(&(lattice.basis[0][2]), 158);
-    ibz_set(&(lattice.basis[0][3]), 53);
-    ibz_set(&(lattice.basis[1][2]), 149);
-    ibz_set(&(lattice.basis[1][3]), 158);
+    ibz_set(&(lattice.basis.m[0][0]), 202);
+    ibz_set(&(lattice.basis.m[1][1]), 202);
+    ibz_set(&(lattice.basis.m[2][2]), 1);
+    ibz_set(&(lattice.basis.m[3][3]), 1);
+    ibz_set(&(lattice.basis.m[0][2]), 158);
+    ibz_set(&(lattice.basis.m[0][3]), 53);
+    ibz_set(&(lattice.basis.m[1][2]), 149);
+    ibz_set(&(lattice.basis.m[1][3]), 158);
     ibz_set(&(lattice.denom), 2);
     quat_lattice_gram(&gram, &lattice, &alg);
 
@@ -790,13 +790,13 @@ quat_test_lattice_gram()
     assert(ok);
     quat_alg_conj(&elem2, &elem2);
     quat_alg_mul(&elem1, &elem1, &elem2, &alg);
-    ibz_mul(&norm1, &(elem1.coord[0]), &ibz_const_two);
+    ibz_mul(&norm1, &(elem1.coord.v[0]), &ibz_const_two);
     ibz_div(&norm1, &test, &norm1, &(elem1.denom));
 
     ibz_mat_4x4_eval(&vec1, &gram, &vec1);
     ibz_set(&norm2, 0);
     for (int i = 0; i < 4; i++) {
-        ibz_mul(&test, &(vec1[i]), &(vec2[i]));
+        ibz_mul(&test, &(vec1.v[i]), &(vec2.v[i]));
         ibz_add(&norm2, &norm2, &test);
     }
     ibz_div(&norm2, &test, &norm2, &(lattice.denom));

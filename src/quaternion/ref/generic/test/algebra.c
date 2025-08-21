@@ -32,45 +32,45 @@ quat_test_alg_coord_mul(void)
     ibz_vec_4_init(&c);
     ibz_vec_4_init(&cmp);
 
-    ibz_set(&(a[0]), 152);
-    ibz_set(&(a[1]), 57);
-    ibz_set(&(a[2]), 190);
-    ibz_set(&(a[3]), 28);
-    ibz_set(&(b[0]), 165);
-    ibz_set(&(b[1]), 35);
-    ibz_set(&(b[2]), 231);
-    ibz_set(&(b[3]), 770);
-    ibz_set(&(cmp[0]), -435065);
-    ibz_set(&(cmp[1]), 993549);
-    ibz_set(&(cmp[2]), 23552);
-    ibz_set(&(cmp[3]), 128177);
+    ibz_set(&(a.v[0]), 152);
+    ibz_set(&(a.v[1]), 57);
+    ibz_set(&(a.v[2]), 190);
+    ibz_set(&(a.v[3]), 28);
+    ibz_set(&(b.v[0]), 165);
+    ibz_set(&(b.v[1]), 35);
+    ibz_set(&(b.v[2]), 231);
+    ibz_set(&(b.v[3]), 770);
+    ibz_set(&(cmp.v[0]), -435065);
+    ibz_set(&(cmp.v[1]), 993549);
+    ibz_set(&(cmp.v[2]), 23552);
+    ibz_set(&(cmp.v[3]), 128177);
     quat_alg_coord_mul(&c, &a, &b, &alg);
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(c[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(c.v[i]), &(cmp.v[i]));
     }
     ibz_set(&(alg.p), 11);
-    ibz_set(&(cmp[0]), -696865);
-    ibz_set(&(cmp[1]), 1552877);
+    ibz_set(&(cmp.v[0]), -696865);
+    ibz_set(&(cmp.v[1]), 1552877);
     quat_alg_coord_mul(&c, &a, &b, &alg);
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(c[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(c.v[i]), &(cmp.v[i]));
     }
 
     ibz_set(&(alg.p), 7);
-    ibz_set(&(a[0]), 1);
-    ibz_set(&(a[1]), 1);
-    ibz_set(&(a[2]), 1);
-    ibz_set(&(a[3]), 1);
-    ibz_set(&(cmp[0]), -14);
-    ibz_set(&(cmp[1]), 2);
-    ibz_set(&(cmp[2]), 2);
-    ibz_set(&(cmp[3]), 2);
+    ibz_set(&(a.v[0]), 1);
+    ibz_set(&(a.v[1]), 1);
+    ibz_set(&(a.v[2]), 1);
+    ibz_set(&(a.v[3]), 1);
+    ibz_set(&(cmp.v[0]), -14);
+    ibz_set(&(cmp.v[1]), 2);
+    ibz_set(&(cmp.v[2]), 2);
+    ibz_set(&(cmp.v[3]), 2);
     quat_alg_coord_mul(&a, &a, &a, &alg);
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(a[i]), &(cmp[i]));
+        res = res || ibz_cmp(&(a.v[i]), &(cmp.v[i]));
     }
 
     if (res != 0) {
@@ -98,115 +98,115 @@ quat_test_alg_equal_denom(void)
     quat_alg_elem_init(&cmp_a);
     quat_alg_elem_init(&cmp_b);
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 67);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 67);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 3);
-    ibz_set(&(cmp_a.coord[0]), -12);
-    ibz_set(&(cmp_a.coord[1]), 0);
-    ibz_set(&(cmp_a.coord[2]), -7);
-    ibz_set(&(cmp_a.coord[3]), 19);
+    ibz_set(&(cmp_a.coord.v[0]), -12);
+    ibz_set(&(cmp_a.coord.v[1]), 0);
+    ibz_set(&(cmp_a.coord.v[2]), -7);
+    ibz_set(&(cmp_a.coord.v[3]), 19);
     ibz_set(&(cmp_a.denom), 9);
-    ibz_set(&(cmp_b.coord[0]), -18);
-    ibz_set(&(cmp_b.coord[1]), 6);
-    ibz_set(&(cmp_b.coord[2]), 201);
-    ibz_set(&(cmp_b.coord[3]), -57);
+    ibz_set(&(cmp_b.coord.v[0]), -18);
+    ibz_set(&(cmp_b.coord.v[1]), 6);
+    ibz_set(&(cmp_b.coord.v[2]), 201);
+    ibz_set(&(cmp_b.coord.v[3]), -57);
     ibz_set(&(cmp_b.denom), 9);
     quat_alg_equal_denom(&res_a, &res_b, &a, &b);
     res = res || ibz_cmp(&(res_a.denom), &(cmp_a.denom));
     res = res || ibz_cmp(&(res_b.denom), &(cmp_b.denom));
     res = res || ibz_cmp(&(cmp_a.denom), &(cmp_b.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(res_a.coord[i]), &(cmp_a.coord[i]));
-        res = res || ibz_cmp(&(res_b.coord[i]), &(cmp_b.coord[i]));
+        res = res || ibz_cmp(&(res_a.coord.v[i]), &(cmp_a.coord.v[i]));
+        res = res || ibz_cmp(&(res_b.coord.v[i]), &(cmp_b.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 67);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 67);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 6);
-    ibz_set(&(cmp_a.coord[0]), -24);
-    ibz_set(&(cmp_a.coord[1]), 0);
-    ibz_set(&(cmp_a.coord[2]), -14);
-    ibz_set(&(cmp_a.coord[3]), 38);
+    ibz_set(&(cmp_a.coord.v[0]), -24);
+    ibz_set(&(cmp_a.coord.v[1]), 0);
+    ibz_set(&(cmp_a.coord.v[2]), -14);
+    ibz_set(&(cmp_a.coord.v[3]), 38);
     ibz_set(&(cmp_a.denom), 18);
-    ibz_set(&(cmp_b.coord[0]), -18);
-    ibz_set(&(cmp_b.coord[1]), 6);
-    ibz_set(&(cmp_b.coord[2]), 201);
-    ibz_set(&(cmp_b.coord[3]), -57);
+    ibz_set(&(cmp_b.coord.v[0]), -18);
+    ibz_set(&(cmp_b.coord.v[1]), 6);
+    ibz_set(&(cmp_b.coord.v[2]), 201);
+    ibz_set(&(cmp_b.coord.v[3]), -57);
     ibz_set(&(cmp_b.denom), 18);
     quat_alg_equal_denom(&res_a, &res_b, &a, &b);
     res = res || ibz_cmp(&(res_a.denom), &(cmp_a.denom));
     res = res || ibz_cmp(&(res_b.denom), &(cmp_b.denom));
     res = res || ibz_cmp(&(cmp_a.denom), &(cmp_b.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(res_a.coord[i]), &(cmp_a.coord[i]));
-        res = res || ibz_cmp(&(res_b.coord[i]), &(cmp_b.coord[i]));
+        res = res || ibz_cmp(&(res_a.coord.v[i]), &(cmp_a.coord.v[i]));
+        res = res || ibz_cmp(&(res_b.coord.v[i]), &(cmp_b.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 6);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 67);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 67);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 6);
-    ibz_set(&(cmp_a.coord[0]), -12);
-    ibz_set(&(cmp_a.coord[1]), 0);
-    ibz_set(&(cmp_a.coord[2]), -7);
-    ibz_set(&(cmp_a.coord[3]), 19);
+    ibz_set(&(cmp_a.coord.v[0]), -12);
+    ibz_set(&(cmp_a.coord.v[1]), 0);
+    ibz_set(&(cmp_a.coord.v[2]), -7);
+    ibz_set(&(cmp_a.coord.v[3]), 19);
     ibz_set(&(cmp_a.denom), 6);
-    ibz_set(&(cmp_b.coord[0]), -6);
-    ibz_set(&(cmp_b.coord[1]), 2);
-    ibz_set(&(cmp_b.coord[2]), 67);
-    ibz_set(&(cmp_b.coord[3]), -19);
+    ibz_set(&(cmp_b.coord.v[0]), -6);
+    ibz_set(&(cmp_b.coord.v[1]), 2);
+    ibz_set(&(cmp_b.coord.v[2]), 67);
+    ibz_set(&(cmp_b.coord.v[3]), -19);
     ibz_set(&(cmp_b.denom), 6);
     quat_alg_equal_denom(&res_a, &res_b, &a, &b);
     res = res || ibz_cmp(&(res_a.denom), &(cmp_a.denom));
     res = res || ibz_cmp(&(res_b.denom), &(cmp_b.denom));
     res = res || ibz_cmp(&(cmp_a.denom), &(cmp_b.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(res_a.coord[i]), &(cmp_a.coord[i]));
-        res = res || ibz_cmp(&(res_b.coord[i]), &(cmp_b.coord[i]));
+        res = res || ibz_cmp(&(res_a.coord.v[i]), &(cmp_a.coord.v[i]));
+        res = res || ibz_cmp(&(res_b.coord.v[i]), &(cmp_b.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 6);
-    ibz_set(&(cmp_a.coord[0]), -12);
-    ibz_set(&(cmp_a.coord[1]), 0);
-    ibz_set(&(cmp_a.coord[2]), -7);
-    ibz_set(&(cmp_a.coord[3]), 19);
+    ibz_set(&(cmp_a.coord.v[0]), -12);
+    ibz_set(&(cmp_a.coord.v[1]), 0);
+    ibz_set(&(cmp_a.coord.v[2]), -7);
+    ibz_set(&(cmp_a.coord.v[3]), 19);
     ibz_set(&(cmp_a.denom), 6);
-    ibz_set(&(cmp_b.coord[0]), -12);
-    ibz_set(&(cmp_b.coord[1]), 0);
-    ibz_set(&(cmp_b.coord[2]), -7);
-    ibz_set(&(cmp_b.coord[3]), 19);
+    ibz_set(&(cmp_b.coord.v[0]), -12);
+    ibz_set(&(cmp_b.coord.v[1]), 0);
+    ibz_set(&(cmp_b.coord.v[2]), -7);
+    ibz_set(&(cmp_b.coord.v[3]), 19);
     ibz_set(&(cmp_b.denom), 6);
     quat_alg_equal_denom(&a, &b, &a, &a);
     res = res || ibz_cmp(&(a.denom), &(a.denom));
     res = res || ibz_cmp(&(b.denom), &(b.denom));
     res = res || ibz_cmp(&(cmp_a.denom), &(cmp_b.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(a.coord[i]), &(a.coord[i]));
-        res = res || ibz_cmp(&(b.coord[i]), &(b.coord[i]));
+        res = res || ibz_cmp(&(a.coord.v[i]), &(a.coord.v[i]));
+        res = res || ibz_cmp(&(b.coord.v[i]), &(b.coord.v[i]));
     }
     if (res != 0) {
         printf("Quaternion unit test alg_equal_denom failed\n");
@@ -233,62 +233,62 @@ quat_test_alg_add(void)
     quat_alg_elem_init(&c);
     quat_alg_elem_init(&cmp);
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 7);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 7);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 3);
-    ibz_set(&(cmp.coord[0]), -30);
-    ibz_set(&(cmp.coord[1]), 6);
-    ibz_set(&(cmp.coord[2]), 14);
-    ibz_set(&(cmp.coord[3]), -38);
+    ibz_set(&(cmp.coord.v[0]), -30);
+    ibz_set(&(cmp.coord.v[1]), 6);
+    ibz_set(&(cmp.coord.v[2]), 14);
+    ibz_set(&(cmp.coord.v[3]), -38);
     ibz_set(&(cmp.denom), 9);
     quat_alg_add(&c, &a, &b);
     res = res || ibz_cmp(&(c.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(c.coord.v[i]), &(cmp.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 7);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 7);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 6);
-    ibz_set(&(cmp.coord[0]), -42);
-    ibz_set(&(cmp.coord[1]), 6);
-    ibz_set(&(cmp.coord[2]), 7);
-    ibz_set(&(cmp.coord[3]), -19);
+    ibz_set(&(cmp.coord.v[0]), -42);
+    ibz_set(&(cmp.coord.v[1]), 6);
+    ibz_set(&(cmp.coord.v[2]), 7);
+    ibz_set(&(cmp.coord.v[3]), -19);
     ibz_set(&(cmp.denom), 18);
     quat_alg_add(&c, &a, &b);
     res = res || ibz_cmp(&(c.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(c.coord.v[i]), &(cmp.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(cmp.coord[0]), -24);
-    ibz_set(&(cmp.coord[1]), 0);
-    ibz_set(&(cmp.coord[2]), -14);
-    ibz_set(&(cmp.coord[3]), 38);
+    ibz_set(&(cmp.coord.v[0]), -24);
+    ibz_set(&(cmp.coord.v[1]), 0);
+    ibz_set(&(cmp.coord.v[2]), -14);
+    ibz_set(&(cmp.coord.v[3]), 38);
     ibz_set(&(cmp.denom), 9);
     quat_alg_add(&a, &a, &a);
     res = res || ibz_cmp(&(a.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(a.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(a.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     if (res != 0) {
@@ -312,64 +312,64 @@ quat_test_alg_sub(void)
     quat_alg_elem_init(&c);
     quat_alg_elem_init(&cmp);
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 7);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 7);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 3);
-    ibz_set(&(cmp.coord[0]), -12 - 3 * (-6));
-    ibz_set(&(cmp.coord[1]), -3 * 2);
-    ibz_set(&(cmp.coord[2]), -7 - 3 * 7);
-    ibz_set(&(cmp.coord[3]), 19 - 3 * (-19));
+    ibz_set(&(cmp.coord.v[0]), -12 - 3 * (-6));
+    ibz_set(&(cmp.coord.v[1]), -3 * 2);
+    ibz_set(&(cmp.coord.v[2]), -7 - 3 * 7);
+    ibz_set(&(cmp.coord.v[3]), 19 - 3 * (-19));
     ibz_set(&(cmp.denom), 9);
     quat_alg_sub(&c, &a, &b);
     res = res || ibz_cmp(&(c.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
-        res = res || ibz_cmp(&(c.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(c.coord.v[i]), &(cmp.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(b.coord[0]), -6);
-    ibz_set(&(b.coord[1]), 2);
-    ibz_set(&(b.coord[2]), 7);
-    ibz_set(&(b.coord[3]), -19);
+    ibz_set(&(b.coord.v[0]), -6);
+    ibz_set(&(b.coord.v[1]), 2);
+    ibz_set(&(b.coord.v[2]), 7);
+    ibz_set(&(b.coord.v[3]), -19);
     ibz_set(&(b.denom), 6);
-    ibz_set(&(cmp.coord[0]), -2 * 12 - 3 * (-6));
-    ibz_set(&(cmp.coord[1]), -3 * 2);
-    ibz_set(&(cmp.coord[2]), -2 * 7 - 3 * 7);
-    ibz_set(&(cmp.coord[3]), 2 * 19 - 3 * (-19));
+    ibz_set(&(cmp.coord.v[0]), -2 * 12 - 3 * (-6));
+    ibz_set(&(cmp.coord.v[1]), -3 * 2);
+    ibz_set(&(cmp.coord.v[2]), -2 * 7 - 3 * 7);
+    ibz_set(&(cmp.coord.v[3]), 2 * 19 - 3 * (-19));
     ibz_set(&(cmp.denom), 18);
     quat_alg_sub(&a, &a, &b);
     res = res || ibz_cmp(&(a.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(a.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(a.coord.v[i]), &(cmp.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -12);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), -7);
-    ibz_set(&(a.coord[3]), 19);
+    ibz_set(&(a.coord.v[0]), -12);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), -7);
+    ibz_set(&(a.coord.v[3]), 19);
     ibz_set(&(a.denom), 9);
-    ibz_set(&(cmp.coord[0]), 0);
-    ibz_set(&(cmp.coord[1]), 0);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 0);
+    ibz_set(&(cmp.coord.v[0]), 0);
+    ibz_set(&(cmp.coord.v[1]), 0);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 0);
     ibz_set(&(cmp.denom), 9);
     quat_alg_sub(&a, &a, &a);
     res = res || ibz_cmp(&(a.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(a.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(a.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     if (res != 0) {
@@ -396,72 +396,72 @@ quat_test_alg_mul(void)
     quat_alg_elem_init(&c);
     quat_alg_elem_init(&cmp);
 
-    ibz_set(&(a.coord[0]), 152);
-    ibz_set(&(a.coord[1]), 57);
-    ibz_set(&(a.coord[2]), 190);
-    ibz_set(&(a.coord[3]), 28);
+    ibz_set(&(a.coord.v[0]), 152);
+    ibz_set(&(a.coord.v[1]), 57);
+    ibz_set(&(a.coord.v[2]), 190);
+    ibz_set(&(a.coord.v[3]), 28);
     ibz_set(&(a.denom), 76);
-    ibz_set(&(b.coord[0]), 165);
-    ibz_set(&(b.coord[1]), 35);
-    ibz_set(&(b.coord[2]), 231);
-    ibz_set(&(b.coord[3]), 770);
+    ibz_set(&(b.coord.v[0]), 165);
+    ibz_set(&(b.coord.v[1]), 35);
+    ibz_set(&(b.coord.v[2]), 231);
+    ibz_set(&(b.coord.v[3]), 770);
     ibz_set(&(b.denom), 385);
-    ibz_set(&(cmp.coord[0]), -435065);
-    ibz_set(&(cmp.coord[1]), 993549);
-    ibz_set(&(cmp.coord[2]), 23552);
-    ibz_set(&(cmp.coord[3]), 128177);
+    ibz_set(&(cmp.coord.v[0]), -435065);
+    ibz_set(&(cmp.coord.v[1]), 993549);
+    ibz_set(&(cmp.coord.v[2]), 23552);
+    ibz_set(&(cmp.coord.v[3]), 128177);
     ibz_set(&(cmp.denom), 29260);
     quat_alg_mul(&c, &a, &b, &alg);
     res = res || ibz_cmp(&(c.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(c.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(c.coord.v[i]), &(cmp.coord.v[i]));
     }
     ibz_set(&(alg.p), 11);
-    ibz_set(&(cmp.coord[0]), -696865);
-    ibz_set(&(cmp.coord[1]), 1552877);
+    ibz_set(&(cmp.coord.v[0]), -696865);
+    ibz_set(&(cmp.coord.v[1]), 1552877);
     ibz_set(&(cmp.denom), 29260);
     quat_alg_mul(&c, &a, &b, &alg);
     res = res || ibz_cmp(&(c.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(c.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(c.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     ibz_set(&(alg.p), 7);
-    ibz_set(&(a.coord[0]), 1);
-    ibz_set(&(a.coord[1]), 1);
-    ibz_set(&(a.coord[2]), 1);
-    ibz_set(&(a.coord[3]), 1);
+    ibz_set(&(a.coord.v[0]), 1);
+    ibz_set(&(a.coord.v[1]), 1);
+    ibz_set(&(a.coord.v[2]), 1);
+    ibz_set(&(a.coord.v[3]), 1);
     ibz_set(&(a.denom), 2);
-    ibz_set(&(cmp.coord[0]), -14);
-    ibz_set(&(cmp.coord[1]), 2);
-    ibz_set(&(cmp.coord[2]), 2);
-    ibz_set(&(cmp.coord[3]), 2);
+    ibz_set(&(cmp.coord.v[0]), -14);
+    ibz_set(&(cmp.coord.v[1]), 2);
+    ibz_set(&(cmp.coord.v[2]), 2);
+    ibz_set(&(cmp.coord.v[3]), 2);
     ibz_set(&(cmp.denom), 4);
     quat_alg_mul(&c, &a, &a, &alg);
     res = res || ibz_cmp(&(c.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(c.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(c.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     ibz_set(&(alg.p), 7);
-    ibz_set(&(a.coord[0]), 1);
-    ibz_set(&(a.coord[1]), 1);
-    ibz_set(&(a.coord[2]), 1);
-    ibz_set(&(a.coord[3]), 1);
+    ibz_set(&(a.coord.v[0]), 1);
+    ibz_set(&(a.coord.v[1]), 1);
+    ibz_set(&(a.coord.v[2]), 1);
+    ibz_set(&(a.coord.v[3]), 1);
     ibz_set(&(a.denom), 2);
-    ibz_set(&(cmp.coord[0]), -14);
-    ibz_set(&(cmp.coord[1]), 2);
-    ibz_set(&(cmp.coord[2]), 2);
-    ibz_set(&(cmp.coord[3]), 2);
+    ibz_set(&(cmp.coord.v[0]), -14);
+    ibz_set(&(cmp.coord.v[1]), 2);
+    ibz_set(&(cmp.coord.v[2]), 2);
+    ibz_set(&(cmp.coord.v[3]), 2);
     ibz_set(&(cmp.denom), 4);
     quat_alg_mul(&a, &a, &a, &alg);
     res = res || ibz_cmp(&(a.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(a.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(a.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     if (res != 0) {
@@ -491,10 +491,10 @@ quat_test_alg_norm(void)
     ibz_init(&cmp_denom);
 
     ibz_set(&(alg.p), 11);
-    ibz_set(&(a.coord[0]), 1);
-    ibz_set(&(a.coord[1]), 5);
-    ibz_set(&(a.coord[2]), 7);
-    ibz_set(&(a.coord[3]), 2);
+    ibz_set(&(a.coord.v[0]), 1);
+    ibz_set(&(a.coord.v[1]), 5);
+    ibz_set(&(a.coord.v[2]), 7);
+    ibz_set(&(a.coord.v[3]), 2);
     ibz_set(&(a.denom), 2);
     ibz_set(&cmp_num, 609);
     ibz_set(&cmp_denom, 4);
@@ -504,10 +504,10 @@ quat_test_alg_norm(void)
 
     // same vector, not reduced
     ibz_set(&(alg.p), 11);
-    ibz_set(&(a.coord[0]), 2);
-    ibz_set(&(a.coord[1]), 10);
-    ibz_set(&(a.coord[2]), 14);
-    ibz_set(&(a.coord[3]), 4);
+    ibz_set(&(a.coord.v[0]), 2);
+    ibz_set(&(a.coord.v[1]), 10);
+    ibz_set(&(a.coord.v[2]), 14);
+    ibz_set(&(a.coord.v[3]), 4);
     ibz_set(&(a.denom), 4);
     ibz_set(&cmp_num, 609);
     ibz_set(&cmp_denom, 4);
@@ -516,10 +516,10 @@ quat_test_alg_norm(void)
     res = res || (ibz_cmp(&denom, &cmp_denom));
 
     ibz_set(&(alg.p), 11);
-    ibz_set(&(a.coord[0]), 152);
-    ibz_set(&(a.coord[1]), 57);
-    ibz_set(&(a.coord[2]), 190);
-    ibz_set(&(a.coord[3]), 28);
+    ibz_set(&(a.coord.v[0]), 152);
+    ibz_set(&(a.coord.v[1]), 57);
+    ibz_set(&(a.coord.v[2]), 190);
+    ibz_set(&(a.coord.v[3]), 28);
     ibz_set(&(a.denom), 76);
     ibz_set(&cmp_num, 432077);
     ibz_set(&cmp_denom, 5776);
@@ -528,10 +528,10 @@ quat_test_alg_norm(void)
     res = res || (ibz_cmp(&denom, &cmp_denom));
 
     ibz_set(&(alg.p), 11);
-    ibz_set(&(a.coord[0]), 0);
-    ibz_set(&(a.coord[1]), 12);
-    ibz_set(&(a.coord[2]), 35);
-    ibz_set(&(a.coord[3]), 49);
+    ibz_set(&(a.coord.v[0]), 0);
+    ibz_set(&(a.coord.v[1]), 12);
+    ibz_set(&(a.coord.v[2]), 35);
+    ibz_set(&(a.coord.v[3]), 49);
     ibz_set(&(a.denom), 28);
     ibz_set(&cmp_num, 20015);
     ibz_set(&cmp_denom, 392);
@@ -540,10 +540,10 @@ quat_test_alg_norm(void)
     res = res || (ibz_cmp(&denom, &cmp_denom));
 
     ibz_set(&(alg.p), 7);
-    ibz_set(&(a.coord[0]), 152);
-    ibz_set(&(a.coord[1]), 57);
-    ibz_set(&(a.coord[2]), 190);
-    ibz_set(&(a.coord[3]), 28);
+    ibz_set(&(a.coord.v[0]), 152);
+    ibz_set(&(a.coord.v[1]), 57);
+    ibz_set(&(a.coord.v[2]), 190);
+    ibz_set(&(a.coord.v[3]), 28);
     ibz_set(&(a.denom), 76);
     ibz_set(&cmp_num, 284541);
     ibz_set(&cmp_denom, 5776);
@@ -577,44 +577,44 @@ quat_test_alg_scalar(void)
 
     ibz_set(&num, 1);
     ibz_set(&denom, 1);
-    ibz_set(&(cmp.coord[0]), 1);
-    ibz_set(&(cmp.coord[1]), 0);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 0);
+    ibz_set(&(cmp.coord.v[0]), 1);
+    ibz_set(&(cmp.coord.v[1]), 0);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 0);
     ibz_set(&(cmp.denom), 1);
     quat_alg_scalar(&elem, &num, &denom);
     res = res || ibz_cmp(&(elem.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(elem.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(elem.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     ibz_set(&num, 5);
     ibz_set(&denom, 9);
-    ibz_set(&(cmp.coord[0]), 5);
-    ibz_set(&(cmp.coord[1]), 0);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 0);
+    ibz_set(&(cmp.coord.v[0]), 5);
+    ibz_set(&(cmp.coord.v[1]), 0);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 0);
     ibz_set(&(cmp.denom), 9);
     quat_alg_scalar(&elem, &num, &denom);
     res = res || ibz_cmp(&(elem.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(elem.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(elem.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     ibz_set(&num, -125);
     ibz_set(&denom, 25);
-    ibz_set(&(cmp.coord[0]), -125);
-    ibz_set(&(cmp.coord[1]), 0);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 0);
+    ibz_set(&(cmp.coord.v[0]), -125);
+    ibz_set(&(cmp.coord.v[1]), 0);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 0);
     ibz_set(&(cmp.denom), 25);
     quat_alg_scalar(&elem, &num, &denom);
     res = res || ibz_cmp(&(elem.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(elem.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(elem.coord.v[i]), &(cmp.coord.v[i]));
     }
     if (res != 0) {
         printf("Quaternion unit test alg_scalar failed\n");
@@ -636,38 +636,38 @@ quat_test_alg_conj(void)
     quat_alg_elem_init(&conj);
     quat_alg_elem_init(&a);
 
-    ibz_set(&(a.coord[0]), 0);
-    ibz_set(&(a.coord[1]), 0);
-    ibz_set(&(a.coord[2]), 0);
-    ibz_set(&(a.coord[3]), 7);
+    ibz_set(&(a.coord.v[0]), 0);
+    ibz_set(&(a.coord.v[1]), 0);
+    ibz_set(&(a.coord.v[2]), 0);
+    ibz_set(&(a.coord.v[3]), 7);
     ibz_set(&(a.denom), 25);
-    ibz_set(&(cmp.coord[0]), 0);
-    ibz_set(&(cmp.coord[1]), 0);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), -7);
+    ibz_set(&(cmp.coord.v[0]), 0);
+    ibz_set(&(cmp.coord.v[1]), 0);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), -7);
     ibz_set(&(cmp.denom), 25);
     quat_alg_conj(&conj, &a);
     res = res || ibz_cmp(&(conj.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(conj.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(conj.coord.v[i]), &(cmp.coord.v[i]));
     }
 
-    ibz_set(&(a.coord[0]), -125);
-    ibz_set(&(a.coord[1]), 2);
-    ibz_set(&(a.coord[2]), 0);
-    ibz_set(&(a.coord[3]), -30);
+    ibz_set(&(a.coord.v[0]), -125);
+    ibz_set(&(a.coord.v[1]), 2);
+    ibz_set(&(a.coord.v[2]), 0);
+    ibz_set(&(a.coord.v[3]), -30);
     ibz_set(&(a.denom), 25);
-    ibz_set(&(cmp.coord[0]), -125);
-    ibz_set(&(cmp.coord[1]), -2);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 30);
+    ibz_set(&(cmp.coord.v[0]), -125);
+    ibz_set(&(cmp.coord.v[1]), -2);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 30);
     ibz_set(&(cmp.denom), 25);
     quat_alg_conj(&conj, &a);
     res = res || ibz_cmp(&(conj.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(conj.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(conj.coord.v[i]), &(cmp.coord.v[i]));
     }
     if (res != 0) {
         printf("Quaternion unit test alg_conj failed\n");
@@ -700,32 +700,32 @@ quat_test_alg_make_primitive(void)
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ibz_set(&(order.basis[i][j]), 0);
+            ibz_set(&(order.basis.m[i][j]), 0);
         }
     }
-    ibz_set(&(order.basis[0][0]), 1);
-    ibz_set(&(order.basis[0][3]), -1);
-    ibz_set(&(order.basis[1][1]), -2);
-    ibz_set(&(order.basis[2][2]), 1);
-    ibz_set(&(order.basis[2][1]), 1);
-    ibz_set(&(order.basis[3][3]), -3);
+    ibz_set(&(order.basis.m[0][0]), 1);
+    ibz_set(&(order.basis.m[0][3]), -1);
+    ibz_set(&(order.basis.m[1][1]), -2);
+    ibz_set(&(order.basis.m[2][2]), 1);
+    ibz_set(&(order.basis.m[2][1]), 1);
+    ibz_set(&(order.basis.m[3][3]), -3);
     ibz_set(&(order.denom), 6);
     quat_lattice_hnf(&order);
     // x=1, should succeed if order
     ibz_set(&(x.denom), 1);
-    ibz_set(&(x.coord[0]), 1);
-    ibz_set(&(x.coord[1]), 0);
-    ibz_set(&(x.coord[2]), 0);
-    ibz_set(&(x.coord[3]), 0);
+    ibz_set(&(x.coord.v[0]), 1);
+    ibz_set(&(x.coord.v[1]), 0);
+    ibz_set(&(x.coord.v[2]), 0);
+    ibz_set(&(x.coord.v[3]), 0);
     // is it an order?
     res = res || (0 == quat_lattice_contains(&prim, &order, &x));
 
     // actual test
     ibz_set(&(x.denom), 6);
-    ibz_set(&(x.coord[0]), 2);
-    ibz_set(&(x.coord[1]), -4);
-    ibz_set(&(x.coord[2]), 26);
-    ibz_set(&(x.coord[3]), 18);
+    ibz_set(&(x.coord.v[0]), 2);
+    ibz_set(&(x.coord.v[1]), -4);
+    ibz_set(&(x.coord.v[2]), 26);
+    ibz_set(&(x.coord.v[3]), 18);
 
     res = res || (0 == quat_lattice_contains(&x_coord_in_order, &order, &x));
     ibz_vec_4_content(&cmp_cnt, &x_coord_in_order);
@@ -736,16 +736,16 @@ quat_test_alg_make_primitive(void)
     // multiply by cnt, and compare to x in order
     // assumes contains is correct
     for (int i = 0; i < 4; i++) {
-        ibz_mul(&cmp_cnt, &cnt, &(prim[i]));
-        res = res || ibz_cmp(&cmp_cnt, &(x_coord_in_order[i]));
+        ibz_mul(&cmp_cnt, &cnt, &(prim.v[i]));
+        res = res || ibz_cmp(&cmp_cnt, &(x_coord_in_order.v[i]));
     }
 
     // on a primitive element
     ibz_set(&(x.denom), 6);
-    ibz_set(&(x.coord[0]), 2);
-    ibz_set(&(x.coord[1]), -4);
-    ibz_set(&(x.coord[2]), 5);
-    ibz_set(&(x.coord[3]), 18);
+    ibz_set(&(x.coord.v[0]), 2);
+    ibz_set(&(x.coord.v[1]), -4);
+    ibz_set(&(x.coord.v[2]), 5);
+    ibz_set(&(x.coord.v[3]), 18);
 
     res = res || (0 == quat_lattice_contains(&x_coord_in_order, &order, &x));
     ibz_vec_4_content(&cmp_cnt, &x_coord_in_order);
@@ -758,8 +758,8 @@ quat_test_alg_make_primitive(void)
     // multiply by cnt, and compare to x in order
     // assumes contains is correct
     for (int i = 0; i < 4; i++) {
-        ibz_mul(&cmp_cnt, &cnt, &(prim[i]));
-        res = res || ibz_cmp(&cmp_cnt, &(x_coord_in_order[i]));
+        ibz_mul(&cmp_cnt, &cnt, &(prim.v[i]));
+        res = res || ibz_cmp(&cmp_cnt, &(x_coord_in_order.v[i]));
     }
 
     if (res != 0) {
@@ -787,55 +787,55 @@ quat_test_alg_normalize(void)
     ibz_init(&gcd);
 
     // sign change
-    ibz_set(&(x.coord[0]), -125);
-    ibz_set(&(x.coord[1]), 2);
-    ibz_set(&(x.coord[2]), 0);
-    ibz_set(&(x.coord[3]), -30);
+    ibz_set(&(x.coord.v[0]), -125);
+    ibz_set(&(x.coord.v[1]), 2);
+    ibz_set(&(x.coord.v[2]), 0);
+    ibz_set(&(x.coord.v[3]), -30);
     ibz_set(&(x.denom), -25);
-    ibz_set(&(cmp.coord[0]), 125);
-    ibz_set(&(cmp.coord[1]), -2);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 30);
+    ibz_set(&(cmp.coord.v[0]), 125);
+    ibz_set(&(cmp.coord.v[1]), -2);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 30);
     ibz_set(&(cmp.denom), 25);
     quat_alg_normalize(&x);
     res = res || ibz_cmp(&(x.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(x.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(x.coord.v[i]), &(cmp.coord.v[i]));
     }
     // divide by gcd
-    ibz_set(&(x.coord[0]), -36);
-    ibz_set(&(x.coord[1]), 18);
-    ibz_set(&(x.coord[2]), 0);
-    ibz_set(&(x.coord[3]), -300);
+    ibz_set(&(x.coord.v[0]), -36);
+    ibz_set(&(x.coord.v[1]), 18);
+    ibz_set(&(x.coord.v[2]), 0);
+    ibz_set(&(x.coord.v[3]), -300);
     ibz_set(&(x.denom), 48);
-    ibz_set(&(cmp.coord[0]), -6);
-    ibz_set(&(cmp.coord[1]), 3);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), -50);
+    ibz_set(&(cmp.coord.v[0]), -6);
+    ibz_set(&(cmp.coord.v[1]), 3);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), -50);
     ibz_set(&(cmp.denom), 8);
     quat_alg_normalize(&x);
     res = res || ibz_cmp(&(x.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(x.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(x.coord.v[i]), &(cmp.coord.v[i]));
     }
     // divide by gcd
-    ibz_set(&(x.coord[0]), -36);
-    ibz_set(&(x.coord[1]), 18);
-    ibz_set(&(x.coord[2]), 0);
-    ibz_set(&(x.coord[3]), -300);
+    ibz_set(&(x.coord.v[0]), -36);
+    ibz_set(&(x.coord.v[1]), 18);
+    ibz_set(&(x.coord.v[2]), 0);
+    ibz_set(&(x.coord.v[3]), -300);
     ibz_set(&(x.denom), -6);
-    ibz_set(&(cmp.coord[0]), 6);
-    ibz_set(&(cmp.coord[1]), -3);
-    ibz_set(&(cmp.coord[2]), 0);
-    ibz_set(&(cmp.coord[3]), 50);
+    ibz_set(&(cmp.coord.v[0]), 6);
+    ibz_set(&(cmp.coord.v[1]), -3);
+    ibz_set(&(cmp.coord.v[2]), 0);
+    ibz_set(&(cmp.coord.v[3]), 50);
     ibz_set(&(cmp.denom), 1);
     quat_alg_normalize(&x);
     res = res || ibz_cmp(&(x.denom), &(cmp.denom));
     for (int i = 0; i < 4; i++) {
         ;
-        res = res || ibz_cmp(&(x.coord[i]), &(cmp.coord[i]));
+        res = res || ibz_cmp(&(x.coord.v[i]), &(cmp.coord.v[i]));
     }
 
     if (res != 0) {
@@ -893,46 +893,46 @@ quat_test_alg_elem_is_zero(void)
     quat_alg_elem_t x;
     quat_alg_elem_init(&x);
     ibz_set(&(x.denom), 1);
-    ibz_set(&(x.coord[0]), 0);
-    ibz_set(&(x.coord[1]), 0);
-    ibz_set(&(x.coord[2]), 0);
-    ibz_set(&(x.coord[3]), 0);
+    ibz_set(&(x.coord.v[0]), 0);
+    ibz_set(&(x.coord.v[1]), 0);
+    ibz_set(&(x.coord.v[2]), 0);
+    ibz_set(&(x.coord.v[3]), 0);
     res = res | (1 - quat_alg_elem_is_zero(&x));
     ibz_set(&(x.denom), 56865);
     res = res | (1 - quat_alg_elem_is_zero(&x));
     ibz_set(&(x.denom), 0);
     // maybe failure should be accepted here, but according to doc, this is still 0
     res = res | (1 - quat_alg_elem_is_zero(&x));
-    ibz_set(&(x.coord[3]), 1);
+    ibz_set(&(x.coord.v[3]), 1);
     res = res | quat_alg_elem_is_zero(&x);
     ibz_set(&(x.denom), 56865);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[3]), -1);
+    ibz_set(&(x.coord.v[3]), -1);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[2]), 1);
-    ibz_set(&(x.coord[3]), 0);
+    ibz_set(&(x.coord.v[2]), 1);
+    ibz_set(&(x.coord.v[3]), 0);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[2]), -20);
+    ibz_set(&(x.coord.v[2]), -20);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[1]), 1);
-    ibz_set(&(x.coord[2]), 0);
+    ibz_set(&(x.coord.v[1]), 1);
+    ibz_set(&(x.coord.v[2]), 0);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[1]), -50000);
+    ibz_set(&(x.coord.v[1]), -50000);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[0]), 1);
-    ibz_set(&(x.coord[1]), 0);
+    ibz_set(&(x.coord.v[0]), 1);
+    ibz_set(&(x.coord.v[1]), 0);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[0]), -90000);
+    ibz_set(&(x.coord.v[0]), -90000);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[0]), 0);
-    ibz_set(&(x.coord[1]), -500);
-    ibz_set(&(x.coord[2]), 20);
-    ibz_set(&(x.coord[3]), 0);
+    ibz_set(&(x.coord.v[0]), 0);
+    ibz_set(&(x.coord.v[1]), -500);
+    ibz_set(&(x.coord.v[2]), 20);
+    ibz_set(&(x.coord.v[3]), 0);
     res = res | quat_alg_elem_is_zero(&x);
-    ibz_set(&(x.coord[0]), 19);
-    ibz_set(&(x.coord[1]), -500);
-    ibz_set(&(x.coord[2]), 20);
-    ibz_set(&(x.coord[3]), -2);
+    ibz_set(&(x.coord.v[0]), 19);
+    ibz_set(&(x.coord.v[1]), -500);
+    ibz_set(&(x.coord.v[2]), 20);
+    ibz_set(&(x.coord.v[3]), -2);
     res = res | quat_alg_elem_is_zero(&x);
     if (res != 0) {
         printf("Quaternion unit test alg_elem_is_zero failed\n");
@@ -950,10 +950,10 @@ quat_test_alg_elem_set(void)
     quat_alg_elem_t elem;
     quat_alg_elem_init(&elem);
     quat_alg_elem_set(&elem, 5, 1, 2, 3, 4);
-    res = res || (ibz_cmp_int32(&(elem.coord[0]), 1) != 0);
-    res = res || (ibz_cmp_int32(&(elem.coord[1]), 2) != 0);
-    res = res || (ibz_cmp_int32(&(elem.coord[2]), 3) != 0);
-    res = res || (ibz_cmp_int32(&(elem.coord[3]), 4) != 0);
+    res = res || (ibz_cmp_int32(&(elem.coord.v[0]), 1) != 0);
+    res = res || (ibz_cmp_int32(&(elem.coord.v[1]), 2) != 0);
+    res = res || (ibz_cmp_int32(&(elem.coord.v[2]), 3) != 0);
+    res = res || (ibz_cmp_int32(&(elem.coord.v[3]), 4) != 0);
     res = res || (ibz_cmp_int32(&(elem.denom), 5) != 0);
 
     if (res != 0) {
@@ -1005,10 +1005,10 @@ quat_test_alg_elem_copy_ibz(void)
     ibz_set(&d, 4);
     ibz_set(&q, 5);
     quat_alg_elem_copy_ibz(&elem, &q, &a, &b, &c, &d);
-    res = res || ibz_cmp(&(elem.coord[0]), &a);
-    res = res || ibz_cmp(&(elem.coord[1]), &b);
-    res = res || ibz_cmp(&(elem.coord[2]), &c);
-    res = res || ibz_cmp(&(elem.coord[3]), &d);
+    res = res || ibz_cmp(&(elem.coord.v[0]), &a);
+    res = res || ibz_cmp(&(elem.coord.v[1]), &b);
+    res = res || ibz_cmp(&(elem.coord.v[2]), &c);
+    res = res || ibz_cmp(&(elem.coord.v[3]), &d);
     res = res || ibz_cmp(&(elem.denom), &q);
 
     if (res != 0) {
@@ -1038,37 +1038,37 @@ quat_test_alg_elem_mul_by_scalar(void)
 
     ibz_set(&scalar, 6);
     ibz_set(&(elem.denom), 2);
-    ibz_set(&(elem.coord[0]), 2);
-    ibz_set(&(elem.coord[1]), -4);
-    ibz_set(&(elem.coord[2]), 5);
-    ibz_set(&(elem.coord[3]), 25);
+    ibz_set(&(elem.coord.v[0]), 2);
+    ibz_set(&(elem.coord.v[1]), -4);
+    ibz_set(&(elem.coord.v[2]), 5);
+    ibz_set(&(elem.coord.v[3]), 25);
     ibz_set(&(cmp.denom), 2);
-    ibz_set(&(cmp.coord[0]), 12);
-    ibz_set(&(cmp.coord[1]), -24);
-    ibz_set(&(cmp.coord[2]), 30);
-    ibz_set(&(cmp.coord[3]), 150);
+    ibz_set(&(cmp.coord.v[0]), 12);
+    ibz_set(&(cmp.coord.v[1]), -24);
+    ibz_set(&(cmp.coord.v[2]), 30);
+    ibz_set(&(cmp.coord.v[3]), 150);
 
     quat_alg_elem_mul_by_scalar(&prod, &scalar, &elem);
-    res = res || ibz_cmp(&(prod.coord[0]), &(cmp.coord[0]));
-    res = res || ibz_cmp(&(prod.coord[1]), &(cmp.coord[1]));
-    res = res || ibz_cmp(&(prod.coord[2]), &(cmp.coord[2]));
-    res = res || ibz_cmp(&(prod.coord[3]), &(cmp.coord[3]));
+    res = res || ibz_cmp(&(prod.coord.v[0]), &(cmp.coord.v[0]));
+    res = res || ibz_cmp(&(prod.coord.v[1]), &(cmp.coord.v[1]));
+    res = res || ibz_cmp(&(prod.coord.v[2]), &(cmp.coord.v[2]));
+    res = res || ibz_cmp(&(prod.coord.v[3]), &(cmp.coord.v[3]));
     res = res || ibz_cmp(&(prod.denom), &(cmp.denom));
     // denom should not be modified
     res = res || ibz_cmp(&(prod.denom), &(elem.denom));
 
     ibz_set(&scalar, -3);
     ibz_set(&(cmp.denom), 2);
-    ibz_set(&(cmp.coord[0]), -6);
-    ibz_set(&(cmp.coord[1]), 12);
-    ibz_set(&(cmp.coord[2]), -15);
-    ibz_set(&(cmp.coord[3]), -75);
+    ibz_set(&(cmp.coord.v[0]), -6);
+    ibz_set(&(cmp.coord.v[1]), 12);
+    ibz_set(&(cmp.coord.v[2]), -15);
+    ibz_set(&(cmp.coord.v[3]), -75);
 
     quat_alg_elem_mul_by_scalar(&prod, &scalar, &elem);
-    res = res || ibz_cmp(&(prod.coord[0]), &(cmp.coord[0]));
-    res = res || ibz_cmp(&(prod.coord[1]), &(cmp.coord[1]));
-    res = res || ibz_cmp(&(prod.coord[2]), &(cmp.coord[2]));
-    res = res || ibz_cmp(&(prod.coord[3]), &(cmp.coord[3]));
+    res = res || ibz_cmp(&(prod.coord.v[0]), &(cmp.coord.v[0]));
+    res = res || ibz_cmp(&(prod.coord.v[1]), &(cmp.coord.v[1]));
+    res = res || ibz_cmp(&(prod.coord.v[2]), &(cmp.coord.v[2]));
+    res = res || ibz_cmp(&(prod.coord.v[3]), &(cmp.coord.v[3]));
     res = res || ibz_cmp(&(prod.denom), &(cmp.denom));
 
     if (res != 0) {

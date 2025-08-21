@@ -1,0 +1,64 @@
+name: SQIsign-lvl5
+type: signature
+claimed-nist-level: 5
+length-public-key: 129
+length-secret-key: 701
+length-signature: 292
+nistkat-sha256: ab4c24835843b316d94ea60252b2d81941c90dfb7a4a56d993d37ae958f7e570
+principal-submitters:
+  - Marius A. Aardal
+  - Gora Adj
+  - Diego F. Aranha
+  - Andrea Basso
+  - Isaac Andrés Canales Martínez
+  - Jorge Chávez-Saab
+  - Maria Corte-Real Santos
+  - Pierrick Dartois
+  - Luca De Feo
+  - Max Duparc
+  - Jonathan Komada Eriksen
+  - Tako Boris Fouotsa
+  - Décio Luiz Gazzoni Filho
+  - Basil Hess
+  - David Kohel
+  - Antonin Leroux
+  - Patrick Longa
+  - Luciano Maino
+  - Michael Meyer
+  - Kohei Nakagawa
+  - Hiroshi Onuki
+  - Lorenz Panny
+  - Sikhar Patranabis
+  - Christophe Petit
+  - Giacomo Pope
+  - Krijn Reijnders
+  - Damien Robert
+  - Francisco Rodríguez Henríquez
+  - Sina Schaeffler
+  - Benjamin Wesolowski
+implementations:
+  - name: ref
+    version: round2
+    folder_name: .
+    compile_opts: -DSQISIGN_BUILD_TYPE_REF=ON -DENABLE_SIGN=ON -DSQISIGN_VARIANT=lvl5
+    signature_keypair: sqisign_lvl5_ref_sqisign_keypair
+    signature_signature: sqisign_lvl5_ref_sqisign_sign_signature
+    signature_verify: sqisign_lvl5_ref_sqisign_verify_signature
+    sources: LICENSE NOTICE ./integration/liboqs/fips202.h ./integration/liboqs/rng.h ./include/sig.h ./integration/liboqs/sqisign_namespace.h ./src/sqisign.c ./src/precomp/ref/lvlx.cmake ./src/precomp/ref/lvl5/quaternion_data.c ./src/precomp/ref/lvl5/endomorphism_action.c ./src/precomp/ref/lvl5/ec_params.c ./src/precomp/ref/lvl5/torsion_constants.c ./src/precomp/ref/lvl5/e0_basis.c ./src/precomp/ref/lvl5/hd_splitting_transforms.c ./src/precomp/ref/lvl5/sqisign_parameters.txt ./src/precomp/ref/lvl5/include/ec_params.h ./src/precomp/ref/lvl5/include/endomorphism_action.h ./src/precomp/ref/lvl5/include/quaternion_constants.h ./src/precomp/ref/lvl5/include/e0_basis.h ./src/precomp/ref/lvl5/include/torsion_constants.h ./src/precomp/ref/lvl5/include/hd_splitting_transforms.h ./src/precomp/ref/lvl5/include/encoded_sizes.h ./src/precomp/ref/lvl5/include/fp_constants.h ./src/precomp/ref/lvl5/include/quaternion_data.h ./src/gf/ref/lvlx.cmake ./src/gf/ref/lvl5/fp_p27500_32.c ./src/gf/ref/lvl5/fp_p27500_64.c ./src/gf/ref/lvlx/fp.c ./src/gf/ref/lvlx/fp2.c ./src/gf/ref/include/fp2.h ./src/gf/ref/include/fp.h ./src/signature/ref/lvlx.cmake ./src/signature/ref/lvlx/keygen.c ./src/signature/ref/lvlx/sign.c ./src/signature/ref/lvlx/encode_signature.c ./src/signature/ref/include/signature.h ./src/hd/ref/lvlx.cmake ./src/hd/ref/lvlx/theta_isogenies.h ./src/hd/ref/lvlx/theta_structure.c ./src/hd/ref/lvlx/theta_isogenies.c ./src/hd/ref/lvlx/hd.c ./src/hd/ref/lvlx/theta_structure.h ./src/hd/ref/include/hd.h ./src/ec/ref/lvlx.cmake ./src/ec/ref/lvlx/isog_chains.c ./src/ec/ref/lvlx/ec_jac.c ./src/ec/ref/lvlx/xisog.c ./src/ec/ref/lvlx/ec.c ./src/ec/ref/lvlx/biextension.c ./src/ec/ref/lvlx/xeval.c ./src/ec/ref/lvlx/basis.c ./src/ec/ref/include/isog.h ./src/ec/ref/include/ec.h ./src/ec/ref/include/biextension.h ./src/verification/ref/lvlx.cmake ./src/verification/ref/lvlx/common.c ./src/verification/ref/lvlx/verify.c ./src/verification/ref/lvlx/encode_verification.c ./src/verification/ref/include/verification.h ./src/common/generic/include/bench.h ./src/common/generic/include/tools.h ./src/common/generic/include/tutil.h ./src/common/generic/include/bench_macos.h ./src/mp/ref/generic/mp.c ./src/mp/ref/generic/include/mp.h ./src/quaternion/ref/generic/algebra.c ./src/quaternion/ref/generic/integers.c ./src/quaternion/ref/generic/dim2.c ./src/quaternion/ref/generic/lat_ball.c ./src/quaternion/ref/generic/lattice.c ./src/quaternion/ref/generic/intbig.c ./src/quaternion/ref/generic/ideal.c ./src/quaternion/ref/generic/finit.c ./src/quaternion/ref/generic/printer.c ./src/quaternion/ref/generic/dim4.c ./src/quaternion/ref/generic/normeq.c ./src/quaternion/ref/generic/internal_quaternion_headers/lll_internals.h ./src/quaternion/ref/generic/internal_quaternion_headers/internal.h ./src/quaternion/ref/generic/internal_quaternion_headers/intbig_internal.h ./src/quaternion/ref/generic/internal_quaternion_headers/hnf_internal.h ./src/quaternion/ref/generic/lll/l2.c ./src/quaternion/ref/generic/lll/lll_applications.c ./src/quaternion/ref/generic/lll/rationals.c ./src/quaternion/ref/generic/hnf/ibz_division.c ./src/quaternion/ref/generic/hnf/hnf.c ./src/quaternion/ref/generic/hnf/hnf_internal.c ./src/quaternion/ref/generic/include/quaternion.h ./src/quaternion/ref/generic/include/intbig.h ./src/id2iso/ref/lvlx.cmake ./src/id2iso/ref/lvlx/id2iso.c ./src/id2iso/ref/lvlx/dim2id2iso.c ./src/id2iso/ref/include/id2iso.h ./src/nistapi/lvl5/api.c ./src/nistapi/lvl5/api.h 
+    external: gmp
+  - name: broadwell
+    version: round2
+    folder_name: .
+    compile_opts: -DSQISIGN_BUILD_TYPE_BROADWELL=ON -DENABLE_SIGN=ON -DSQISIGN_VARIANT=lvl5 -DSQISIGN_GF_IMPL_BROADWELL
+    signature_keypair: sqisign_lvl5_broadwell_sqisign_keypair
+    signature_signature: sqisign_lvl5_broadwell_sqisign_sign_signature
+    signature_verify: sqisign_lvl5_broadwell_sqisign_verify_signature
+    sources: LICENSE NOTICE ./integration/liboqs/fips202.h ./integration/liboqs/rng.h ./include/sig.h ./integration/liboqs/sqisign_namespace.h ./src/sqisign.c ./src/precomp/ref/lvlx.cmake ./src/precomp/ref/lvl5/quaternion_data.c ./src/precomp/ref/lvl5/endomorphism_action.c ./src/precomp/ref/lvl5/ec_params.c ./src/precomp/ref/lvl5/torsion_constants.c ./src/precomp/ref/lvl5/e0_basis.c ./src/precomp/ref/lvl5/hd_splitting_transforms.c ./src/precomp/ref/lvl5/sqisign_parameters.txt ./src/precomp/ref/lvl5/include/ec_params.h ./src/precomp/ref/lvl5/include/endomorphism_action.h ./src/precomp/ref/lvl5/include/quaternion_constants.h ./src/precomp/ref/lvl5/include/e0_basis.h ./src/precomp/ref/lvl5/include/torsion_constants.h ./src/precomp/ref/lvl5/include/hd_splitting_transforms.h ./src/precomp/ref/lvl5/include/encoded_sizes.h ./src/precomp/ref/lvl5/include/fp_constants.h ./src/precomp/ref/lvl5/include/quaternion_data.h ./src/gf/ref/lvlx/fp.c ./src/gf/ref/lvlx/fp2.c ./src/gf/ref/include/fp2.h ./src/gf/ref/include/fp.h ./src/gf/broadwell/lvlx.cmake ./src/gf/broadwell/lvl5/fp.c ./src/gf/broadwell/lvl5/fp_asm.S ./src/gf/broadwell/lvl5/gf27500.c ./src/gf/broadwell/lvl5/include/fp2.h ./src/gf/broadwell/lvl5/include/gf27500.h ./src/gf/broadwell/lvl5/include/fp.h ./src/gf/broadwell/lvlx/fp2.c ./src/gf/broadwell/include/asm_preamble.h ./src/gf/broadwell/include/fp2x.h ./src/signature/ref/lvlx/keygen.c ./src/signature/ref/lvlx/sign.c ./src/signature/ref/lvlx/encode_signature.c ./src/signature/ref/include/signature.h ./src/hd/ref/lvlx/theta_isogenies.h ./src/hd/ref/lvlx/theta_structure.c ./src/hd/ref/lvlx/theta_isogenies.c ./src/hd/ref/lvlx/hd.c ./src/hd/ref/lvlx/theta_structure.h ./src/hd/ref/include/hd.h ./src/ec/ref/lvlx/isog_chains.c ./src/ec/ref/lvlx/ec_jac.c ./src/ec/ref/lvlx/xisog.c ./src/ec/ref/lvlx/ec.c ./src/ec/ref/lvlx/biextension.c ./src/ec/ref/lvlx/xeval.c ./src/ec/ref/lvlx/basis.c ./src/ec/ref/include/isog.h ./src/ec/ref/include/ec.h ./src/ec/ref/include/biextension.h ./src/verification/ref/lvlx/common.c ./src/verification/ref/lvlx/verify.c ./src/verification/ref/lvlx/encode_verification.c ./src/verification/ref/include/verification.h ./src/common/broadwell/include/defs.h ./src/common/generic/include/bench.h ./src/common/generic/include/tools.h ./src/common/generic/include/tutil.h ./src/common/generic/include/bench_macos.h ./src/mp/ref/generic/mp.c ./src/mp/ref/generic/include/mp.h ./src/quaternion/ref/generic/algebra.c ./src/quaternion/ref/generic/integers.c ./src/quaternion/ref/generic/dim2.c ./src/quaternion/ref/generic/lat_ball.c ./src/quaternion/ref/generic/lattice.c ./src/quaternion/ref/generic/intbig.c ./src/quaternion/ref/generic/ideal.c ./src/quaternion/ref/generic/finit.c ./src/quaternion/ref/generic/dim4.c ./src/quaternion/ref/generic/normeq.c ./src/quaternion/ref/generic/internal_quaternion_headers/lll_internals.h ./src/quaternion/ref/generic/internal_quaternion_headers/internal.h ./src/quaternion/ref/generic/internal_quaternion_headers/intbig_internal.h ./src/quaternion/ref/generic/internal_quaternion_headers/hnf_internal.h ./src/quaternion/ref/generic/lll/l2.c ./src/quaternion/ref/generic/lll/lll_applications.c ./src/quaternion/ref/generic/lll/rationals.c ./src/quaternion/ref/generic/hnf/ibz_division.c ./src/quaternion/ref/generic/hnf/hnf.c ./src/quaternion/ref/generic/hnf/hnf_internal.c ./src/quaternion/ref/generic/include/quaternion.h ./src/quaternion/ref/generic/include/intbig.h ./src/id2iso/ref/lvlx/id2iso.c ./src/id2iso/ref/lvlx/dim2id2iso.c ./src/id2iso/ref/include/id2iso.h ./src/nistapi/lvl5/api.c ./src/nistapi/lvl5/api.h 
+    external: gmp
+    supported_platforms:
+      - architecture: x86_64
+        operating_systems:
+          - Darwin
+          - Linux
+        required_flags:
+          - avx2

@@ -109,6 +109,7 @@ void shake256_inc_init(shake256incctx *state);
 void shake256_inc_absorb(shake256incctx *state, const uint8_t *input, size_t inlen);
 /* Prepares for squeeze phase */
 void shake256_inc_finalize(shake256incctx *state);
+
 /* Squeeze output out of the sponge.
  *
  * Supports being called multiple times
@@ -116,6 +117,8 @@ void shake256_inc_finalize(shake256incctx *state);
 void shake256_inc_squeeze(uint8_t *output, size_t outlen, shake256incctx *state);
 /* Copy the state */
 void shake256_inc_ctx_clone(shake256incctx *dest, const shake256incctx *src);
+/* Reset incremental hashing API */
+void shake256_inc_ctx_reset(shake256incctx *state);
 /* Free the state */
 void shake256_inc_ctx_release(shake256incctx *state);
 

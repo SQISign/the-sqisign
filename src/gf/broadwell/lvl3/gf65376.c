@@ -1,30 +1,30 @@
 #include "gf65376.h"
 
 // see gf65376.h
-const gf65376 gf65376_ZERO = { 0, 0, 0, 0, 0, 0 };
+const gf65376 ZERO = {{ 0, 0, 0, 0, 0, 0 }};
 
 // see gf65376.h
-const gf65376 gf65376_ONE = { 0x0000000000000003, 0x0000000000000000, 0x0000000000000000,
-                              0x0000000000000000, 0x0000000000000000, 0x3D00000000000000 };
+const gf65376 ONE = {{ 0x0000000000000003, 0x0000000000000000, 0x0000000000000000,
+                              0x0000000000000000, 0x0000000000000000, 0x3D00000000000000 }};
 
 // see gf65376.h
-const gf65376 gf65376_MINUS_ONE = { 0xFFFFFFFFFFFFFFFC, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
-                                    0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x03FFFFFFFFFFFFFF };
+const gf65376 gf65376_MINUS_ONE = {{ 0xFFFFFFFFFFFFFFFC, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                    0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x03FFFFFFFFFFFFFF }};
 
 // Montgomery representation of 2^256.
-static const gf65376 R2 = { 0x3F03F03F03F03F13, 0x03F03F03F03F03F0, 0xF03F03F03F03F03F,
-                            0x3F03F03F03F03F03, 0x03F03F03F03F03F0, 0x1D3F03F03F03F03F };
+static const gf65376 R2 = {{ 0x3F03F03F03F03F13, 0x03F03F03F03F03F0, 0xF03F03F03F03F03F,
+                            0x3F03F03F03F03F03, 0x03F03F03F03F03F0, 0x1D3F03F03F03F03F }};
 
 // The modulus itself (this is also a valid representation of zero).
-static const gf65376 MODULUS = { 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
-                                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x40FFFFFFFFFFFFFF };
+static const gf65376 MODULUS = {{ 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x40FFFFFFFFFFFFFF }};
 
 // 1/2^380 (in Montgomery representation).
-static const gf65376 INVT380 = { 0x0000000000000010, 0x0000000000000000, 0x0000000000000000,
-                                 0x0000000000000000, 0x0000000000000000, 0x0000000000000000 };
+static const gf65376 INVT380 = {{ 0x0000000000000010, 0x0000000000000000, 0x0000000000000000,
+                                 0x0000000000000000, 0x0000000000000000, 0x0000000000000000 }};
 
-static const gf65376 PM1O3 = { 0xaaaaaaaaaaaaaaaa, 0xaaaaaaaaaaaaaaaa, 0xaaaaaaaaaaaaaaaa,
-                               0xaaaaaaaaaaaaaaaa, 0xaaaaaaaaaaaaaaaa, 0x15aaaaaaaaaaaaaa };
+static const gf65376 PM1O3 = {{ 0xaaaaaaaaaaaaaaaa, 0xaaaaaaaaaaaaaaaa, 0xaaaaaaaaaaaaaaaa,
+                               0xaaaaaaaaaaaaaaaa, 0xaaaaaaaaaaaaaaaa, 0x15aaaaaaaaaaaaaa }};
 
 // Expand the most significant bit of x into a full-width 64-bit word
 // (0x0000000000000000 or 0xFFFFFFFFFFFFFFFF).
@@ -267,7 +267,7 @@ gf65376_div(gf65376 *d, const gf65376 *x, const gf65376 *y)
     inner_gf65376_normalize(&a, y);
     b = MODULUS;
     u = *x;
-    v = gf65376_ZERO;
+    v = ZERO;
 
     // Generic loop does 23*31 = 713 inner iterations.
     for (int i = 0; i < 23; i++) {
@@ -432,7 +432,7 @@ gf65376_div(gf65376 *d, const gf65376 *x, const gf65376 *y)
 uint32_t
 gf65376_invert(gf65376 *d, const gf65376 *a)
 {
-    return gf65376_div(d, &gf65376_ONE, a);
+    return gf65376_div(d, &ONE, a);
 }
 
 // see gf65376.h
@@ -704,7 +704,7 @@ gf65376_decode_reduce(gf65376 *d, const void *src, size_t len)
 {
     const uint8_t *buf = src;
 
-    *d = gf65376_ZERO;
+    *d = ZERO;
     if (len == 0) {
         return;
     }

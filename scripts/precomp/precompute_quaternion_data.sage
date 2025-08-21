@@ -19,18 +19,18 @@ objs = \
             # basis (columns)
             [
                 Ibz(mat.denominator()),
-                [[Ibz(v) for v in vs]
-                    for vs in mat.transpose()*mat.denominator()],
+                [[[Ibz(v) for v in vs]
+                    for vs in mat.transpose()*mat.denominator()]],
             ],
             # sqrt(-q)
             [
                 Ibz(mat.denominator()),
-                [Ibz(c) for c in ii*mat.denominator()],
+                [[Ibz(c) for c in ii*mat.denominator()]],
             ],
             # sqrt(-p)
             [
                 Ibz(1),
-                [Ibz(c) for c in (0,0,1,0)]
+                [[Ibz(c) for c in (0,0,1,0)]]
             ],
             q
         ]
@@ -43,8 +43,8 @@ idlobjs = \
             # basis (columns)
             [
                 Ibz(idl.denominator()),
-                [[Ibz(v) for v in vs]
-                    for vs in idl.transpose()*idl.denominator()],
+                [[[Ibz(v) for v in vs]
+                    for vs in idl.transpose()*idl.denominator()]],
             ],
             # norm
             Ibz(abs(idl.row_space(ZZ).intersection((ZZ^4).submodule([[1,0,0,0]])).basis()[0][0])),
@@ -58,7 +58,7 @@ gammaobjs = \
     [
         [
             Ibz(gamma.denominator()),
-            list(map(Ibz, gamma * gamma.denominator())),
+            [list(map(Ibz, gamma * gamma.denominator()))],
         ]
         for _,_,_,_,_,gamma in orders
     ]

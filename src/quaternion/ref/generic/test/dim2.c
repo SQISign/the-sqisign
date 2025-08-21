@@ -8,8 +8,8 @@ quat_test_dim2_ibz_vec_2_set(void)
     ibz_vec_2_t vec;
     ibz_vec_2_init(&vec);
     ibz_vec_2_set(&vec, 2, 5);
-    res = res || (ibz_cmp_int32(&(vec[0]), 2) != 0);
-    res = res || (ibz_cmp_int32(&(vec[1]), 5) != 0);
+    res = res || (ibz_cmp_int32(&(vec.v[0]), 2) != 0);
+    res = res || (ibz_cmp_int32(&(vec.v[1]), 5) != 0);
     if (res != 0) {
         printf("Quaternion unit test dim2_ibz_vec_2_set failed\n");
     }
@@ -25,10 +25,10 @@ quat_test_dim2_ibz_mat_2x2_set(void)
     ibz_mat_2x2_t mat;
     ibz_mat_2x2_init(&mat);
     ibz_mat_2x2_set(&mat, 2, 7, -1, 5);
-    res = res || (ibz_cmp_int32(&(mat[0][0]), 2) != 0);
-    res = res || (ibz_cmp_int32(&(mat[0][1]), 7) != 0);
-    res = res || (ibz_cmp_int32(&(mat[1][0]), -1) != 0);
-    res = res || (ibz_cmp_int32(&(mat[1][1]), 5) != 0);
+    res = res || (ibz_cmp_int32(&(mat.m[0][0]), 2) != 0);
+    res = res || (ibz_cmp_int32(&(mat.m[0][1]), 7) != 0);
+    res = res || (ibz_cmp_int32(&(mat.m[1][0]), -1) != 0);
+    res = res || (ibz_cmp_int32(&(mat.m[1][1]), 5) != 0);
     if (res != 0) {
         printf("Quaternion unit test dim2_ibz_mat_2x2_set failed\n");
     }
@@ -46,22 +46,22 @@ quat_test_dim2_ibz_mat_2x2_copy(void)
     ibz_mat_2x2_init(&copy);
 
     ibz_mat_2x2_set(&mat, 1, -1, 2, 4);
-    res = res || (0 == ibz_cmp_int32(&(copy[0][0]), 1));
-    res = res || (0 == ibz_cmp_int32(&(copy[0][1]), -1));
-    res = res || (0 == ibz_cmp_int32(&(copy[1][0]), 2));
-    res = res || (0 == ibz_cmp_int32(&(copy[1][1]), 4));
-    res = res || (0 != ibz_cmp_int32(&(mat[0][0]), 1));
-    res = res || (0 != ibz_cmp_int32(&(mat[0][1]), -1));
-    res = res || (0 != ibz_cmp_int32(&(mat[1][0]), 2));
-    res = res || (0 != ibz_cmp_int32(&(mat[1][1]), 4));
+    res = res || (0 == ibz_cmp_int32(&(copy.m[0][0]), 1));
+    res = res || (0 == ibz_cmp_int32(&(copy.m[0][1]), -1));
+    res = res || (0 == ibz_cmp_int32(&(copy.m[1][0]), 2));
+    res = res || (0 == ibz_cmp_int32(&(copy.m[1][1]), 4));
+    res = res || (0 != ibz_cmp_int32(&(mat.m[0][0]), 1));
+    res = res || (0 != ibz_cmp_int32(&(mat.m[0][1]), -1));
+    res = res || (0 != ibz_cmp_int32(&(mat.m[1][0]), 2));
+    res = res || (0 != ibz_cmp_int32(&(mat.m[1][1]), 4));
     ibz_mat_2x2_copy(&copy, &mat);
-    res = res || (0 != ibz_cmp_int32(&(copy[0][0]), 1));
-    res = res || (0 != ibz_cmp_int32(&(copy[0][1]), -1));
-    res = res || (0 != ibz_cmp_int32(&(copy[1][0]), 2));
-    res = res || (0 != ibz_cmp_int32(&(copy[1][1]), 4));
+    res = res || (0 != ibz_cmp_int32(&(copy.m[0][0]), 1));
+    res = res || (0 != ibz_cmp_int32(&(copy.m[0][1]), -1));
+    res = res || (0 != ibz_cmp_int32(&(copy.m[1][0]), 2));
+    res = res || (0 != ibz_cmp_int32(&(copy.m[1][1]), 4));
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-            res = res || (0 != ibz_cmp(&(mat[i][j]), &(copy[i][j])));
+            res = res || (0 != ibz_cmp(&(mat.m[i][j]), &(copy.m[i][j])));
         }
     }
 
@@ -144,15 +144,15 @@ quat_test_dim2_ibz_mat_2x2_eval(void)
     ibz_vec_2_set(&vec, 1, -1);
     ibz_vec_2_set(&cmp, 2, -2);
     ibz_mat_2x2_eval(&ret, &mat, &vec);
-    res = res || ibz_cmp(&(ret[0]), &(cmp[0]));
-    res = res || ibz_cmp(&(ret[1]), &(cmp[1]));
+    res = res || ibz_cmp(&(ret.v[0]), &(cmp.v[0]));
+    res = res || ibz_cmp(&(ret.v[1]), &(cmp.v[1]));
 
     ibz_mat_2x2_set(&mat, 2, -2, 1, 3);
     ibz_vec_2_set(&vec, 2, 4);
     ibz_vec_2_set(&cmp, -4, 14);
     ibz_mat_2x2_eval(&vec, &mat, &vec);
-    res = res || ibz_cmp(&(vec[0]), &(cmp[0]));
-    res = res || ibz_cmp(&(vec[1]), &(cmp[1]));
+    res = res || ibz_cmp(&(vec.v[0]), &(cmp.v[0]));
+    res = res || ibz_cmp(&(vec.v[1]), &(cmp.v[1]));
 
     if (res != 0) {
         printf("Quaternion unit test dim2_ibz_mat_2x2_eval failed\n");
@@ -185,25 +185,25 @@ quat_test_dim2_ibz_mat_2x2_mul_mod(void)
     ibz_mat_2x2_set(&b, 5, 3, 4, 1);
     ibz_mat_2x2_set(&cmp, 2, 4, 3, 6);
     ibz_2x2_mul_mod(&prod, &a, &b, &m);
-    res = res || ibz_cmp(&(prod[0][0]), &(cmp[0][0]));
-    res = res || ibz_cmp(&(prod[0][1]), &(cmp[0][1]));
-    res = res || ibz_cmp(&(prod[1][0]), &(cmp[1][0]));
-    res = res || ibz_cmp(&(prod[1][1]), &(cmp[1][1]));
+    res = res || ibz_cmp(&(prod.m[0][0]), &(cmp.m[0][0]));
+    res = res || ibz_cmp(&(prod.m[0][1]), &(cmp.m[0][1]));
+    res = res || ibz_cmp(&(prod.m[1][0]), &(cmp.m[1][0]));
+    res = res || ibz_cmp(&(prod.m[1][1]), &(cmp.m[1][1]));
     ibz_mat_2x2_set(&cmp, 6, 6, 2, 2);
     ibz_2x2_mul_mod(&prod, &b, &a, &m);
-    res = res || ibz_cmp(&(prod[0][0]), &(cmp[0][0]));
-    res = res || ibz_cmp(&(prod[0][1]), &(cmp[0][1]));
-    res = res || ibz_cmp(&(prod[1][0]), &(cmp[1][0]));
-    res = res || ibz_cmp(&(prod[1][1]), &(cmp[1][1]));
+    res = res || ibz_cmp(&(prod.m[0][0]), &(cmp.m[0][0]));
+    res = res || ibz_cmp(&(prod.m[0][1]), &(cmp.m[0][1]));
+    res = res || ibz_cmp(&(prod.m[1][0]), &(cmp.m[1][0]));
+    res = res || ibz_cmp(&(prod.m[1][1]), &(cmp.m[1][1]));
 
     ibz_set(&m, 12);
     ibz_mat_2x2_set(&a, 2, 7, 1, -2);
     ibz_mat_2x2_set(&cmp, 11, 0, 0, 11);
     ibz_2x2_mul_mod(&a, &a, &a, &m);
-    res = res || ibz_cmp(&(a[0][0]), &(cmp[0][0]));
-    res = res || ibz_cmp(&(a[0][1]), &(cmp[0][1]));
-    res = res || ibz_cmp(&(a[1][0]), &(cmp[1][0]));
-    res = res || ibz_cmp(&(a[1][1]), &(cmp[1][1]));
+    res = res || ibz_cmp(&(a.m[0][0]), &(cmp.m[0][0]));
+    res = res || ibz_cmp(&(a.m[0][1]), &(cmp.m[0][1]));
+    res = res || ibz_cmp(&(a.m[1][0]), &(cmp.m[1][0]));
+    res = res || ibz_cmp(&(a.m[1][1]), &(cmp.m[1][1]));
 
     if (res != 0) {
         printf("Quaternion unit test dim2_ibz_mat_2x2_mul_mod failed\n");
@@ -236,10 +236,10 @@ quat_test_dim2_ibz_mat_2x2_inv_mod(void)
     if (ibz_mat_2x2_inv_mod(&inv, &a, &m)) {
         // ibz_2x2_mul_mod(&prod,&a,&inv, &m);
         ibz_2x2_mul_mod(&prod, &inv, &a, &m);
-        res = res || ibz_cmp(&(prod[0][0]), &(id[0][0]));
-        res = res || ibz_cmp(&(prod[0][1]), &(id[0][1]));
-        res = res || ibz_cmp(&(prod[1][0]), &(id[1][0]));
-        res = res || ibz_cmp(&(prod[1][1]), &(id[1][1]));
+        res = res || ibz_cmp(&(prod.m[0][0]), &(id.m[0][0]));
+        res = res || ibz_cmp(&(prod.m[0][1]), &(id.m[0][1]));
+        res = res || ibz_cmp(&(prod.m[1][0]), &(id.m[1][0]));
+        res = res || ibz_cmp(&(prod.m[1][1]), &(id.m[1][1]));
     } else {
         res = 1;
     }
@@ -248,10 +248,10 @@ quat_test_dim2_ibz_mat_2x2_inv_mod(void)
     ibz_mat_2x2_set(&inv, 2, 7, 1, -2);
     if (ibz_mat_2x2_inv_mod(&inv, &inv, &m)) {
         ibz_2x2_mul_mod(&prod, &a, &inv, &m);
-        res = res || ibz_cmp(&(prod[0][0]), &(id[0][0]));
-        res = res || ibz_cmp(&(prod[0][1]), &(id[0][1]));
-        res = res || ibz_cmp(&(prod[1][0]), &(id[1][0]));
-        res = res || ibz_cmp(&(prod[1][1]), &(id[1][1]));
+        res = res || ibz_cmp(&(prod.m[0][0]), &(id.m[0][0]));
+        res = res || ibz_cmp(&(prod.m[0][1]), &(id.m[0][1]));
+        res = res || ibz_cmp(&(prod.m[1][0]), &(id.m[1][0]));
+        res = res || ibz_cmp(&(prod.m[1][1]), &(id.m[1][1]));
     } else {
         res = 1;
     }

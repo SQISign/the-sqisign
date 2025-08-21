@@ -1,30 +1,30 @@
 #include "gf27500.h"
 
 // see gf27500.h
-const gf27500 gf27500_ZERO = { 0, 0, 0, 0, 0, 0, 0, 0 };
+const gf27500 ZERO = {{ 0, 0, 0, 0, 0, 0, 0, 0 }};
 
 // see gf27500.h
-const gf27500 gf27500_ONE = { 0x0000000000000097, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-                              0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0130000000000000 };
+const gf27500 ONE = {{ 0x0000000000000097, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+                              0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0130000000000000 }};
 
 // see gf27500.h
-const gf27500 gf27500_MINUS_ONE = { 0xFFFFFFFFFFFFFF68, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
-                                    0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x007FFFFFFFFFFFFF };
+const gf27500 gf27500_MINUS_ONE = {{ 0xFFFFFFFFFFFFFF68, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                    0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x007FFFFFFFFFFFFF }};
 
 // Montgomery representation of 2^256.
-static const gf27500 R2 = { 0xED097B425ED0F19A, 0x097B425ED097B425, 0x7B425ED097B425ED, 0x425ED097B425ED09,
-                            0x5ED097B425ED097B, 0xD097B425ED097B42, 0x97B425ED097B425E, 0x0045ED097B425ED0 };
+static const gf27500 R2 = {{ 0xED097B425ED0F19A, 0x097B425ED097B425, 0x7B425ED097B425ED, 0x425ED097B425ED09,
+                            0x5ED097B425ED097B, 0xD097B425ED097B42, 0x97B425ED097B425E, 0x0045ED097B425ED0 }};
 
 // The modulus itself (this is also a valid representation of zero).
-static const gf27500 MODULUS = { 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
-                                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x01AFFFFFFFFFFFFF };
+static const gf27500 MODULUS = {{ 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF,
+                                 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x01AFFFFFFFFFFFFF }};
 
 // 1/2^496 (in Montgomery representation).
-static const gf27500 INVT496 = { 0x0000000000010000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-                                 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000 };
+static const gf27500 INVT496 = {{ 0x0000000000010000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+                                 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000 }};
 
-static const gf27500 PM1O3 = { 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff,
-                               0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff, 0x011fffffffffffff };
+static const gf27500 PM1O3 = {{ 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff,
+                               0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff, 0x011fffffffffffff }};
 
 // Expand the most significant bit of x into a full-width 64-bit word
 // (0x0000000000000000 or 0xFFFFFFFFFFFFFFFF).
@@ -283,7 +283,7 @@ gf27500_div(gf27500 *d, const gf27500 *x, const gf27500 *y)
     inner_gf27500_normalize(&a, y);
     b = MODULUS;
     u = *x;
-    v = gf27500_ZERO;
+    v = ZERO;
 
     // Generic loop does 31*31 = 961 inner iterations.
     for (int i = 0; i < 31; i++) {
@@ -456,7 +456,7 @@ gf27500_div(gf27500 *d, const gf27500 *x, const gf27500 *y)
 uint32_t
 gf27500_invert(gf27500 *d, const gf27500 *a)
 {
-    return gf27500_div(d, &gf27500_ONE, a);
+    return gf27500_div(d, &ONE, a);
 }
 
 // see gf27500.h
@@ -746,7 +746,7 @@ gf27500_decode_reduce(gf27500 *d, const void *src, size_t len)
 {
     const uint8_t *buf = src;
 
-    *d = gf27500_ZERO;
+    *d = ZERO;
     if (len == 0) {
         return;
     }

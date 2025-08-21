@@ -243,15 +243,15 @@ objs = ObjectFormatter([
         Object('curve_with_endomorphism_ring_t[]', 'CURVES_WITH_ENDOMORPHISMS',
             [
                 [
-                    [Fp2_to_list(A), Fp2_to_list(1),                    # ec_curve_t A, C
-                     [Fp2_to_list(A24), Fp2_to_list(1)], "true"],       # ec_curve_t A24, is_A24_computed_and_normalized
-                    basis2field(*basis),                                # ec_basis_t
-                    [[Ibz(v) for v in vs] for vs in mati.transpose()],  # ibz_mat_2x2_t
-                    [[Ibz(v) for v in vs] for vs in matj.transpose()],  # ibz_mat_2x2_t
-                    [[Ibz(v) for v in vs] for vs in matk.transpose()],  # ibz_mat_2x2_t
-                    [[Ibz(v) for v in vs] for vs in mat2.transpose()],  # ibz_mat_2x2_t
-                    [[Ibz(v) for v in vs] for vs in mat3.transpose()],  # ibz_mat_2x2_t
-                    [[Ibz(v) for v in vs] for vs in mat4.transpose()],  # ibz_mat_2x2_t
+                    [Fp2_to_list(A), Fp2_to_list(1),                      # ec_curve_t A, C
+                     [Fp2_to_list(A24), Fp2_to_list(1)], "true"],         # ec_curve_t A24, is_A24_computed_and_normalized
+                    basis2field(*basis),                                  # ec_basis_t
+                    [[[Ibz(v) for v in vs] for vs in mati.transpose()]],  # ibz_mat_2x2_t
+                    [[[Ibz(v) for v in vs] for vs in matj.transpose()]],  # ibz_mat_2x2_t
+                    [[[Ibz(v) for v in vs] for vs in matk.transpose()]],  # ibz_mat_2x2_t
+                    [[[Ibz(v) for v in vs] for vs in mat2.transpose()]],  # ibz_mat_2x2_t
+                    [[[Ibz(v) for v in vs] for vs in mat3.transpose()]],  # ibz_mat_2x2_t
+                    [[[Ibz(v) for v in vs] for vs in mat4.transpose()]],  # ibz_mat_2x2_t
                 ]
                 for (A,A24),basis,(mati,matj,matk),(mat2,mat3,mat4)
                 in data

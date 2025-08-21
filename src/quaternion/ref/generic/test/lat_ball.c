@@ -46,11 +46,11 @@ quat_test_lat_ball_paralellogram_randomized(int iterations, int bitsize)
 
         quat_lattice_bound_parallelogram(&box, &U, &G, &radius);
         for (int i = 0; i < 4; i++) {
-            // dbox is a box with sides dbox[i] =  2*box[i] + 1
-            ibz_add(&dbox[i], &box[i], &box[i]);
-            ibz_add(&dbox[i], &dbox[i], &ibz_const_one);
-            // initialize x[i] to the bottom of dbox[i]
-            ibz_neg(&x[i], &dbox[i]);
+            // dbox is a box with sides dbox.v[i] =  2*box.v[i] + 1
+            ibz_add(&dbox.v[i], &box.v[i], &box.v[i]);
+            ibz_add(&dbox.v[i], &dbox.v[i], &ibz_const_one);
+            // initialize x.v[i] to the bottom of dbox.v[i]
+            ibz_neg(&x.v[i], &dbox.v[i]);
         }
 
         // Integrate U into the Gram matrix
@@ -58,7 +58,7 @@ quat_test_lat_ball_paralellogram_randomized(int iterations, int bitsize)
         ibz_mat_4x4_transpose(&U, &U);
         ibz_mat_4x4_mul(&G, &G, &U);
 
-        // We treat x[0]...x[4] as a counter, incrementing one by one
+        // We treat x.v[0]...x.v[4] as a counter, incrementing one by one
         // but skipping values that are inside the parallelogram defined
         // by box.
         while (1) {
@@ -71,29 +71,29 @@ quat_test_lat_ball_paralellogram_randomized(int iterations, int bitsize)
             }
 
             // Increment counter
-            ibz_add(&x[0], &x[0], &ibz_const_one);
-            // if x[0] just entered the interval
-            ibz_add(&tmp, &x[0], &box[0]);
+            ibz_add(&x.v[0], &x.v[0], &ibz_const_one);
+            // if x.v[0] just entered the interval
+            ibz_add(&tmp, &x.v[0], &box.v[0]);
             if (ibz_is_zero(&tmp)) {
                 int inbox = 1;
                 for (int i = 1; i < 4; i++) {
-                    ibz_abs(&tmp, &x[i]);
-                    inbox &= ibz_cmp(&tmp, &box[i]) <= 0;
+                    ibz_abs(&tmp, &x.v[i]);
+                    inbox &= ibz_cmp(&tmp, &box.v[i]) <= 0;
                 }
-                // if x[1]...x[3] are all in the respective intervals
-                // jump straight to the end of x[0]'s interval
+                // if x.v[1]...x.v[3] are all in the respective intervals
+                // jump straight to the end of x.v[0]'s interval
                 if (inbox)
-                    ibz_set(&x[0], 1);
+                    ibz_set(&x.v[0], 1);
             }
 
-            // if x[0] became positive, loop the counter
-            if (ibz_is_one(&x[0])) {
-                ibz_neg(&x[0], &dbox[0]);
+            // if x.v[0] became positive, loop the counter
+            if (ibz_is_one(&x.v[0])) {
+                ibz_neg(&x.v[0], &dbox.v[0]);
                 int carry = 1;
                 for (int i = 1; carry && i < 4; i++) {
-                    ibz_add(&x[i], &x[i], &ibz_const_one);
-                    if (ibz_cmp(&x[i], &dbox[i]) > 0) {
-                        ibz_neg(&x[i], &dbox[i]);
+                    ibz_add(&x.v[i], &x.v[i], &ibz_const_one);
+                    if (ibz_cmp(&x.v[i], &dbox.v[i]) > 0) {
+                        ibz_neg(&x.v[i], &dbox.v[i]);
                     } else {
                         carry = 0;
                     }
@@ -176,7 +176,7 @@ quat_test_lat_ball_sample_from_ball()
             // Test a very much non-orthogonal qf
             for (int i = 0; i < 4; i++)
                 for (int j = 0; j < 4; j++)
-                    ibz_add(&(lattice.basis[i][j]), &(lattice.basis[i][j]), &ibz_const_one);
+                    ibz_add(&(lattice.basis.m[i][j]), &(lattice.basis.m[i][j]), &ibz_const_one);
         }
 
         for (int i = 0; i < 100; i++) {

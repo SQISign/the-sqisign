@@ -44,16 +44,16 @@ id2iso_represent_integer_benchmarks_test(const quat_alg_elem_t *gamma,
     if (non_diag) {
         if ((*params).order->q == 1) {
             ibz_mul(&norm_n, &ibz_const_two, &ibz_const_two);
-            ibz_add(&norm_d, &((*gamma).coord[0]), &((*gamma).coord[3]));
+            ibz_add(&norm_d, &((*gamma).coord.v[0]), &((*gamma).coord.v[3]));
             ibz_mod(&norm_d, &norm_d, &norm_n);
             res = res || (0 != ibz_cmp(&ibz_const_two, &norm_d));
-            ibz_sub(&norm_d, &((*gamma).coord[1]), &((*gamma).coord[2]));
+            ibz_sub(&norm_d, &((*gamma).coord.v[1]), &((*gamma).coord.v[2]));
             ibz_mod(&norm_d, &norm_d, &norm_n);
             res = res || (0 != ibz_cmp(&ibz_const_two, &norm_d));
         } else {
             quat_lattice_contains(&coord, &((*params).order->order), gamma);
-            ibz_gcd(&norm_d, &(coord[1]), &(coord[2]));
-            ibz_gcd(&norm_d, &norm_d, &(coord[3]));
+            ibz_gcd(&norm_d, &(coord.v[1]), &(coord.v[2]));
+            ibz_gcd(&norm_d, &norm_d, &(coord.v[3]));
             res = res || ibz_is_even(&norm_d);
         }
     }

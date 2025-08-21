@@ -1,9 +1,10 @@
 // clang-format off
 // Command line : python monty.py 32
 // 0x40ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-
 #include <stdint.h>
 #include <stdio.h>
+
+#ifdef RADIX_32
 
 #define sspint int32_t
 #define spint uint32_t
@@ -816,22 +817,6 @@ static int modqr(const spint *h, const spint *x) {
   return modis1(r) | modis0(x);
 }
 
-// conditional move g to f if d=1
-// strongly recommend inlining be disabled using compiler specific syntax
-static void modcmv(int b, const spint *g, volatile spint *f) {
-  int i;
-  spint c0, c1, s, t;
-  spint r = 0x5aa5a55au;
-  c0 = (1 - b) + r;
-  c1 = b + r;
-  for (i = 0; i < 14; i++) {
-    s = g[i];
-    t = f[i];
-    f[i] = c0 * t + c1 * s;
-    f[i] -= r * (t + s);
-  }
-}
-
 // conditional swap g and f if d=1
 // strongly recommend inlining be disabled using compiler specific syntax
 static void modcsw(int b, volatile spint *g, volatile spint *f) {
@@ -885,52 +870,6 @@ static int modshr(unsigned int n, spint *a) {
   return r;
 }
 
-// set a= 2^r
-static void mod2r(unsigned int r, spint *a) {
-  unsigned int n = r / 28u;
-  unsigned int m = r % 28u;
-  modzer(a);
-  if (r >= 48 * 8)
-    return;
-  a[n] = 1;
-  a[n] <<= m;
-  nres(a, a);
-}
-
-// export to byte array
-static void modexp(const spint *a, char *b) {
-  int i;
-  spint c[14];
-  redc(a, c);
-  for (i = 47; i >= 0; i--) {
-    b[i] = c[0] & (spint)0xff;
-    (void)modshr(8, c);
-  }
-}
-
-// import from byte array
-// returns 1 if in range, else 0
-static int modimp(const char *b, spint *a) {
-  int i, res;
-  for (i = 0; i < 14; i++) {
-    a[i] = 0;
-  }
-  for (i = 0; i < 48; i++) {
-    modshl(8, a);
-    a[0] += (spint)(unsigned char)b[i];
-  }
-  res = modfsb(a);
-  nres(a, a);
-  return res;
-}
-
-// determine sign
-static int modsign(const spint *a) {
-  spint c[14];
-  redc(a, c);
-  return c[0] % 2;
-}
-
 // return true if equal
 static int modcmp(const spint *a, const spint *b) {
   spint c[14], d[14];
@@ -950,136 +889,136 @@ static int modcmp(const spint *a, const spint *b) {
 
 #include <fp.h>
 
-const digit_t ZERO[NWORDS_FIELD] = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
-const digit_t ONE[NWORDS_FIELD] = {
+const fp_t ZERO = {{ 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 }};
+const fp_t ONE = {{
     0x000003f0, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00010000
-};
+}};
 // Montgomery representation of 2^-1
-static const digit_t TWO_INV[NWORDS_FIELD] = { 0x000001f8, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+static const fp_t TWO_INV = {{ 0x000001f8, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
                                                0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-                                               0x00000000, 0x00000000, 0x00000000, 0x00008000 };
+                                               0x00000000, 0x00000000, 0x00000000, 0x00008000 }};
 // Montgomery representation of 3^-1
-static const digit_t THREE_INV[NWORDS_FIELD] = { 0x0aaaabfa, 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa,
+static const fp_t THREE_INV = {{ 0x0aaaabfa, 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa,
                                                  0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa,
-                                                 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa, 0x00030aaa };
+                                                 0x0aaaaaaa, 0x0aaaaaaa, 0x0aaaaaaa, 0x00030aaa }};
 // Montgomery representation of 2^384
-static const digit_t R2[NWORDS_FIELD] = { 0x003f1373, 0x0f03f03f, 0x03f03f03, 0x003f03f0, 0x0f03f03f,
+static const fp_t R2 = {{ 0x003f1373, 0x0f03f03f, 0x03f03f03, 0x003f03f0, 0x0f03f03f,
                                           0x03f03f03, 0x003f03f0, 0x0f03f03f, 0x03f03f03, 0x003f03f0,
-                                          0x0f03f03f, 0x03f03f03, 0x003f03f0, 0x0000c03f };
+                                          0x0f03f03f, 0x03f03f03, 0x003f03f0, 0x0000c03f }};
 
 void
 fp_set_small(fp_t *x, const digit_t val)
 {
-    modint((int)val, *x);
+    modint((int)val, x->fp);
 }
 
 void
 fp_mul_small(fp_t *x, const fp_t *a, const uint32_t val)
 {
-    modmli(*a, (int)val, *x);
+    modmli(a->fp, (int)val, x->fp);
 }
 
 void
 fp_set_zero(fp_t *x)
 {
-    modzer(*x);
+    modzer(x->fp);
 }
 
 void
 fp_set_one(fp_t *x)
 {
-    modone(*x);
+    modone(x->fp);
 }
 
 uint32_t
 fp_is_equal(const fp_t *a, const fp_t *b)
 {
-    return -(uint32_t)modcmp(*a, *b);
+    return -(uint32_t)modcmp(a->fp, b->fp);
 }
 
 uint32_t
 fp_is_zero(const fp_t *a)
 {
-    return -(uint32_t)modis0(*a);
+    return -(uint32_t)modis0(a->fp);
 }
 
 void
 fp_copy(fp_t *out, const fp_t *a)
 {
-    modcpy(*a, *out);
+    modcpy(a->fp, out->fp);
 }
 
 void
 fp_cswap(fp_t *a, fp_t *b, uint32_t ctl)
 {
-    modcsw((int)(ctl & 0x1), *a, *b);
+    modcsw((int)(ctl & 0x1), a->fp, b->fp);
 }
 
 void
 fp_add(fp_t *out, const fp_t *a, const fp_t *b)
 {
-    modadd(*a, *b, *out);
+    modadd(a->fp, b->fp, out->fp);
 }
 
 void
 fp_sub(fp_t *out, const fp_t *a, const fp_t *b)
 {
-    modsub(*a, *b, *out);
+    modsub(a->fp, b->fp, out->fp);
 }
 
 void
 fp_neg(fp_t *out, const fp_t *a)
 {
-    modneg(*a, *out);
+    modneg(a->fp, out->fp);
 }
 
 void
 fp_sqr(fp_t *out, const fp_t *a)
 {
-    modsqr(*a, *out);
+    modsqr(a->fp, out->fp);
 }
 
 void
 fp_mul(fp_t *out, const fp_t *a, const fp_t *b)
 {
-    modmul(*a, *b, *out);
+    modmul(a->fp, b->fp, out->fp);
 }
 
 void
 fp_inv(fp_t *x)
 {
-    modinv(*x, NULL, *x);
+    modinv(x->fp, NULL, x->fp);
 }
 
 uint32_t
 fp_is_square(const fp_t *a)
 {
-    return -(uint32_t)modqr(NULL, *a);
+    return -(uint32_t)modqr(NULL, a->fp);
 }
 
 void
 fp_sqrt(fp_t *a)
 {
-    modsqrt(*a, NULL, *a);
+    modsqrt(a->fp, NULL, a->fp);
 }
 
 void
 fp_half(fp_t *out, const fp_t *a)
 {
-    modmul(TWO_INV, *a, *out);
+    modmul(TWO_INV.fp, a->fp, out->fp);
 }
 
 void
 fp_exp3div4(fp_t *out, const fp_t *a)
 {
-    modpro(*a, *out);
+    modpro(a->fp, out->fp);
 }
 
 void
 fp_div3(fp_t *out, const fp_t *a)
 {
-    modmul(THREE_INV, *a, *out);
+    modmul(THREE_INV.fp, a->fp, out->fp);
 }
 
 void
@@ -1088,7 +1027,7 @@ fp_encode(void *dst, const fp_t *a)
     // Modified version of modexp()
     int i;
     spint c[14];
-    redc(*a, c);
+    redc(a->fp, c);
     for (i = 0; i < 48; i++) {
         ((char *)dst)[i] = c[0] & (spint)0xff;
         (void)modshr(8, c);
@@ -1103,17 +1042,17 @@ fp_decode(fp_t *d, const void *src)
     spint res;
     const unsigned char *b = src;
     for (i = 0; i < 14; i++) {
-        (*d)[i] = 0;
+        d->fp[i] = 0;
     }
     for (i = 47; i >= 0; i--) {
-        modshl(8, *d);
-        (*d)[0] += (spint)b[i];
+        modshl(8, d->fp);
+        d->fp[0] += (spint)b[i];
     }
-    res = (spint)-modfsb(*d);
-    nres(*d, *d);
+    res = (spint)-modfsb(d->fp);
+    nres(d->fp, d->fp);
     // If the value was canonical then res = -1; otherwise, res = 0
     for (i = 0; i < 14; i++) {
-        (*d)[i] &= res;
+        d->fp[i] &= res;
     }
     return (uint32_t)res;
 }
@@ -1229,3 +1168,5 @@ fp_decode_reduce(fp_t *d, const void *src, size_t len)
         fp_add(d, d, &a);
     }
 }
+
+#endif /* RADIX_32 */

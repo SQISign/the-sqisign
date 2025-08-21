@@ -25,33 +25,33 @@ mini_gmp_test_mpz_legendre(void)
     };
     // clang-format on
 
-    mpz_t a, p;
-    mpz_init(a);
-    mpz_init(p);
+    ibz_t a, p;
+    ibz_init(&a);
+    ibz_init(&p);
 
     for (int i = 0; i < levels; i++) {
         // build cofactor*2^e - 1 for the i-th level
-        mpz_set_ui(p, 1);
-        mpz_mul_2exp(p, p, e[i]);
-        mpz_mul_ui(p, p, cofactor[i]);
-        mpz_sub_ui(p, p, 1);
+        mpz_set_ui(p.i, 1);
+        mpz_mul_2exp(p.i, p.i, e[i]);
+        mpz_mul_ui(p.i, p.i, cofactor[i]);
+        mpz_sub_ui(p.i, p.i, 1);
 
         for (unsigned long j = 0; j < sizeof(as) / sizeof(as[0]); j++) {
-            mpz_set_si(a, as[j]);
-            res = res | (mini_mpz_legendre(a, p) != legendre[i][j]);
+            mpz_set_si(a.i, as[j]);
+            res = res | (mini_mpz_legendre(a.i, p.i) != legendre[i][j]);
         }
 
 #if defined(__GMP_H__)
         for (int j = 0; j < RANDOM_TEST_ITERS; j++) {
             ibz_rand_interval(&a, &ibz_const_zero, &p);
             // Compare against the full GMP implementation
-            res = res | (mini_mpz_legendre(a, p) != mpz_legendre(a, p));
+            res = res | (mini_mpz_legendre(a.i, p.i) != mpz_legendre(a.i, p.i));
         }
 #endif
     }
 
-    mpz_clear(a);
-    mpz_clear(p);
+    ibz_finalize(&a);
+    ibz_finalize(&p);
 
     if (res) {
         printf("mini-gmp test mpz_legendre failed\n");
@@ -73,39 +73,39 @@ mini_gmp_test_mpz_get_d_2exp(void)
     int res = 0;
     signed long int e, e2 UNUSED;
     double d, d2 UNUSED;
-    mpz_t op;
+    ibz_t op;
 
-    mpz_init(op);
+    ibz_init(&op);
 
     // Test 0
-    mpz_set_si(op, 0);
-    d = mini_mpz_get_d_2exp(&e, op);
+    mpz_set_si(op.i, 0);
+    d = mini_mpz_get_d_2exp(&e, op.i);
     res = res | (e != 0);
     res = res | (d != 0.0); // exact floating point comparison
 
     // Test 1
-    mpz_set_si(op, 1);
-    d = mini_mpz_get_d_2exp(&e, op);
+    mpz_set_si(op.i, 1);
+    d = mini_mpz_get_d_2exp(&e, op.i);
     res = res | (e != 1);
     res = res | (d != 0.5); // exact floating point comparison
 
     // Test -1
-    mpz_set_si(op, -1);
-    d = mini_mpz_get_d_2exp(&e, op);
+    mpz_set_si(op.i, -1);
+    d = mini_mpz_get_d_2exp(&e, op.i);
     res = res | (e != 1);
     res = res | (d != -0.5); // exact floating point comparison
 
     // Test a few powers of 2: 2^1, 2^2, 2^4, 2^8, ..., 2^65536, and their negatives
     for (int i = 0; i <= 16; i++) {
-        mpz_set_ui(op, 1);
-        mpz_mul_2exp(op, op, 1 << i);
+        mpz_set_ui(op.i, 1);
+        mpz_mul_2exp(op.i, op.i, 1 << i);
 
-        d = mini_mpz_get_d_2exp(&e, op);
+        d = mini_mpz_get_d_2exp(&e, op.i);
         res = res | (e != (1 << i) + 1);
         res = res | (d != 0.5); // exact floating point comparison
 
-        mpz_neg(op, op);
-        d = mini_mpz_get_d_2exp(&e, op);
+        mpz_neg(op.i, op.i);
+        d = mini_mpz_get_d_2exp(&e, op.i);
         res = res | (e != (1 << i) + 1);
         res = res | (d != -0.5); // exact floating point comparison
     }
@@ -128,12 +128,12 @@ mini_gmp_test_mpz_get_d_2exp(void)
         dd.s64 |= 0x3fe0000000000000; // set exponent to -1
 
         if (ee >= DBL_MANT_DIG) {
-            mpz_set_d(op, dd.d * (INT64_C(1) << DBL_MANT_DIG));
-            mpz_mul_2exp(op, op, ee - DBL_MANT_DIG);
+            mpz_set_d(op.i, dd.d * (INT64_C(1) << DBL_MANT_DIG));
+            mpz_mul_2exp(op.i, op.i, ee - DBL_MANT_DIG);
         } else {
             // Since it fits in a double, round it first to ensure it's an integer
             dd.d = round(dd.d * (INT64_C(1) << ee));
-            mpz_set_d(op, dd.d);
+            mpz_set_d(op.i, dd.d);
             dd.d /= INT64_C(1) << ee;
             // These cases (-1, 0, 1) were already tested, and +/- 1 would require special-casing below
             if (fabs(dd.d) <= 1.0) {
@@ -141,14 +141,14 @@ mini_gmp_test_mpz_get_d_2exp(void)
             }
         }
 
-        d = mini_mpz_get_d_2exp(&e, op);
+        d = mini_mpz_get_d_2exp(&e, op.i);
 
         res = res | (e != ee);
         res = res | (d != dd.d);
 
 #if defined(__GMP_H__)
         // Compare against the full GMP implementation
-        d2 = mpz_get_d_2exp(&e2, op);
+        d2 = mpz_get_d_2exp(&e2, op.i);
 
         res = res | (e != e2);
         res = res | (d != d2);
@@ -160,17 +160,17 @@ mini_gmp_test_mpz_get_d_2exp(void)
         for (int sign_outer = -1; sign_outer <= 1; sign_outer += 2) {
             for (int sign_inner = -1; sign_inner <= 1; sign_inner += 2) {
                 for (int i = 1; i < 15; i++) {
-                    mpz_set_si(op, i);
-                    mpz_mul_2exp(op, op, 55);
+                    mpz_set_si(op.i, i);
+                    mpz_mul_2exp(op.i, op.i, 55);
                     if (sign_inner > 0)
-                        mpz_add_ui(op, op, 1);
+                        mpz_add_ui(op.i, op.i, 1);
                     else
-                        mpz_sub_ui(op, op, 1);
-                    mpz_mul_2exp(op, op, exp2 - 55);
-                    mpz_mul_si(op, op, sign_outer);
+                        mpz_sub_ui(op.i, op.i, 1);
+                    mpz_mul_2exp(op.i, op.i, exp2 - 55);
+                    mpz_mul_si(op.i, op.i, sign_outer);
 
-                    d = mini_mpz_get_d_2exp(&e, op);
-                    d2 = mpz_get_d_2exp(&e2, op);
+                    d = mini_mpz_get_d_2exp(&e, op.i);
+                    d2 = mpz_get_d_2exp(&e2, op.i);
 
                     res = res | (e != e2);
                     res = res | (d != d2);
@@ -183,8 +183,8 @@ mini_gmp_test_mpz_get_d_2exp(void)
     for (uint32_t i = 0; i < RANDOM_TEST_ITERS; i++) {
         ibz_rand_interval_bits(&op, 8 * (i + 1));
 
-        d = mini_mpz_get_d_2exp(&e, op);
-        d2 = mpz_get_d_2exp(&e2, op);
+        d = mini_mpz_get_d_2exp(&e, op.i);
+        d2 = mpz_get_d_2exp(&e2, op.i);
 
         res = res | (e != e2);
         res = res | (d != d2);
@@ -195,7 +195,7 @@ mini_gmp_test_mpz_get_d_2exp(void)
         printf("mini-gmp test mpz_get_d_2exp failed\n");
     }
 
-    mpz_clear(op);
+    ibz_finalize(&op);
 
     return res;
 }

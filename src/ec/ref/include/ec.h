@@ -566,7 +566,7 @@ uint32_t ec_is_basis_four_torsion(const ec_basis_t *B, const ec_curve_t *E);
  *
  * @return 0xFFFFFFFF if the order is correct, 0 otherwise
  */
-static int
+static inline int
 test_point_order_twof(const ec_point_t *P, const ec_curve_t *E, int t)
 {
     ec_point_t test;
@@ -595,7 +595,7 @@ test_point_order_twof(const ec_point_t *P, const ec_curve_t *E, int t)
  *
  * @return 0xFFFFFFFF if the order is correct, 0 otherwise
  */
-static int
+static inline int
 test_basis_order_twof(const ec_basis_t *B, const ec_curve_t *E, int t)
 {
     int check_P = test_point_order_twof(&B->P, E, t);
@@ -603,57 +603,6 @@ test_basis_order_twof(const ec_basis_t *B, const ec_curve_t *E, int t)
     int check_PmQ = test_point_order_twof(&B->PmQ, E, t);
 
     return check_P & check_Q & check_PmQ;
-}
-
-/**
- * @brief Check if a Jacobian point (X : Y : Z) has order exactly 2^f
- *
- * @param P: a point
- * @param E: an elliptic curve
- * @param t: an integer
- *
- * @return 0xFFFFFFFF if the order is correct, 0 otherwise
- */
-static int
-test_jac_order_twof(const jac_point_t *P, const ec_curve_t *E, int t)
-{
-    jac_point_t test;
-    test = *P;
-    if (fp2_is_zero(&test.z))
-        return 0;
-    for (int i = 0; i < t - 1; i++) {
-        DBL(&test, &test, E);
-    }
-    if (fp2_is_zero(&test.z))
-        return 0;
-    DBL(&test, &test, E);
-    return (fp2_is_zero(&test.z));
-}
-
-// Prints the x-coordinate of the point (X : 1)
-static void
-ec_point_print(const char *name, ec_point_t P)
-{
-    fp2_t a;
-    if (fp2_is_zero(&P.z)) {
-        printf("%s = INF\n", name);
-    } else {
-        fp2_copy(&a, &P.z);
-        fp2_inv(&a);
-        fp2_mul(&a, &a, &P.x);
-        fp2_print(name, &a);
-    }
-}
-
-// Prints the Montgomery coefficient A
-static void
-ec_curve_print(const char *name, ec_curve_t E)
-{
-    fp2_t a;
-    fp2_copy(&a, &E.C);
-    fp2_inv(&a);
-    fp2_mul(&a, &a, &E.A);
-    fp2_print(name, &a);
 }
 
 #endif

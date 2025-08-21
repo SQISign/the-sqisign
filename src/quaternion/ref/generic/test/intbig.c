@@ -607,7 +607,7 @@ ibz_test_sqrt_mod_p(int reps, int prime_n)
     // Generate random prime number
     int n = prime_n; // Number of bits
     ibz_set(&two_to_the_n_minus_1, 1);
-    mpz_mul_2exp(two_to_the_n_minus_1, two_to_the_n_minus_1, n);
+    mpz_mul_2exp(two_to_the_n_minus_1.i, two_to_the_n_minus_1.i, n);
     ibz_sub(&two_to_the_n_minus_1, &two_to_the_n_minus_1, &ibz_const_one);
 
     for (int r = 0; r < reps; ++r) {
@@ -620,15 +620,15 @@ ibz_test_sqrt_mod_p(int reps, int prime_n)
         while (p4m3 == 0 || p5m8 == 0 || p1m8 == 0) {
             do {
                 ibz_add(&prime, &prime, &ibz_const_two);
-            } while (!mpz_probab_prime_p(prime, 25));
+            } while (!mpz_probab_prime_p(prime.i, 25));
 
-            if (mpz_mod_ui(tmp, prime, 4) == 3) {
+            if (mpz_mod_ui(tmp.i, prime.i, 4) == 3) {
                 ibz_copy(&prime_p4m3, &prime);
                 p4m3 = 1;
-            } else if (mpz_mod_ui(tmp, prime, 8) == 5) {
+            } else if (mpz_mod_ui(tmp.i, prime.i, 8) == 5) {
                 ibz_copy(&prime_p5m8, &prime);
                 p5m8 = 1;
-            } else if (mpz_mod_ui(tmp, prime, 8) == 1) {
+            } else if (mpz_mod_ui(tmp.i, prime.i, 8) == 1) {
                 ibz_copy(&prime_p1m8, &prime);
                 p1m8 = 1;
             } else {
@@ -640,17 +640,17 @@ ibz_test_sqrt_mod_p(int reps, int prime_n)
         ibz_t *primes[] = { &prime_p4m3, &prime_p5m8, &prime_p1m8 };
         ibz_t *primes_x2[] = { &prime_p4m3_x2, &prime_p5m8_x2, &prime_p1m8_x2 };
         for (int i = 0; i < 3; ++i) // 2p
-            mpz_mul_2exp(*primes_x2[i], *primes[i], 1);
+            mpz_mul_2exp(primes_x2[i]->i, primes[i]->i, 1);
 
         // Test sqrt mod p
         for (int i = 0; i < 3; ++i) {
             ibz_sub(&tmp, primes[i], &ibz_const_one);
             ibz_rand_interval(&a, &ibz_const_zero, &tmp);
             ibz_sub(&prime_minus_a, (primes[i]), &a);
-            mpz_powm_ui(asq, a, 2, *primes[i]);
+            mpz_powm_ui(asq.i, a.i, 2, primes[i]->i);
 
             int no_sqrt = !ibz_sqrt_mod_p(&sqrt, &asq, primes[i]);
-            mpz_powm_ui(tmp, sqrt, 2, *primes[i]);
+            mpz_powm_ui(tmp.i, sqrt.i, 2, primes[i]->i);
 
             if (no_sqrt || (ibz_cmp(&sqrt, &a) && ibz_cmp(&sqrt, &prime_minus_a))) {
                 res = 1;
@@ -877,8 +877,8 @@ ibz_test_to_digits(void)
     ibz_init(&cof);
     ibz_init(&cof2);
 
-    size_t d1_digits = (mpz_sizeinbase(d1_intbig, 2) + sizeof(digit_t) * 8 - 1) / (sizeof(digit_t) * 8);
-    size_t d2_digits = (mpz_sizeinbase(d2_intbig, 2) + sizeof(digit_t) * 8 - 1) / (sizeof(digit_t) * 8);
+    size_t d1_digits = (mpz_sizeinbase(d1_intbig.i, 2) + sizeof(digit_t) * 8 - 1) / (sizeof(digit_t) * 8);
+    size_t d2_digits = (mpz_sizeinbase(d2_intbig.i, 2) + sizeof(digit_t) * 8 - 1) / (sizeof(digit_t) * 8);
 
     digit_t d1[d1_digits];
     digit_t d2[d2_digits];
