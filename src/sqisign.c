@@ -4,6 +4,7 @@
 #include <verification.h>
 #if defined(ENABLE_SIGN)
 #include <signature.h>
+#include "intbig.h"
 #endif
 
 #if defined(ENABLE_SIGN)
@@ -11,6 +12,10 @@ SQISIGN_API
 int
 sqisign_keypair(unsigned char *pk, unsigned char *sk)
 {
+    FILE *fp = fopen("quaternion_elements_bits_lvl1.txt", "a"); //NIST-I experiment // need to change path
+    //FILE *fp = fopen("quaternion_elements_bits_lvl3.txt", "a"); //NIST-III experiment
+    //FILE *fp = fopen("quaternion_elements_bits_lvl5.txt", "a"); //NIST-V experiment
+
     int ret = 0;
     secret_key_t skt;
     public_key_t pkt = { 0 };
@@ -18,9 +23,14 @@ sqisign_keypair(unsigned char *pk, unsigned char *sk)
 
     ret = !protocols_keygen(&pkt, &skt);
 
+    fprintf(fp, "%llu\n", MAX_bit);
+
     secret_key_to_bytes(sk, &skt, &pkt);
     public_key_to_bytes(pk, &pkt);
     secret_key_finalize(&skt);
+
+    fclose(fp);
+
     return ret;
 }
 
@@ -32,6 +42,10 @@ sqisign_sign(unsigned char *sm,
              unsigned long long mlen,
              const unsigned char *sk)
 {
+    FILE *fp = fopen("quaternion_elements_bits_lvl1.txt", "a"); // NIST-I experiment // need to change path
+    // FILE *fp = fopen("quaternion_elements_bits_lvl3.txt", "a"); //NIST-III experiment
+    // FILE *fp = fopen("quaternion_elements_bits_lvl5.txt", "a"); //NIST-V experiment
+
     int ret = 0;
     secret_key_t skt;
     public_key_t pkt = { 0 };
@@ -47,8 +61,12 @@ sqisign_sign(unsigned char *sm,
         goto err;
     }
 
+    fprintf(fp, "%llu\n", MAX_bit);
+
     signature_to_bytes(sm, &sigt);
     *smlen = SIGNATURE_BYTES + mlen;
+
+    fclose(fp);
 
 err:
     secret_key_finalize(&skt);

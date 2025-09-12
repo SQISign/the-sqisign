@@ -33,7 +33,6 @@ protection within the United States.
 #include <string.h>
 
 #include <rng.h>
-#include <threads.h>
 #include "ctr_drbg.h"
 
 #ifdef ENABLE_CT_TESTING
@@ -45,7 +44,7 @@ protection within the United States.
 #define RNG_BAD_OUTBUF -2
 #define RNG_BAD_REQ_LEN -3
 
-thread_local CTR_DRBG_STATE drbg;
+CTR_DRBG_STATE drbg;
 
 #ifndef CTRDRBG_TEST_BENCH
 static

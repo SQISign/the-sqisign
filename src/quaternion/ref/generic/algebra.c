@@ -1,5 +1,6 @@
 #include <quaternion.h>
 #include "internal.h"
+#include <stdio.h>
 
 // Internal helper functions
 
@@ -16,6 +17,8 @@ quat_alg_init_set_ui(quat_alg_t *alg, unsigned int p)
 void
 quat_alg_coord_mul(ibz_vec_4_t *res, const ibz_vec_4_t *a, const ibz_vec_4_t *b, const quat_alg_t *alg)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_t prod;
     ibz_vec_4_t sum;
     ibz_init(&prod);
@@ -28,42 +31,76 @@ quat_alg_coord_mul(ibz_vec_4_t *res, const ibz_vec_4_t *a, const ibz_vec_4_t *b,
 
     // compute 1 coordinate
     ibz_mul(&prod, &((*a)[2]), &((*b)[2]));
+    //gmp_fprintf(fp, "%Zd\n", prod);    
     ibz_sub(&(sum[0]), &(sum[0]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[0]);
     ibz_mul(&prod, &((*a)[3]), &((*b)[3]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_sub(&(sum[0]), &(sum[0]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[0]);
     ibz_mul(&(sum[0]), &(sum[0]), &(alg->p));
+    //gmp_fprintf(fp, "%Zd\n", sum[0]);
     ibz_mul(&prod, &((*a)[0]), &((*b)[0]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[0]), &(sum[0]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[0]);
     ibz_mul(&prod, &((*a)[1]), &((*b)[1]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_sub(&(sum[0]), &(sum[0]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[0]);
     // compute i coordiante
     ibz_mul(&prod, &((*a)[2]), &((*b)[3]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[1]), &(sum[1]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[1]);
     ibz_mul(&prod, &((*a)[3]), &((*b)[2]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_sub(&(sum[1]), &(sum[1]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[1]);
     ibz_mul(&(sum[1]), &(sum[1]), &(alg->p));
+    //gmp_fprintf(fp, "%Zd\n", sum[1]);
     ibz_mul(&prod, &((*a)[0]), &((*b)[1]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[1]), &(sum[1]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[1]);
     ibz_mul(&prod, &((*a)[1]), &((*b)[0]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[1]), &(sum[1]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[1]);
     // compute j coordiante
     ibz_mul(&prod, &((*a)[0]), &((*b)[2]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[2]), &(sum[2]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[2]);
     ibz_mul(&prod, &((*a)[2]), &((*b)[0]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[2]), &(sum[2]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[2]);
     ibz_mul(&prod, &((*a)[1]), &((*b)[3]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_sub(&(sum[2]), &(sum[2]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[2]);
     ibz_mul(&prod, &((*a)[3]), &((*b)[1]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[2]), &(sum[2]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[2]);
     // compute ij coordiante
     ibz_mul(&prod, &((*a)[0]), &((*b)[3]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[3]), &(sum[3]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[3]);
     ibz_mul(&prod, &((*a)[3]), &((*b)[0]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[3]), &(sum[3]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[3]);
     ibz_mul(&prod, &((*a)[2]), &((*b)[1]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_sub(&(sum[3]), &(sum[3]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[3]);
     ibz_mul(&prod, &((*a)[1]), &((*b)[2]));
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(&(sum[3]), &(sum[3]), &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum[3]);
 
     ibz_copy(&((*res)[0]), &(sum[0]));
     ibz_copy(&((*res)[1]), &(sum[1]));
@@ -72,11 +109,15 @@ quat_alg_coord_mul(ibz_vec_4_t *res, const ibz_vec_4_t *a, const ibz_vec_4_t *b,
 
     ibz_finalize(&prod);
     ibz_vec_4_finalize(&sum);
+
+    //fclose(fp);
 }
 
 void
 quat_alg_equal_denom(quat_alg_elem_t *res_a, quat_alg_elem_t *res_b, const quat_alg_elem_t *a, const quat_alg_elem_t *b)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_t gcd, r;
     ibz_init(&gcd);
     ibz_init(&r);
@@ -87,15 +128,21 @@ quat_alg_equal_denom(quat_alg_elem_t *res_a, quat_alg_elem_t *res_b, const quat_
     for (int i = 0; i < 4; i++) {
         // multiply coordiates by reduced denominators from the other element
         ibz_mul(&(res_a->coord[i]), &(a->coord[i]), &(res_b->denom));
+        //gmp_fprintf(fp, "%Zd\n", res_a->coord[i]);
         ibz_mul(&(res_b->coord[i]), &(b->coord[i]), &(res_a->denom));
+        //gmp_fprintf(fp, "%Zd\n", res_b->coord[i]);
     }
     // multiply both reduced denominators
     ibz_mul(&(res_a->denom), &(res_a->denom), &(res_b->denom));
     // multiply them by the gcd to get the new common denominator
     ibz_mul(&(res_b->denom), &(res_a->denom), &gcd);
+    //gmp_fprintf(fp, "%Zd\n", res_b->denom);
     ibz_mul(&(res_a->denom), &(res_a->denom), &gcd);
+    //gmp_fprintf(fp, "%Zd\n", res_a->denom);
     ibz_finalize(&gcd);
     ibz_finalize(&r);
+
+    //fclose(fp);
 }
 
 // Public Functions
@@ -103,6 +150,8 @@ quat_alg_equal_denom(quat_alg_elem_t *res_a, quat_alg_elem_t *res_b, const quat_
 void
 quat_alg_add(quat_alg_elem_t *res, const quat_alg_elem_t *a, const quat_alg_elem_t *b)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     quat_alg_elem_t res_a, res_b;
     quat_alg_elem_init(&res_a);
     quat_alg_elem_init(&res_b);
@@ -111,13 +160,19 @@ quat_alg_add(quat_alg_elem_t *res, const quat_alg_elem_t *a, const quat_alg_elem
     // then add
     ibz_copy(&(res->denom), &(res_a.denom));
     ibz_vec_4_add(&(res->coord), &(res_a.coord), &(res_b.coord));
+    //for(int i = 0; i < 4; i++)
+        //gmp_fprintf(fp, "%Zd\n", (res->coord)[i]);
     quat_alg_elem_finalize(&res_a);
     quat_alg_elem_finalize(&res_b);
+
+    //fclose(fp);
 }
 
 void
 quat_alg_sub(quat_alg_elem_t *res, const quat_alg_elem_t *a, const quat_alg_elem_t *b)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     quat_alg_elem_t res_a, res_b;
     quat_alg_elem_init(&res_a);
     quat_alg_elem_init(&res_b);
@@ -126,16 +181,25 @@ quat_alg_sub(quat_alg_elem_t *res, const quat_alg_elem_t *a, const quat_alg_elem
     // then substract
     ibz_copy(&res->denom, &res_a.denom);
     ibz_vec_4_sub(&res->coord, &res_a.coord, &res_b.coord);
+    //for(int i = 0;i < 4;i++)
+        //gmp_fprintf(fp, "%Zd\n", res->coord[i]);
     quat_alg_elem_finalize(&res_a);
     quat_alg_elem_finalize(&res_b);
+
+    //fclose(fp);
 }
 
 void
 quat_alg_mul(quat_alg_elem_t *res, const quat_alg_elem_t *a, const quat_alg_elem_t *b, const quat_alg_t *alg)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     // denominator: product of denominators
     ibz_mul(&(res->denom), &(a->denom), &(b->denom));
+    //gmp_fprintf(fp, "%Zd\n", res->denom);
     quat_alg_coord_mul(&(res->coord), &(a->coord), &(b->coord), alg);
+
+    //fclose(fp);
 }
 
 void
@@ -198,6 +262,8 @@ quat_alg_make_primitive(ibz_vec_4_t *primitive_x, ibz_t *content, const quat_alg
 void
 quat_alg_normalize(quat_alg_elem_t *x)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+    
     ibz_t gcd, sign, r;
     ibz_init(&gcd);
     ibz_init(&sign);
@@ -209,9 +275,12 @@ quat_alg_normalize(quat_alg_elem_t *x)
     ibz_set(&sign, 2 * (0 > ibz_cmp(&ibz_const_zero, &(x->denom))) - 1);
     ibz_vec_4_scalar_mul(&(x->coord), &sign, &(x->coord));
     ibz_mul(&(x->denom), &sign, &(x->denom));
+    //gmp_fprintf(fp, "%Zd\n", x->denom);
     ibz_finalize(&gcd);
     ibz_finalize(&sign);
     ibz_finalize(&r);
+
+    //fclose(fp);
 }
 
 int
@@ -273,8 +342,13 @@ quat_alg_elem_copy_ibz(quat_alg_elem_t *elem,
 void
 quat_alg_elem_mul_by_scalar(quat_alg_elem_t *res, const ibz_t *scalar, const quat_alg_elem_t *elem)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     for (int i = 0; i < 4; i++) {
         ibz_mul(&(res->coord[i]), &(elem->coord[i]), scalar);
+        //gmp_fprintf(fp, "%Zd\n", res->coord[i]);
     }
     ibz_copy(&(res->denom), &(elem->denom));
+
+    //fclose(fp);
 }

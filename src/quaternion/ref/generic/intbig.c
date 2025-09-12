@@ -6,6 +6,8 @@
 #include <stdarg.h>
 #include <assert.h>
 
+unsigned long long MAX_bit = 0;
+
 // #define DEBUG_VERBOSE
 
 #ifdef DEBUG_VERBOSE
@@ -169,6 +171,9 @@ ibz_add(ibz_t *sum, const ibz_t *a, const ibz_t *b)
     ibz_copy(&b_cp, b);
 #endif
     mpz_add(*sum, *a, *b);
+    size_t bit = mpz_sizeinbase(*sum, 2);
+    if(bit > MAX_bit)
+        MAX_bit = bit;
 #ifdef DEBUG_VERBOSE
     DEBUG_STR_FUN_3("ibz_add", sum, &a_cp, &b_cp);
     ibz_finalize(&a_cp);
@@ -187,7 +192,9 @@ ibz_sub(ibz_t *diff, const ibz_t *a, const ibz_t *b)
     ibz_copy(&b_cp, b);
 #endif
     mpz_sub(*diff, *a, *b);
-
+    size_t bit = mpz_sizeinbase(*diff, 2);
+    if(bit > MAX_bit)
+        MAX_bit = bit;
 #ifdef DEBUG_VERBOSE
     DEBUG_STR_FUN_3("ibz_sub", diff, &a_cp, &b_cp);
     ibz_finalize(&a_cp);
@@ -206,6 +213,9 @@ ibz_mul(ibz_t *prod, const ibz_t *a, const ibz_t *b)
     ibz_copy(&b_cp, b);
 #endif
     mpz_mul(*prod, *a, *b);
+    size_t bit = mpz_sizeinbase(*prod, 2);
+    if(bit > MAX_bit)
+        MAX_bit = bit;
 #ifdef DEBUG_VERBOSE
     DEBUG_STR_FUN_3("ibz_mul", prod, &a_cp, &b_cp);
     ibz_finalize(&a_cp);
@@ -286,6 +296,9 @@ void
 ibz_pow(ibz_t *pow, const ibz_t *x, uint32_t e)
 {
     mpz_pow_ui(*pow, *x, e);
+    size_t bit = mpz_sizeinbase(*pow, 2);
+    if(bit > MAX_bit)
+        MAX_bit = bit;
 }
 
 void
@@ -293,6 +306,9 @@ ibz_pow_mod(ibz_t *pow, const ibz_t *x, const ibz_t *e, const ibz_t *m)
 {
     mpz_powm(*pow, *x, *e, *m);
     DEBUG_STR_FUN_4("ibz_pow_mod", pow, x, e, m);
+    size_t bit = mpz_sizeinbase(*pow, 2);
+    if(bit > MAX_bit)
+        MAX_bit = bit;
 }
 
 int

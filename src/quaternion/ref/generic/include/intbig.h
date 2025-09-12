@@ -18,6 +18,9 @@
 #include <stdint.h>
 #include <tutil.h>
 
+extern unsigned long long MAX_bit;
+
+
 /** @ingroup quat_quat
  * @defgroup ibz_all Signed big integers (gmp-based)
  * @{

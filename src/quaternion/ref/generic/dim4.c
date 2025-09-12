@@ -1,10 +1,13 @@
 #include <quaternion.h>
 #include "internal.h"
+#include <stdio.h>
 
 // internal helper functions
 void
 ibz_mat_4x4_mul(ibz_mat_4x4_t *res, const ibz_mat_4x4_t *a, const ibz_mat_4x4_t *b)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_mat_4x4_t mat;
     ibz_t prod;
     ibz_init(&prod);
@@ -14,7 +17,9 @@ ibz_mat_4x4_mul(ibz_mat_4x4_t *res, const ibz_mat_4x4_t *a, const ibz_mat_4x4_t 
             ibz_set(&(mat[i][j]), 0);
             for (int k = 0; k < 4; k++) {
                 ibz_mul(&prod, &((*a)[i][k]), &((*b)[k][j]));
+                //gmp_fprintf(fp, "%Zd\n", prod);
                 ibz_add(&(mat[i][j]), &(mat[i][j]), &prod);
+                //gmp_fprintf(fp, "%Zd\n", mat[i][j]);
             }
         }
     }
@@ -25,6 +30,8 @@ ibz_mat_4x4_mul(ibz_mat_4x4_t *res, const ibz_mat_4x4_t *a, const ibz_mat_4x4_t 
     }
     ibz_mat_4x4_finalize(&mat);
     ibz_finalize(&prod);
+
+    //fclose(fp);
 }
 
 // helper functions for lattices
@@ -73,19 +80,35 @@ ibz_vec_4_negate(ibz_vec_4_t *neg, const ibz_vec_4_t *vec)
 void
 ibz_vec_4_add(ibz_vec_4_t *res, const ibz_vec_4_t *a, const ibz_vec_4_t *b)
 {
+    ////FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_add(&((*res)[0]), &((*a)[0]), &((*b)[0]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[0]);
     ibz_add(&((*res)[1]), &((*a)[1]), &((*b)[1]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[1]);
     ibz_add(&((*res)[2]), &((*a)[2]), &((*b)[2]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[2]);
     ibz_add(&((*res)[3]), &((*a)[3]), &((*b)[3]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[3]);
+
+    //fclose(fp);
 }
 
 void
 ibz_vec_4_sub(ibz_vec_4_t *res, const ibz_vec_4_t *a, const ibz_vec_4_t *b)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_sub(&((*res)[0]), &((*a)[0]), &((*b)[0]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[0]);
     ibz_sub(&((*res)[1]), &((*a)[1]), &((*b)[1]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[1]);
     ibz_sub(&((*res)[2]), &((*a)[2]), &((*b)[2]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[2]);
     ibz_sub(&((*res)[3]), &((*a)[3]), &((*b)[3]));
+    //gmp_fprintf(fp, "%Zd\n", (*res)[3]);
+
+    //fclose(fp);
 }
 
 int
@@ -105,28 +128,40 @@ ibz_vec_4_linear_combination(ibz_vec_4_t *lc,
                              const ibz_t *coeff_b,
                              const ibz_vec_4_t *vec_b)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_t prod;
     ibz_vec_4_t sums;
     ibz_vec_4_init(&sums);
     ibz_init(&prod);
     for (int i = 0; i < 4; i++) {
         ibz_mul(&(sums[i]), coeff_a, &((*vec_a)[i]));
+        //gmp_fprintf(fp, "%Zd\n", sums[i]);
         ibz_mul(&prod, coeff_b, &((*vec_b)[i]));
+        //gmp_fprintf(fp, "%Zd\n", prod);
         ibz_add(&(sums[i]), &(sums[i]), &prod);
+        //gmp_fprintf(fp, "%Zd\n", sums[i]);
     }
     for (int i = 0; i < 4; i++) {
         ibz_copy(&((*lc)[i]), &(sums[i]));
     }
     ibz_finalize(&prod);
     ibz_vec_4_finalize(&sums);
+
+    //fclose(fp);
 }
 
 void
 ibz_vec_4_scalar_mul(ibz_vec_4_t *prod, const ibz_t *scalar, const ibz_vec_4_t *vec)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     for (int i = 0; i < 4; i++) {
         ibz_mul(&((*prod)[i]), &((*vec)[i]), scalar);
+        //gmp_fprintf(fp, "%Zd\n", (*prod)[i]);
     }
+
+    //fclose(fp);
 }
 
 int
@@ -225,11 +260,16 @@ ibz_mat_4x4_equal(const ibz_mat_4x4_t *mat1, const ibz_mat_4x4_t *mat2)
 void
 ibz_mat_4x4_scalar_mul(ibz_mat_4x4_t *prod, const ibz_t *scalar, const ibz_mat_4x4_t *mat)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             ibz_mul(&((*prod)[i][j]), &((*mat)[i][j]), scalar);
+            //gmp_fprintf(fp, "%Zd\n", (*prod)[i][j]);
         }
     }
+
+    //fclose(fp);
 }
 
 void
@@ -273,16 +313,25 @@ ibz_inv_dim4_make_coeff_pmp(ibz_t *coeff,
                             const ibz_t *c1,
                             const ibz_t *c2)
 {
+    //FILE *fp = fopen("/mnt/c/Users/WonKim/the-sqisign/quaternion_elements_values_lvl1.txt", "a");
+
     ibz_t prod, sum;
     ibz_init(&prod);
     ibz_init(&sum);
     ibz_mul(&sum, a1, a2);
+    //gmp_fprintf(fp, "%Zd\n", sum);
     ibz_mul(&prod, b1, b2);
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_sub(&sum, &sum, &prod);
+    //gmp_fprintf(fp, "%Zd\n", sum);
     ibz_mul(&prod, c1, c2);
+    //gmp_fprintf(fp, "%Zd\n", prod);
     ibz_add(coeff, &sum, &prod);
+    //gmp_fprintf(fp, "%Zd\n", *coeff);
     ibz_finalize(&prod);
     ibz_finalize(&sum);
+
+    //fclose(fp);
 }
 
 void
@@ -293,7 +342,7 @@ ibz_inv_dim4_make_coeff_mpm(ibz_t *coeff,
                             const ibz_t *b2,
                             const ibz_t *c1,
                             const ibz_t *c2)
-{
+{   
     ibz_t prod, sum;
     ibz_init(&prod);
     ibz_init(&sum);
