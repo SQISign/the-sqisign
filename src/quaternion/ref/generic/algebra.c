@@ -16,61 +16,82 @@ quat_alg_init_set_ui(quat_alg_t *alg, unsigned int p)
 void
 quat_alg_coord_mul(ibz_vec_4_t *res, const ibz_vec_4_t *a, const ibz_vec_4_t *b, const quat_alg_t *alg)
 {
-    ibz_t prod;
+    ibz_t m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12;
+    ibz_t t1, t2;
     ibz_vec_4_t sum;
-    ibz_init(&prod);
+
+    ibz_init(&m1); ibz_init(&m2); ibz_init(&m3);
+    ibz_init(&m4); ibz_init(&m5); ibz_init(&m6);
+    ibz_init(&m7); ibz_init(&m8); ibz_init(&m9);
+    ibz_init(&m10); ibz_init(&m11); ibz_init(&m12);
+    ibz_init(&t1); ibz_init(&t2);
     ibz_vec_4_init(&sum);
 
-    ibz_set(&(sum[0]), 0);
-    ibz_set(&(sum[1]), 0);
-    ibz_set(&(sum[2]), 0);
-    ibz_set(&(sum[3]), 0);
+    // Quaternion multiplication in 12 multiplications
+    // Using Gauss' optimization:
+    //    consider a = A + Bj    (A = a₀+a₁i, B = a₂+a₃i)
+    //             b = C + Dj    (C = b₀+b₁i, D = b₂+b₃i)
+    //    we then have:
+    //       (A+Bj)(C+Dj) = (AC - pBD̅) + (AD + BC̅)j
+    //    we can use Karatsuba to perform each complex multiplication
+    //    in 3 element multiplication instead of 4.
 
-    // compute 1 coordinate
-    ibz_mul(&prod, &((*a)[2]), &((*b)[2]));
-    ibz_sub(&(sum[0]), &(sum[0]), &prod);
-    ibz_mul(&prod, &((*a)[3]), &((*b)[3]));
-    ibz_sub(&(sum[0]), &(sum[0]), &prod);
-    ibz_mul(&(sum[0]), &(sum[0]), &(alg->p));
-    ibz_mul(&prod, &((*a)[0]), &((*b)[0]));
-    ibz_add(&(sum[0]), &(sum[0]), &prod);
-    ibz_mul(&prod, &((*a)[1]), &((*b)[1]));
-    ibz_sub(&(sum[0]), &(sum[0]), &prod);
-    // compute i coordiante
-    ibz_mul(&prod, &((*a)[2]), &((*b)[3]));
-    ibz_add(&(sum[1]), &(sum[1]), &prod);
-    ibz_mul(&prod, &((*a)[3]), &((*b)[2]));
-    ibz_sub(&(sum[1]), &(sum[1]), &prod);
-    ibz_mul(&(sum[1]), &(sum[1]), &(alg->p));
-    ibz_mul(&prod, &((*a)[0]), &((*b)[1]));
-    ibz_add(&(sum[1]), &(sum[1]), &prod);
-    ibz_mul(&prod, &((*a)[1]), &((*b)[0]));
-    ibz_add(&(sum[1]), &(sum[1]), &prod);
-    // compute j coordiante
-    ibz_mul(&prod, &((*a)[0]), &((*b)[2]));
-    ibz_add(&(sum[2]), &(sum[2]), &prod);
-    ibz_mul(&prod, &((*a)[2]), &((*b)[0]));
-    ibz_add(&(sum[2]), &(sum[2]), &prod);
-    ibz_mul(&prod, &((*a)[1]), &((*b)[3]));
-    ibz_sub(&(sum[2]), &(sum[2]), &prod);
-    ibz_mul(&prod, &((*a)[3]), &((*b)[1]));
-    ibz_add(&(sum[2]), &(sum[2]), &prod);
-    // compute ij coordiante
-    ibz_mul(&prod, &((*a)[0]), &((*b)[3]));
-    ibz_add(&(sum[3]), &(sum[3]), &prod);
-    ibz_mul(&prod, &((*a)[3]), &((*b)[0]));
-    ibz_add(&(sum[3]), &(sum[3]), &prod);
-    ibz_mul(&prod, &((*a)[2]), &((*b)[1]));
-    ibz_sub(&(sum[3]), &(sum[3]), &prod);
-    ibz_mul(&prod, &((*a)[1]), &((*b)[2]));
-    ibz_add(&(sum[3]), &(sum[3]), &prod);
+    ibz_mul(&m1, &((*a)[0]), &((*b)[0]));
+    ibz_mul(&m2, &((*a)[1]), &((*b)[1]));
+    ibz_add(&t1, &((*a)[0]), &((*a)[1]));
+    ibz_add(&t2, &((*b)[0]), &((*b)[1]));
+    ibz_mul(&m3, &t1, &t2);
+
+    ibz_mul(&m4, &((*a)[2]), &((*b)[2]));
+    ibz_mul(&m5, &((*a)[3]), &((*b)[3]));
+    ibz_add(&t1, &((*a)[2]), &((*a)[3]));
+    ibz_sub(&t2, &((*b)[2]), &((*b)[3]));
+    ibz_mul(&m6, &t1, &t2);
+
+    ibz_mul(&m7, &((*a)[0]), &((*b)[2]));
+    ibz_mul(&m8, &((*a)[1]), &((*b)[3]));
+    ibz_add(&t1, &((*a)[0]), &((*a)[1]));
+    ibz_add(&t2, &((*b)[2]), &((*b)[3]));
+    ibz_mul(&m9, &t1, &t2);
+
+    ibz_mul(&m10, &((*a)[2]), &((*b)[0]));
+    ibz_mul(&m11, &((*a)[3]), &((*b)[1]));
+    ibz_add(&t1, &((*a)[2]), &((*a)[3]));
+    ibz_sub(&t2, &((*b)[0]), &((*b)[1]));
+    ibz_mul(&m12, &t1, &t2);
+
+    ibz_sub(&(sum[0]), &m1, &m2);
+    ibz_add(&t1, &m4, &m5);
+    ibz_mul(&t2, &(alg->p), &t1);
+    ibz_sub(&(sum[0]), &(sum[0]), &t2);
+
+    ibz_sub(&t1, &m3, &m1);
+    ibz_sub(&t1, &t1, &m2);
+    ibz_sub(&t2, &m6, &m4);
+    ibz_add(&t2, &t2, &m5);
+    ibz_mul(&t2, &(alg->p), &t2);
+    ibz_sub(&(sum[1]), &t1, &t2);
+
+    ibz_sub(&(sum[2]), &m7, &m8);
+    ibz_add(&t1, &m10, &m11);
+    ibz_add(&(sum[2]), &(sum[2]), &t1);
+
+    ibz_sub(&(sum[3]), &m9, &m7);
+    ibz_sub(&(sum[3]), &(sum[3]), &m8);
+    ibz_sub(&t1, &m12, &m10);
+    ibz_add(&t1, &t1, &m11);
+    ibz_add(&(sum[3]), &(sum[3]), &t1);
 
     ibz_copy(&((*res)[0]), &(sum[0]));
     ibz_copy(&((*res)[1]), &(sum[1]));
     ibz_copy(&((*res)[2]), &(sum[2]));
     ibz_copy(&((*res)[3]), &(sum[3]));
 
-    ibz_finalize(&prod);
+    ibz_finalize(&m1); ibz_finalize(&m2); ibz_finalize(&m3);
+    ibz_finalize(&m4); ibz_finalize(&m5); ibz_finalize(&m6);
+    ibz_finalize(&m7); ibz_finalize(&m8); ibz_finalize(&m9);
+    ibz_finalize(&m10); ibz_finalize(&m11); ibz_finalize(&m12);
+    ibz_finalize(&t1); ibz_finalize(&t2);
     ibz_vec_4_finalize(&sum);
 }
 
