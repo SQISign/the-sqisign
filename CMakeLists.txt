@@ -9,7 +9,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(CTest)
 
-option(ENABLE_STRICT "Build with strict compile options." ON)
+option(ENABLE_STRICT "Build with strict compile options." OFF)
 option(ENABLE_TESTS  "Enable compilation of tests." ON)
 option(ENABLE_CT_TESTING  "Enable compilation for constant time testing." OFF)
 option(ENABLE_SIGN "Build with sign functionality" ON)
@@ -113,6 +113,9 @@ install(DIRECTORY "${INC_PUBLIC}/"
 if(_INSTALL_TARGETS)
     foreach(_tgt ${_INSTALL_TARGETS})
         if(TARGET ${_tgt})
+            set_property(TARGET ${_tgt} APPEND PROPERTY 
+                INTERFACE_LINK_DIRECTORIES "$<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}>"
+            )
             target_compile_definitions(${_tgt} PUBLIC ${GLOBAL_PUBLIC_DEFS})
         endif()
     endforeach()
