@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+
+set(SQIsign_INCLUDE_DIRS "@PACKAGE_INC_PUBLIC@")
+include("${CMAKE_CURRENT_LIST_DIR}/SQIsignTargets.cmake")
+
+check_required_components("SQIsign")
+
