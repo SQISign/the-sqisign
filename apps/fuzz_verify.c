@@ -21,15 +21,12 @@ typedef struct
     size_t smlen;
 } testcase_t;
 
-// Crash on purpose, so that the fuzzer records the input as a failing test case. The null dereference is the mechanism,
-// not a defect.
+// Crash on purpose, so that the fuzzer records the input as a failing test case. abort() raises SIGABRT, which every
+// fuzzer records, and being _Noreturn it cannot be optimised away.
 static void
 crash()
 {
-    int *p = 0;
-    // cppcheck-suppress nullPointer ; deliberate: this is how the fuzzer is signalled
-    // NOLINTNEXTLINE(clang-analyzer-core.NullDereference) - deliberate: this is how the fuzzer is signalled
-    *p = 0;
+    abort();
 }
 
 static int
