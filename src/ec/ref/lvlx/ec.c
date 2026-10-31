@@ -280,6 +280,25 @@ ec_xADD(ec_point_t *R, const ec_point_t *P, const ec_point_t *Q, const ec_point_
     fp2_copy(&R->x, &t2);
 }
 
+// ec_xADD with a difference point of Z = 1, given by its x-coordinate only
+static inline void
+xADD_Z1(ec_point_t *R, const ec_point_t *P, const ec_point_t *Q, const fp2_t *xPQ)
+{
+    fp2_t t0, t1, t2, t3;
+
+    fp2_add(&t0, &P->x, &P->z);
+    fp2_sub(&t1, &P->x, &P->z);
+    fp2_add(&t2, &Q->x, &Q->z);
+    fp2_sub(&t3, &Q->x, &Q->z);
+    fp2_mul(&t0, &t0, &t3);
+    fp2_mul(&t1, &t1, &t2);
+    fp2_add(&t2, &t0, &t1);
+    fp2_sub(&t3, &t0, &t1);
+    fp2_sqr(&R->x, &t2);
+    fp2_sqr(&t3, &t3);
+    fp2_mul(&R->z, xPQ, &t3);
+}
+
 void
 ec_xDBLADD(ec_point_t *R,
            ec_point_t *S,
@@ -474,6 +493,17 @@ xDBLMUL(ec_point_t *S,
     fp2_copy(&DIFF2b.x, &PQ->x);
     fp2_copy(&DIFF2b.z, &PQ->z);
 
+    // The four difference points are fixed for the whole ladder: normalize them to Z = 1 with a single batched
+    // inversion (all Z are non-zero, checked above), so each ladder xADD saves one multiplication by Z.
+    {
+        fp2_t zs[4] = { DIFF1a.z, DIFF1b.z, DIFF2a.z, DIFF2b.z };
+        fp2_batched_inv(zs, 4);
+        fp2_mul(&DIFF1a.x, &DIFF1a.x, &zs[0]);
+        fp2_mul(&DIFF1b.x, &DIFF1b.x, &zs[1]);
+        fp2_mul(&DIFF2a.x, &DIFF2a.x, &zs[2]);
+        fp2_mul(&DIFF2b.x, &DIFF2b.x, &zs[3]);
+    }
+
     A_is_zero = fp2_is_zero(&curve->A);
     // Whether A == 0 is a public property of the curve: the curves reaching the biladder during signing are published
     // in or recomputable from the signature; the curve itself stays tainted
@@ -498,8 +528,8 @@ xDBLMUL(ec_point_t *S,
         select_point(&T[2], &R[1], &R[2], maskk);
 
         cswap_points(&DIFF1a, &DIFF1b, maskk);
-        ec_xADD(&T[1], &T[1], &T[2], &DIFF1a);
-        ec_xADD(&T[2], &R[0], &R[2], &DIFF2a);
+        xADD_Z1(&T[1], &T[1], &T[2], &DIFF1a.x);
+        xADD_Z1(&T[2], &R[0], &R[2], &DIFF2a.x);
 
         // If hw (mod 2) = 1 then swap DIFF2a and DIFF2b
         maskk = 0 - (h & 1);

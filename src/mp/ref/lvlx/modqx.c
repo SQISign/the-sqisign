@@ -98,13 +98,13 @@ modqx_modsub(const spint a[MODQLIMBS],
 }
 
 // Modular multiplication, c=a*b mod 2p
-void
-modqx_modmul(const spint a[MODQLIMBS],
-             const spint b[MODQLIMBS],
-             spint c[MODQLIMBS],
-             const spint p[MODQLIMBS],
-             const spint ndash,
-             int numwords)
+static inline __attribute__((always_inline)) void
+modmul_impl(const spint a[MODQLIMBS],
+            const spint b[MODQLIMBS],
+            spint c[MODQLIMBS],
+            const spint p[MODQLIMBS],
+            const spint ndash,
+            int numwords)
 {
     assert(numwords <= MODQLIMBS);
     assert(numwords > 0);
@@ -134,8 +134,8 @@ modqx_modmul(const spint a[MODQLIMBS],
 }
 
 // Modular squaring, c=a*a  mod 2p
-void
-modqx_modsqr(const spint a[MODQLIMBS], spint c[MODQLIMBS], const spint p[MODQLIMBS], const spint ndash, int numwords)
+static inline __attribute__((always_inline)) void
+modsqr_impl(const spint a[MODQLIMBS], spint c[MODQLIMBS], const spint p[MODQLIMBS], const spint ndash, int numwords)
 {
     assert(numwords <= MODQLIMBS);
     assert(numwords > 0);
@@ -186,6 +186,44 @@ modqx_modsqr(const spint a[MODQLIMBS], spint c[MODQLIMBS], const spint p[MODQLIM
         t >>= MODQRADIX;
     }
     c[numwords - 1] = (spint)t;
+}
+
+// The limb count is public (it follows the bit length of the modulus). Dispatching the common
+// counts to constant-trip-count copies lets the compiler fully unroll the product-scanning loops.
+#define MODQX_DISPATCH(impl, ...)                                                                                      \
+    switch (numwords) {                                                                                                \
+        case 3:                                                                                                        \
+            impl(__VA_ARGS__, 3);                                                                                      \
+            break;                                                                                                     \
+        case 6:                                                                                                        \
+            impl(__VA_ARGS__, 6);                                                                                      \
+            break;                                                                                                     \
+        case 9:                                                                                                        \
+            impl(__VA_ARGS__, 9);                                                                                      \
+            break;                                                                                                     \
+        case 12:                                                                                                       \
+            impl(__VA_ARGS__, 12);                                                                                     \
+            break;                                                                                                     \
+        default:                                                                                                       \
+            impl(__VA_ARGS__, numwords);                                                                               \
+            break;                                                                                                     \
+    }
+
+void
+modqx_modmul(const spint a[MODQLIMBS],
+             const spint b[MODQLIMBS],
+             spint c[MODQLIMBS],
+             const spint p[MODQLIMBS],
+             const spint ndash,
+             int numwords)
+{
+    MODQX_DISPATCH(modmul_impl, a, b, c, p, ndash)
+}
+
+void
+modqx_modsqr(const spint a[MODQLIMBS], spint c[MODQLIMBS], const spint p[MODQLIMBS], const spint ndash, int numwords)
+{
+    MODQX_DISPATCH(modsqr_impl, a, c, p, ndash)
 }
 
 // copy
